@@ -23,7 +23,7 @@ module layer1_tree_adder(
 	input signed  [15:0] input_data9;
 	input signed  [15:0] bias;
 	
-	output signed [15:0] output_data;
+	output logic signed [15:0] output_data;
 	
 	logic signed  [15:0] add_data1;
 	logic signed  [15:0] add_data2;

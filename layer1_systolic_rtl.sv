@@ -29,18 +29,19 @@ module layer1_systolic(
 	input         [47:0] weight7;
 	input         [47:0] weight8;
 	
-	output signed [15:0] output_channel1;
-	output signed [15:0] output_channel2;
-	output signed [15:0] output_channel3;
-	output signed [15:0] output_channel4;
-	output signed [15:0] output_channel5;
-	output signed [15:0] output_channel6;
-	output signed [15:0] output_channel7;
-	output signed [15:0] output_channel8;
+	output logic signed [15:0] output_channel1;
+	output logic signed [15:0] output_channel2;
+	output logic signed [15:0] output_channel3;
+	output logic signed [15:0] output_channel4;
+	output logic signed [15:0] output_channel5;
+	output logic signed [15:0] output_channel6;
+	output logic signed [15:0] output_channel7;
+	output logic signed [15:0] output_channel8;
 	
 	always_comb
 	begin
 		output_channel1=(signed'(weight1[47:32])*signed'(input_channel[47:32]))+(signed'(weight1[31:16])*signed'(input_channel[31:16]))+(signed'(weight1[15:0])*signed'(input_channel[15:0]));
+		
 		output_channel2=(signed'(weight2[47:32])*signed'(input_channel[47:32]))+(signed'(weight2[31:16])*signed'(input_channel[31:16]))+(signed'(weight2[15:0])*signed'(input_channel[15:0]));
 		output_channel3=(signed'(weight3[47:32])*signed'(input_channel[47:32]))+(signed'(weight3[31:16])*signed'(input_channel[31:16]))+(signed'(weight3[15:0])*signed'(input_channel[15:0]));
 		output_channel4=(signed'(weight4[47:32])*signed'(input_channel[47:32]))+(signed'(weight4[31:16])*signed'(input_channel[31:16]))+(signed'(weight4[15:0])*signed'(input_channel[15:0]));
