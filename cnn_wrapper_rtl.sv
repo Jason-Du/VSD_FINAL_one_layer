@@ -7,4 +7,7 @@ module cnn_wrapper(
 
 
 //interrupt_output
-//enable_write_interrupt signal
+
+//cpu clean 
+
+//dma start
