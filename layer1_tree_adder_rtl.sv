@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module layer1_tree_adder(
 	input_data1,
 	input_data2,

@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module 28stage_fifo
 (
 	clk,
@@ -22,9 +23,9 @@ logic  [ 4:0][47:0] Reg_out ;
 	always_comb
 	begin
 		for(byte i=0;i<27;i++)
-			begin
-				Reg_in[i+1]=Reg_out[i];
-			end
+		begin
+			Reg_in[i+1]=Reg_out[i];
+		end
 		output_data=Reg_in[27];
 	end
 endmodule

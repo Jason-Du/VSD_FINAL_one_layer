@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module layer1_systolic(
 	input_channel,
 	
