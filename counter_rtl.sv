@@ -2,10 +2,12 @@
 module counter(
 	clk,
 	rst,
-	count
+	count,
+	clear,
 );
 	input clk;
 	input rst;
+	input clear;
 	output [15:0]count;
 	always_ff@(posedge clk or posedge rst)
 	begin
@@ -21,6 +23,13 @@ module counter(
 	end
 	always_comb
 	begin
-		count_in=count+16'd1;
+		if(clear)
+		begin
+			count_in=16'd0;
+		end
+		else
+		begin
+			count_in=count+16'd1;
+		end
 	end
 endmodule

@@ -199,386 +199,342 @@ module layer1_cnn(
 		end
 	end
 	//----------------------------------------SYSTOLIC_ARRARYY---------------------------------------------//
+
+	layer1_systolic array1(
+	.input_channel(col_1_1_register_out),
 	
-	always_comb
-	begin
-	/*
-		layer1_systolic array1(
-		.input_channel(col_1_1_register_out),
-		
-		.output_channel1(systolic1_output[0]),
-		.output_channel2(systolic1_output[1]),
-		.output_channel3(systolic1_output[2]),
-		.output_channel4(systolic1_output[3]),
-		.output_channel5(systolic1_output[4]),
-		.output_channel6(systolic1_output[5]),
-		.output_channel7(systolic1_output[6]),
-		.output_channel8(systolic1_output[7]),
-		
-		.weight1(weight_register_out1[0]),
-		.weight2(weight_register_out1[1]),
-		.weight3(weight_register_out1[2]),
-		.weight4(weight_register_out1[3]),
-		.weight5(weight_register_out1[4]),
-		.weight6(weight_register_out1[5]),
-		.weight7(weight_register_out1[6]),
-		.weight8(weight_register_out1[7])
-	);*/logic [47:0] testin;
-		logic [47:0] weight_in1;
-		logic [47:0] weight_in2;
-		logic [47:0] weight_in3;
-		logic [47:0] weight_in4;
-		logic [47:0] weight_in5;
-		logic [47:0] weight_in6;
-		logic [47:0] weight_in7;
-		logic [47:0] weight_in8;
-		logic [15:0] systolic1_output1;
-		logic [15:0] systolic1_output2;
-		logic [15:0] systolic1_output3;
-		logic [15:0] systolic1_output4;
-		logic [15:0] systolic1_output5;
-		logic [15:0] systolic1_output6;
-		logic [15:0] systolic1_output7;
-		logic [15:0] systolic1_output8;
-		layer1_systolic array1(
-		.input_channel(testin),
-		
-		.output_channel1(systolic1_output1),
-		.output_channel2(systolic1_output2),
-		.output_channel3(systolic1_output3),
-		.output_channel4(systolic1_output4),
-		.output_channel5(systolic1_output5),
-		.output_channel6(systolic1_output6),
-		.output_channel7(systolic1_output7),
-		.output_channel8(systolic1_output8),
-		
-		.weight1(weight_in1),
-		.weight2(weight_in2),
-		.weight3(weight_in3),
-		.weight4(weight_in4),
-		.weight5(weight_in5),
-		.weight6(weight_in6),
-		.weight7(weight_in7),
-		.weight8(weight_in8)
-	);
-	end
-	/*
-		layer1_systolic array2(
-		.input_channel(col_1_2_register_out),
-		
-		.output_channel1(systolic2_output[0]),
-		.output_channel2(systolic2_output[1]),
-		.output_channel3(systolic2_output[2]),
-		.output_channel4(systolic2_output[3]),
-		.output_channel5(systolic2_output[4]),
-		.output_channel6(systolic2_output[5]),
-		.output_channel7(systolic2_output[6]),
-		.output_channel8(systolic2_output[7]),
-		
-		.weight1(weight_register_out2[0]),
-		.weight2(weight_register_out2[1]),
-		.weight3(weight_register_out2[2]),
-		.weight4(weight_register_out2[3]),
-		.weight5(weight_register_out2[4]),
-		.weight6(weight_register_out2[5]),
-		.weight7(weight_register_out2[6]),
-		.weight8(weight_register_out2[7])
-	);
-		layer1_systolic array3(
-		.input_channel(col_1_3_register_out),
-		
-		.output_channel1(systolic3_output[0]),
-		.output_channel2(systolic3_output[1]),
-		.output_channel3(systolic3_output[2]),
-		.output_channel4(systolic3_output[3]),
-		.output_channel5(systolic3_output[4]),
-		.output_channel6(systolic3_output[5]),
-		.output_channel7(systolic3_output[6]),
-		.output_channel8(systolic3_output[7]),
-		
-		.weight1(weight_register_out3[0]),
-		.weight2(weight_register_out3[1]),
-		.weight3(weight_register_out3[2]),
-		.weight4(weight_register_out3[3]),
-		.weight5(weight_register_out3[4]),
-		.weight6(weight_register_out3[5]),
-		.weight7(weight_register_out3[6]),
-		.weight8(weight_register_out3[7])
-	);
+	.output_channel1(systolic1_output[0]),
+	.output_channel2(systolic1_output[1]),
+	.output_channel3(systolic1_output[2]),
+	.output_channel4(systolic1_output[3]),
+	.output_channel5(systolic1_output[4]),
+	.output_channel6(systolic1_output[5]),
+	.output_channel7(systolic1_output[6]),
+	.output_channel8(systolic1_output[7]),
 	
-		layer1_systolic array4(
-		.input_channel(col_2_1_register_out),
-		
-		.output_channel1(systolic4_output[0]),
-		.output_channel2(systolic4_output[1]),
-		.output_channel3(systolic4_output[2]),
-		.output_channel4(systolic4_output[3]),
-		.output_channel5(systolic4_output[4]),
-		.output_channel6(systolic4_output[5]),
-		.output_channel7(systolic4_output[6]),
-		.output_channel8(systolic4_output[7]),
-		
-		.weight1(weight_register_out4[0]),
-		.weight2(weight_register_out4[1]),
-		.weight3(weight_register_out4[2]),
-		.weight4(weight_register_out4[3]),
-		.weight5(weight_register_out4[4]),
-		.weight6(weight_register_out4[5]),
-		.weight7(weight_register_out4[6]),
-		.weight8(weight_register_out4[7])
-	);
-		layer1_systolic array5(
-		.input_channel(col_2_2_register_out),
-		
-		.output_channel1(systolic5_output[0]),
-		.output_channel2(systolic5_output[1]),
-		.output_channel3(systolic5_output[2]),
-		.output_channel4(systolic5_output[3]),
-		.output_channel5(systolic5_output[4]),
-		.output_channel6(systolic5_output[5]),
-		.output_channel7(systolic5_output[6]),
-		.output_channel8(systolic5_output[7]),
-		
-		.weight1(weight_register_out5[0]),
-		.weight2(weight_register_out5[1]),
-		.weight3(weight_register_out5[2]),
-		.weight4(weight_register_out5[3]),
-		.weight5(weight_register_out5[4]),
-		.weight6(weight_register_out5[5]),
-		.weight7(weight_register_out5[6]),
-		.weight8(weight_register_out5[7])
-	);
-		layer1_systolic array6(
-		.input_channel(col_2_3_register_out),
-		
-		.output_channel1(systolic6_output[0]),
-		.output_channel2(systolic6_output[1]),
-		.output_channel3(systolic6_output[2]),
-		.output_channel4(systolic6_output[3]),
-		.output_channel5(systolic6_output[4]),
-		.output_channel6(systolic6_output[5]),
-		.output_channel7(systolic6_output[6]),
-		.output_channel8(systolic6_output[7]),
-		
-		.weight1(weight_register_out6[0]),
-		.weight2(weight_register_out6[1]),
-		.weight3(weight_register_out6[2]),
-		.weight4(weight_register_out6[3]),
-		.weight5(weight_register_out6[4]),
-		.weight6(weight_register_out6[5]),
-		.weight7(weight_register_out6[6]),
-		.weight8(weight_register_out6[7])
-	);
-		layer1_systolic array7(
-		.input_channel(col_3_1_register_out),
-		
-		.output_channel1(systolic7_output[0]),
-		.output_channel2(systolic7_output[1]),
-		.output_channel3(systolic7_output[2]),
-		.output_channel4(systolic7_output[3]),
-		.output_channel5(systolic7_output[4]),
-		.output_channel6(systolic7_output[5]),
-		.output_channel7(systolic7_output[6]),
-		.output_channel8(systolic7_output[7]),
-		
-		.weight1(weight_register_out7[0]),
-		.weight2(weight_register_out7[1]),
-		.weight3(weight_register_out7[2]),
-		.weight4(weight_register_out7[3]),
-		.weight5(weight_register_out7[4]),
-		.weight6(weight_register_out7[5]),
-		.weight7(weight_register_out7[6]),
-		.weight8(weight_register_out7[7])
-	);
-		layer1_systolic array8(
-		.input_channel(col_3_2_register_out),
-		
-		.output_channel1(systolic8_output[0]),
-		.output_channel2(systolic8_output[1]),
-		.output_channel3(systolic8_output[2]),
-		.output_channel4(systolic8_output[3]),
-		.output_channel5(systolic8_output[4]),
-		.output_channel6(systolic8_output[5]),
-		.output_channel7(systolic8_output[6]),
-		.output_channel8(systolic8_output[7]),
-		
-		.weight1(weight_register_out8[0]),
-		.weight2(weight_register_out8[1]),
-		.weight3(weight_register_out8[2]),
-		.weight4(weight_register_out8[3]),
-		.weight5(weight_register_out8[4]),
-		.weight6(weight_register_out8[5]),
-		.weight7(weight_register_out8[6]),
-		.weight8(weight_register_out8[7])
-	);
-		layer1_systolic array9(
-		.input_channel(col_3_3_register_out),
-		
-		.output_channel1(systolic9_output[0]),
-		.output_channel2(systolic9_output[1]),
-		.output_channel3(systolic9_output[2]),
-		.output_channel4(systolic9_output[3]),
-		.output_channel5(systolic9_output[4]),
-		.output_channel6(systolic9_output[5]),
-		.output_channel7(systolic9_output[6]),
-		.output_channel8(systolic9_output[7]),
-		
-		.weight1(weight_register_out9[0]),
-		.weight2(weight_register_out9[1]),
-		.weight3(weight_register_out9[2]),
-		.weight4(weight_register_out9[3]),
-		.weight5(weight_register_out9[4]),
-		.weight6(weight_register_out9[5]),
-		.weight7(weight_register_out9[6]),
-		.weight8(weight_register_out9[7])
-	);
+	.weight1(weight_register_out1[0]),
+	.weight2(weight_register_out1[1]),
+	.weight3(weight_register_out1[2]),
+	.weight4(weight_register_out1[3]),
+	.weight5(weight_register_out1[4]),
+	.weight6(weight_register_out1[5]),
+	.weight7(weight_register_out1[6]),
+	.weight8(weight_register_out1[7])
+);
+
+	layer1_systolic array2(
+	.input_channel(col_1_2_register_out),
 	
-	end
+	.output_channel1(systolic2_output[0]),
+	.output_channel2(systolic2_output[1]),
+	.output_channel3(systolic2_output[2]),
+	.output_channel4(systolic2_output[3]),
+	.output_channel5(systolic2_output[4]),
+	.output_channel6(systolic2_output[5]),
+	.output_channel7(systolic2_output[6]),
+	.output_channel8(systolic2_output[7]),
+	
+	.weight1(weight_register_out2[0]),
+	.weight2(weight_register_out2[1]),
+	.weight3(weight_register_out2[2]),
+	.weight4(weight_register_out2[3]),
+	.weight5(weight_register_out2[4]),
+	.weight6(weight_register_out2[5]),
+	.weight7(weight_register_out2[6]),
+	.weight8(weight_register_out2[7])
+);
+	layer1_systolic array3(
+	.input_channel(col_1_3_register_out),
+	
+	.output_channel1(systolic3_output[0]),
+	.output_channel2(systolic3_output[1]),
+	.output_channel3(systolic3_output[2]),
+	.output_channel4(systolic3_output[3]),
+	.output_channel5(systolic3_output[4]),
+	.output_channel6(systolic3_output[5]),
+	.output_channel7(systolic3_output[6]),
+	.output_channel8(systolic3_output[7]),
+	
+	.weight1(weight_register_out3[0]),
+	.weight2(weight_register_out3[1]),
+	.weight3(weight_register_out3[2]),
+	.weight4(weight_register_out3[3]),
+	.weight5(weight_register_out3[4]),
+	.weight6(weight_register_out3[5]),
+	.weight7(weight_register_out3[6]),
+	.weight8(weight_register_out3[7])
+);
+
+	layer1_systolic array4(
+	.input_channel(col_2_1_register_out),
+	
+	.output_channel1(systolic4_output[0]),
+	.output_channel2(systolic4_output[1]),
+	.output_channel3(systolic4_output[2]),
+	.output_channel4(systolic4_output[3]),
+	.output_channel5(systolic4_output[4]),
+	.output_channel6(systolic4_output[5]),
+	.output_channel7(systolic4_output[6]),
+	.output_channel8(systolic4_output[7]),
+	
+	.weight1(weight_register_out4[0]),
+	.weight2(weight_register_out4[1]),
+	.weight3(weight_register_out4[2]),
+	.weight4(weight_register_out4[3]),
+	.weight5(weight_register_out4[4]),
+	.weight6(weight_register_out4[5]),
+	.weight7(weight_register_out4[6]),
+	.weight8(weight_register_out4[7])
+);
+	layer1_systolic array5(
+	.input_channel(col_2_2_register_out),
+	
+	.output_channel1(systolic5_output[0]),
+	.output_channel2(systolic5_output[1]),
+	.output_channel3(systolic5_output[2]),
+	.output_channel4(systolic5_output[3]),
+	.output_channel5(systolic5_output[4]),
+	.output_channel6(systolic5_output[5]),
+	.output_channel7(systolic5_output[6]),
+	.output_channel8(systolic5_output[7]),
+	
+	.weight1(weight_register_out5[0]),
+	.weight2(weight_register_out5[1]),
+	.weight3(weight_register_out5[2]),
+	.weight4(weight_register_out5[3]),
+	.weight5(weight_register_out5[4]),
+	.weight6(weight_register_out5[5]),
+	.weight7(weight_register_out5[6]),
+	.weight8(weight_register_out5[7])
+);
+	layer1_systolic array6(
+	.input_channel(col_2_3_register_out),
+	
+	.output_channel1(systolic6_output[0]),
+	.output_channel2(systolic6_output[1]),
+	.output_channel3(systolic6_output[2]),
+	.output_channel4(systolic6_output[3]),
+	.output_channel5(systolic6_output[4]),
+	.output_channel6(systolic6_output[5]),
+	.output_channel7(systolic6_output[6]),
+	.output_channel8(systolic6_output[7]),
+	
+	.weight1(weight_register_out6[0]),
+	.weight2(weight_register_out6[1]),
+	.weight3(weight_register_out6[2]),
+	.weight4(weight_register_out6[3]),
+	.weight5(weight_register_out6[4]),
+	.weight6(weight_register_out6[5]),
+	.weight7(weight_register_out6[6]),
+	.weight8(weight_register_out6[7])
+);
+	layer1_systolic array7(
+	.input_channel(col_3_1_register_out),
+	
+	.output_channel1(systolic7_output[0]),
+	.output_channel2(systolic7_output[1]),
+	.output_channel3(systolic7_output[2]),
+	.output_channel4(systolic7_output[3]),
+	.output_channel5(systolic7_output[4]),
+	.output_channel6(systolic7_output[5]),
+	.output_channel7(systolic7_output[6]),
+	.output_channel8(systolic7_output[7]),
+	
+	.weight1(weight_register_out7[0]),
+	.weight2(weight_register_out7[1]),
+	.weight3(weight_register_out7[2]),
+	.weight4(weight_register_out7[3]),
+	.weight5(weight_register_out7[4]),
+	.weight6(weight_register_out7[5]),
+	.weight7(weight_register_out7[6]),
+	.weight8(weight_register_out7[7])
+);
+	layer1_systolic array8(
+	.input_channel(col_3_2_register_out),
+	
+	.output_channel1(systolic8_output[0]),
+	.output_channel2(systolic8_output[1]),
+	.output_channel3(systolic8_output[2]),
+	.output_channel4(systolic8_output[3]),
+	.output_channel5(systolic8_output[4]),
+	.output_channel6(systolic8_output[5]),
+	.output_channel7(systolic8_output[6]),
+	.output_channel8(systolic8_output[7]),
+	
+	.weight1(weight_register_out8[0]),
+	.weight2(weight_register_out8[1]),
+	.weight3(weight_register_out8[2]),
+	.weight4(weight_register_out8[3]),
+	.weight5(weight_register_out8[4]),
+	.weight6(weight_register_out8[5]),
+	.weight7(weight_register_out8[6]),
+	.weight8(weight_register_out8[7])
+);
+	layer1_systolic array9(
+	.input_channel(col_3_3_register_out),
+	
+	.output_channel1(systolic9_output[0]),
+	.output_channel2(systolic9_output[1]),
+	.output_channel3(systolic9_output[2]),
+	.output_channel4(systolic9_output[3]),
+	.output_channel5(systolic9_output[4]),
+	.output_channel6(systolic9_output[5]),
+	.output_channel7(systolic9_output[6]),
+	.output_channel8(systolic9_output[7]),
+	
+	.weight1(weight_register_out9[0]),
+	.weight2(weight_register_out9[1]),
+	.weight3(weight_register_out9[2]),
+	.weight4(weight_register_out9[3]),
+	.weight5(weight_register_out9[4]),
+	.weight6(weight_register_out9[5]),
+	.weight7(weight_register_out9[6]),
+	.weight8(weight_register_out9[7])
+);
 	//----------------------------------------ADDER_TREE--------------------------------------------//
+	layer1_tree_adder channel_1_adder_output(
+	.input_data1(systolic1_output[0]),
+	.input_data2(systolic2_output[0]),
+	.input_data3(systolic3_output[0]),
+	.input_data4(systolic4_output[0]),
+	.input_data5(systolic5_output[0]),
+	.input_data6(systolic6_output[0]),
+	.input_data7(systolic7_output[0]),
+	.input_data8(systolic8_output[0]),
+	.input_data9(systolic9_output[0]),
+	.bias(bias_register_out[0]),
+	.output_data(output_data[15:0])
+	);
+	
+	layer1_tree_adder channel_2_adder_output(
+	.input_data1(systolic1_output[1]),
+	.input_data2(systolic2_output[1]),
+	.input_data3(systolic3_output[1]),
+	.input_data4(systolic4_output[1]),
+	.input_data5(systolic5_output[1]),
+	.input_data6(systolic6_output[1]),
+	.input_data7(systolic7_output[1]),
+	.input_data8(systolic8_output[1]),
+	.input_data9(systolic9_output[1]),
+	.bias(bias_register_out[1]),
+	.output_data(output_data[31:16])
+	);
+	
+	layer1_tree_adder channel_3_adder_output(
+	.input_data1(systolic1_output[2]),
+	.input_data2(systolic2_output[2]),
+	.input_data3(systolic3_output[2]),
+	.input_data4(systolic4_output[2]),
+	.input_data5(systolic5_output[2]),
+	.input_data6(systolic6_output[2]),
+	.input_data7(systolic7_output[2]),
+	.input_data8(systolic8_output[2]),
+	.input_data9(systolic9_output[2]),
+	.bias(bias_register_out[2]),
+	.output_data(output_data[47:32])
+	);
+	layer1_tree_adder channel_4_adder_output(
+	.input_data1(systolic1_output[3]),
+	.input_data2(systolic2_output[3]),
+	.input_data3(systolic3_output[3]),
+	.input_data4(systolic4_output[3]),
+	.input_data5(systolic5_output[3]),
+	.input_data6(systolic6_output[3]),
+	.input_data7(systolic7_output[3]),
+	.input_data8(systolic8_output[3]),
+	.input_data9(systolic9_output[3]),
+	.bias(bias_register_out[3]),
+	.output_data(output_data[63:48])
+	);
+	layer1_tree_adder channel_5_adder_output(
+	.input_data1(systolic1_output[4]),
+	.input_data2(systolic2_output[4]),
+	.input_data3(systolic3_output[4]),
+	.input_data4(systolic4_output[4]),
+	.input_data5(systolic5_output[4]),
+	.input_data6(systolic6_output[4]),
+	.input_data7(systolic7_output[4]),
+	.input_data8(systolic8_output[4]),
+	.input_data9(systolic9_output[4]),
+	.bias(bias_register_out[4]),
+	.output_data(output_data[79:64])
+	);
+	layer1_tree_adder channel_6_adder_output(
+	.input_data1(systolic1_output[5]),
+	.input_data2(systolic2_output[5]),
+	.input_data3(systolic3_output[5]),
+	.input_data4(systolic4_output[5]),
+	.input_data5(systolic5_output[5]),
+	.input_data6(systolic6_output[5]),
+	.input_data7(systolic7_output[5]),
+	.input_data8(systolic8_output[5]),
+	.input_data9(systolic9_output[5]),
+	.bias(bias_register_out[5]),
+	.output_data(output_data[95:80])
+	);
+	layer1_tree_adder channel_7_adder_output(
+	.input_data1(systolic1_output[6]),
+	.input_data2(systolic2_output[6]),
+	.input_data3(systolic3_output[6]),
+	.input_data4(systolic4_output[6]),
+	.input_data5(systolic5_output[6]),
+	.input_data6(systolic6_output[6]),
+	.input_data7(systolic7_output[6]),
+	.input_data8(systolic8_output[6]),
+	.input_data9(systolic9_output[6]),
+	.bias(bias_register_out[6]),
+	.output_data(output_data[111:96])
+	);
+	layer1_tree_adder channel_8_adder_output(
+	.input_data1(systolic1_output[7]),
+	.input_data2(systolic2_output[7]),
+	.input_data3(systolic3_output[7]),
+	.input_data4(systolic4_output[7]),
+	.input_data5(systolic5_output[7]),
+	.input_data6(systolic6_output[7]),
+	.input_data7(systolic7_output[7]),
+	.input_data8(systolic8_output[7]),
+	.input_data9(systolic9_output[7]),
+	.bias(bias_register_out[7]),
+	.output_data(output_data[127:112])
+	);
+//----------------------------------------BUFFER_CHAIN--------------------------------------------//
+	stage28_fifo first_stage(
+	.clk(clk),
+	.rst(rst),
+	.input_data(input_data),
+	.output_data(buffer1_output)
+	);
+	stage28_fifo second_stage(
+	.clk(clk),
+	.rst(rst),
+	.input_data(col_3_1_register_out),
+	.output_data(buffer2_output)
+	);
+	stage28_fifo third_stage(
+	.clk(clk),
+	.rst(rst),
+	.input_data(col_2_1_register_out),
+	.output_data(buffer3_output)
+	);
 	always_comb
 	begin
-		layer1_tree_adder channel_1_adder_output(
-		.input_data1(systolic1_output[0]),
-		.input_data2(systolic2_output[0]),
-		.input_data3(systolic3_output[0]),
-		.input_data4(systolic4_output[0]),
-		.input_data5(systolic5_output[0]),
-		.input_data6(systolic6_output[0]),
-		.input_data7(systolic7_output[0]),
-		.input_data8(systolic8_output[0]),
-		.input_data9(systolic9_output[0]),
-		.bias(bias_register_out[0]),
-		.output_data(output_data[15:0])
-		);
-		
-		layer1_tree_adder channel_2_adder_output(
-		.input_data1(systolic1_output[1]),
-		.input_data2(systolic2_output[1]),
-		.input_data3(systolic3_output[1]),
-		.input_data4(systolic4_output[1]),
-		.input_data5(systolic5_output[1]),
-		.input_data6(systolic6_output[1]),
-		.input_data7(systolic7_output[1]),
-		.input_data8(systolic8_output[1]),
-		.input_data9(systolic9_output[1]),
-		.bias(bias_register_out[1]),
-		.output_data(output_data[31:16])
-		);
-		
-		layer1_tree_adder channel_3_adder_output(
-		.input_data1(systolic1_output[2]),
-		.input_data2(systolic2_output[2]),
-		.input_data3(systolic3_output[2]),
-		.input_data4(systolic4_output[2]),
-		.input_data5(systolic5_output[2]),
-		.input_data6(systolic6_output[2]),
-		.input_data7(systolic7_output[2]),
-		.input_data8(systolic8_output[2]),
-		.input_data9(systolic9_output[2]),
-		.bias(bias_register_out[2]),
-		.output_data(output_data[47:32])
-		);
-		layer1_tree_adder channel_4_adder_output(
-		.input_data1(systolic1_output[3]),
-		.input_data2(systolic2_output[3]),
-		.input_data3(systolic3_output[3]),
-		.input_data4(systolic4_output[3]),
-		.input_data5(systolic5_output[3]),
-		.input_data6(systolic6_output[3]),
-		.input_data7(systolic7_output[3]),
-		.input_data8(systolic8_output[3]),
-		.input_data9(systolic9_output[3]),
-		.bias(bias_register_out[3]),
-		.output_data(output_data[63:48])
-		);
-		layer1_tree_adder channel_5_adder_output(
-		.input_data1(systolic1_output[4]),
-		.input_data2(systolic2_output[4]),
-		.input_data3(systolic3_output[4]),
-		.input_data4(systolic4_output[4]),
-		.input_data5(systolic5_output[4]),
-		.input_data6(systolic6_output[4]),
-		.input_data7(systolic7_output[4]),
-		.input_data8(systolic8_output[4]),
-		.input_data9(systolic9_output[4]),
-		.bias(bias_register_out[4]),
-		.output_data(output_data[79:64])
-		);
-		layer1_tree_adder channel_6_adder_output(
-		.input_data1(systolic1_output[5]),
-		.input_data2(systolic2_output[5]),
-		.input_data3(systolic3_output[5]),
-		.input_data4(systolic4_output[5]),
-		.input_data5(systolic5_output[5]),
-		.input_data6(systolic6_output[5]),
-		.input_data7(systolic7_output[5]),
-		.input_data8(systolic8_output[5]),
-		.input_data9(systolic9_output[5]),
-		.bias(bias_register_out[5]),
-		.output_data(output_data[95:80])
-		);
-		layer1_tree_adder channel_7_adder_output(
-		.input_data1(systolic1_output[6]),
-		.input_data2(systolic2_output[6]),
-		.input_data3(systolic3_output[6]),
-		.input_data4(systolic4_output[6]),
-		.input_data5(systolic5_output[6]),
-		.input_data6(systolic6_output[6]),
-		.input_data7(systolic7_output[6]),
-		.input_data8(systolic8_output[6]),
-		.input_data9(systolic9_output[6]),
-		.bias(bias_register_out[6]),
-		.output_data(output_data[111:96])
-		);
-		layer1_tree_adder channel_8_adder_output(
-		.input_data1(systolic1_output[7]),
-		.input_data2(systolic2_output[7]),
-		.input_data3(systolic3_output[7]),
-		.input_data4(systolic4_output[7]),
-		.input_data5(systolic5_output[7]),
-		.input_data6(systolic6_output[7]),
-		.input_data7(systolic7_output[7]),
-		.input_data8(systolic8_output[7]),
-		.input_data9(systolic9_output[7]),
-		.bias(bias_register_out[7]),
-		.output_data(output_data[127:112])
-		);
-	end
-	//----------------------------------------BUFFER_CHAIN--------------------------------------------//
-	always_comb
-	begin
-		stage28_fifo first_stage(
-		.clk(clk),
-		.rst(rst),
-		.input_data(input_data),
-		.output_data(buffer1_output)
-		);
+
 		col_3_3_register_in=buffer1_output;
 		col_3_2_register_in=col_3_3_register_out;
 		col_3_1_register_in=col_3_2_register_out;
 		
-		stage28_fifo second_stage(
-		.clk(clk),
-		.rst(rst),
-		.input_data(col_3_1_register_out),
-		.output_data(buffer2_output)
-		);
+		
 		
 		col_2_3_register_in=buffer2_output;
 		col_2_2_register_in=col_2_3_register_out;
 		col_2_1_register_in=col_2_2_register_out;
 		
-		stage28_fifo third_stage(
-		.clk(clk),
-		.rst(rst),
-		.input_data(col_2_1_register_out),
-		.output_data(buffer3_output)
-		);
+		
 		
 		col_1_3_register_in=buffer3_output;
 		col_1_2_register_in=col_1_3_register_out;
 		col_1_1_register_in=col_1_2_register_out;
-	);
 	end
 	always_ff@(posedge clk or posedge rst)
 	begin
@@ -611,7 +567,6 @@ module layer1_cnn(
 			col_1_1_register_out<=col_1_1_register_in;
 		end
 	end
-	*/
 endmodule
 
 
