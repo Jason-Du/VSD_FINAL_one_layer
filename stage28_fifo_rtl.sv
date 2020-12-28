@@ -11,8 +11,15 @@ input        [47:0] input_data;
 output logic [47:0] output_data;
 logic        [47:0] Reg_in  [29];
 logic        [47:0] Reg_out [29];
-	always_ff@(posedge clk)
+	always_ff@(posedge clk or posedge rst)
 	begin
+		if(rst)
+		begin
+			for(byte i=0;i<=28;i++)
+			begin
+				Reg_out[i]<=48'd0;
+			end
+		end
 		for(byte i=0;i<=28;i++)
 		begin
 			Reg_out[i]<=Reg_in[i];

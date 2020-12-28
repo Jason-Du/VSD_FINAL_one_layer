@@ -4,11 +4,14 @@ module counter(
 	rst,
 	count,
 	clear,
+	keep
 );
-	input clk;
-	input rst;
-	input clear;
-	output [15:0]count;
+	input               clk;
+	input               rst;
+	input               keep;
+	input               clear;
+	output logic [15:0] count;
+	logic        [15:0] count_in;
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
@@ -26,6 +29,10 @@ module counter(
 		if(clear)
 		begin
 			count_in=16'd0;
+		end
+		else if(keep)
+		begin
+			count_in=count;
 		end
 		else
 		begin

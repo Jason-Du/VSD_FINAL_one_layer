@@ -1,31 +1,38 @@
 `include "layer1_tree_adder_rtl.sv"
 `include "layer1_systolic_rtl.sv"
 `include "stage28_fifo_rtl.sv"
+`include "counter_rtl.sv"
 `timescale 1ns/10ps
 module layer1_cnn(
 	clk,
 	rst,
 	input_data,
-
 	weight_data,
 	bias_data,
-	weight_set_done,
-	bias_set_done,
+	weight_store_done,
+	bias_store_done,
+	pixel_store_done,
 	
+	save_enable,
+	output_row,
+	output_col,
+	layer1_calculation_done,
 	output_data
 );
-	input          clk;
-	input          rst;
-	input          weight_set_done;
-	input          bias_set_done;
-	input  [ 47:0] weight_data;
-	input  [ 47:0] input_data;
-	input  [ 15:0] bias_data;
+	input                clk;
+	input                rst;
+	input                weight_store_done;
+	input                bias_store_done;
+	input                pixel_store_done;
+	input        [ 47:0] weight_data;
+	input        [ 47:0] input_data;
+	input        [ 15:0] bias_data;
+	output logic         save_enable;
+	output logic [ 15:0] output_row;
+	output logic [ 15:0] output_col;
+	output logic [127:0] output_data;
+	output logic         layer1_calculation_done;
 	
-	output logic [128:0] output_data;
-	
-	
-	logic  [47:0] buffer1_output;
 	logic  [47:0] buffer2_output;
 	logic  [47:0] buffer3_output;
 
@@ -82,7 +89,189 @@ module layer1_cnn(
 	logic  [15:0] systolic7_output[8];
 	logic  [15:0] systolic8_output[8];
 	logic  [15:0] systolic9_output[8];
-		//----------------------------------------bias_SETTING-----------------------------------------------//
+
+
+	//----------------------------SAVE ADDRESS SIGNAL CONTROL----------------------------//
+	//set counter is slso col counter
+	localparam SAVE_IDLE=2'b00;
+	localparam SAVE_SETTING=2'b01;
+	localparam SAVE_ENABLE=2'b10;
+	logic  [15:0] save_address_row_count;
+	logic         save_address_row_keep;
+	
+	logic  [15:0] set_count;
+	logic         set_clear;
+	
+	logic         set_keep;
+	logic  [1:0]  save_cs;
+	logic  [1:0]  save_ns;
+	always_ff@(posedge clk or posedge rst)
+	begin
+		if(rst)
+		begin
+			save_cs<=SAVE_IDLE;
+		end
+		else
+		begin
+			save_cs=save_ns;
+		end
+	end
+	always_comb
+	begin
+		output_row=save_address_row_count;
+		output_col=set_count;
+		case(save_cs)
+		SAVE_IDLE:
+		begin
+			save_address_row_keep=1'b1;
+			layer1_calculation_done=1'b0;
+			save_enable=1'b0;
+			set_clear=1'b1;
+			if(pixel_store_done)
+			begin
+				save_ns=SAVE_SETTING;
+			end
+			else
+			begin
+				save_ns=SAVE_IDLE;
+			end
+		end
+		SAVE_SETTING:
+		begin
+			save_address_row_keep=1'b1;
+			layer1_calculation_done=1'b0;
+			save_enable=1'b0;
+			if(set_count==16'd67)
+			begin
+				set_clear=1'b1;
+				save_ns=SAVE_ENABLE;
+			end
+			else
+			begin
+				set_clear=1'b0;
+				save_ns=SAVE_SETTING;
+			end
+		end
+		SAVE_ENABLE:
+		begin
+			if(set_count==16'd32)
+			begin
+				set_clear=1'b1;
+				save_address_row_keep=1'b0;
+			end
+			else
+			begin
+				set_clear=1'b0;
+				save_address_row_keep=1'b1;
+			end
+			
+			if(save_address_row_count==16'd30&&set_count==16'd30)
+			begin
+				save_ns=SAVE_IDLE;
+				layer1_calculation_done=1'b1;
+			end
+			else
+			begin
+				save_ns=SAVE_ENABLE;
+				layer1_calculation_done=1'b0;
+			end
+			
+			if(set_count>16'd30)
+			begin
+				save_enable=1'b0;
+			end
+			else
+			begin
+				save_enable=1'b1;
+			end
+		end
+		default:
+		begin
+			set_clear=1'b1;
+			save_address_row_keep=1'b1;
+			layer1_calculation_done=1'b0;
+			save_enable=1'b0;
+			save_ns=SAVE_IDLE;	
+		end
+		endcase
+	end
+	counter set_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(set_count),
+	.clear(set_clear),
+	.keep(1'b0)
+	);
+	counter save_address_row(
+	.clk(clk),
+	.rst(rst),
+	.count(save_address_row_count),
+	.clear(1'b0),
+	.keep(save_address_row_keep)
+	);
+	//----------------------------------------bias_SETTING-----------------------------------------------//
+	localparam BIAS_IDLE=1'b0;
+	localparam BIAS_SET=1'b1;
+	logic      bias_cs;
+	logic      bias_ns;
+	logic      bias_set_done;
+	logic [15:0] bias_set_count;
+	logic        bias_set_clear;
+	logic        bias_set_keep;
+	always_ff@(posedge clk or posedge rst)
+	begin
+		if(rst)
+		begin
+			bias_cs<=SAVE_IDLE;
+		end
+		else
+		begin
+			bias_cs=bias_ns;
+		end
+	end
+	always_comb
+	begin
+		case(bias_cs)
+		BIAS_IDLE:
+		begin
+			bias_set_keep=1'b0;
+			bias_set_done=1'b0;
+			if(bias_store_done)
+			begin
+				bias_ns=BIAS_SET;
+				bias_set_clear=1'b0;
+			end
+			else
+			begin
+				bias_ns=BIAS_IDLE;
+				bias_set_clear=1'b1;
+			end
+		end
+		BIAS_SET:
+		begin
+			if(bias_set_count==16'd7)
+			begin
+				bias_set_keep=1'b1;
+				bias_set_done=1'b1;
+			end
+			else
+			begin
+				bias_set_keep=1'b0;
+				bias_set_done=1'b0;
+			end
+			bias_ns=BIAS_SET;
+			bias_set_clear=1'b0;
+		end
+		endcase
+	end
+	counter bias_set_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(bias_set_count),
+	.clear(bias_set_clear),
+	.keep(bias_set_keep)
+	);
+	
 	always_comb
 	begin
 		if(bias_set_done==1'b0)
@@ -123,6 +312,67 @@ module layer1_cnn(
 		end
 	end
 		//----------------------------------------WEIGHT_SETTING---------------------------------------------//
+	localparam WEIGHT_IDLE=1'b0;
+	localparam WEIGHT_SET=1'b1;
+	logic      weight_cs;
+	logic      weight_ns;
+	logic      weight_set_done;
+	logic [15:0] weight_set_count;
+	logic        weight_set_clear;
+	logic        weight_set_keep;
+	always_ff@(posedge clk or posedge rst)
+	begin
+		if(rst)
+		begin
+			weight_cs<=SAVE_IDLE;
+		end
+		else
+		begin
+			weight_cs=weight_ns;
+		end
+	end
+	always_comb
+	begin
+		case(weight_cs)
+		WEIGHT_IDLE:
+		begin
+			weight_set_keep=1'b0;
+			weight_set_done=1'b0;
+			if(weight_store_done)
+			begin
+				weight_ns=WEIGHT_SET;
+				weight_set_clear=1'b0;
+			end
+			else
+			begin
+				weight_ns=WEIGHT_IDLE;
+				weight_set_clear=1'b1;
+			end	
+		end
+		WEIGHT_SET:
+		begin
+			if(weight_set_count==16'd71)
+			begin
+				weight_set_keep=1'b1;
+				weight_set_done=1'b1;
+			end
+			else
+			begin
+				weight_set_keep=1'b0;
+				weight_set_done=1'b0;
+			end
+			weight_ns=WEIGHT_SET;
+			weight_set_clear=1'b0;
+		end
+		endcase
+	end
+	counter weight_set_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(weight_set_count),
+	.clear(weight_set_clear),
+	.keep(weight_set_keep)
+	);
 	always_comb
 	begin
 		if(weight_set_done==1'b0)
@@ -520,7 +770,7 @@ module layer1_cnn(
 	always_comb
 	begin
 
-		col_3_3_register_in=buffer1_output;
+		col_3_3_register_in=input_data;
 		col_3_2_register_in=col_3_3_register_out;
 		col_3_1_register_in=col_3_2_register_out;
 		

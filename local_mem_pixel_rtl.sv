@@ -17,8 +17,8 @@ input clk;
 input rst;
 input read_pixel_signal;
 input write_pixel_signal;
-input [16:0]write_pixel_data;
-input [11:0]pixel_addr;
+input [15:0]write_pixel_data;
+input [15:0]pixel_addr;
 
 output logic [47:0] read_pixel_data;
 
