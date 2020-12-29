@@ -70,6 +70,71 @@ module layer1_systolic(
 	logic signed        [31:0] channel8_data2;
 	logic signed        [31:0] channel8_data3;
 	
+	logic  signed       [15:0] channel1_test1;
+	logic  signed       [15:0] channel1_test2;
+	logic  signed       [15:0] channel1_test3;
+	
+	logic signed        [15:0] channel2_test1;
+	logic signed        [15:0] channel2_test2;
+	logic signed        [15:0] channel2_test3;
+	
+	logic signed        [15:0] channel3_test1;
+	logic signed        [15:0] channel3_test2;
+	logic signed        [15:0] channel3_test3;
+	
+	logic signed        [15:0] channel4_test1;
+	logic signed        [15:0] channel4_test2;
+	logic signed        [15:0] channel4_test3;
+	
+	logic signed        [15:0] channel5_test1;
+	logic signed        [15:0] channel5_test2;
+	logic signed        [15:0] channel5_test3;
+	
+	logic signed        [15:0] channel6_test1;
+	logic signed        [15:0] channel6_test2;
+	logic signed        [15:0] channel6_test3;
+	
+	logic signed        [15:0] channel7_test1;
+	logic signed        [15:0] channel7_test2;
+	logic signed        [15:0] channel7_test3;
+	
+	logic signed        [15:0] channel8_test1;
+	logic signed        [15:0] channel8_test2;
+	logic signed        [15:0] channel8_test3;
+	always_comb
+	begin
+		channel1_test1=channel1_data1[25:10];
+		channel1_test2=channel1_data2[25:10];
+		channel1_test3=channel1_data3[25:10];
+		               
+		channel2_test1=channel2_data1[25:10];
+		channel2_test2=channel2_data2[25:10];
+		channel2_test3=channel2_data3[25:10];
+		               
+		channel3_test1=channel3_data1[25:10];
+		channel3_test2=channel3_data2[25:10];
+		channel3_test3=channel3_data3[25:10];
+		               
+		channel4_test1=channel4_data1[25:10];
+		channel4_test2=channel4_data2[25:10];
+		channel4_test3=channel4_data3[25:10];
+		               
+		channel5_test1=channel5_data1[25:10];
+		channel5_test2=channel5_data2[25:10];
+		channel5_test3=channel5_data3[25:10];
+		               
+		channel6_test1=channel6_data1[25:10];
+		channel6_test2=channel6_data2[25:10];
+		channel6_test3=channel6_data3[25:10];
+		               
+		channel7_test1=channel7_data1[25:10];
+		channel7_test2=channel7_data2[25:10];
+		channel7_test3=channel7_data3[25:10];
+		               
+		channel8_test1=channel8_data1[25:10];
+		channel8_test2=channel8_data2[25:10];
+		channel8_test3=channel8_data3[25:10];
+	end
 	
 	always_comb
 	begin

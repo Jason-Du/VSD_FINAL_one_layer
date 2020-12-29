@@ -44,6 +44,30 @@ module controller(
 	bias_mem_addr,
 	bias_mem_data,
 );
+/*
+/ CNN
+`define SLAVE6_ADDR_START 32'hd000_0000
+`define SLAVE6_ADDR_END 32'hdfff_ffff
+
+
+`define result_address             32'hd000_0000
+`define image_set_register_ADDRESS 32'hd111_0000
+`define interrupr_rsgister_ADDRESS 32'hd222_0000
+
+`define local_weight_mem_ADDRESS_START 32'hd333_0000
+`define local_weight_mem_ADDRESS_END 32'hd333_ffff
+
+
+`define local_bias_mem_ADDRESS_START 32'hd444_0000
+`define local_bias_mem_ADDRESS_END 32'hd444_ffff
+
+`define local_pixel_mem_ADDRESS_START 32'hd555_0000
+`define local_pixel_mem_ADDRESS_END  32'hdfff_ffff
+
+`endif
+
+*/
+
 localparam result_address             =32'hffffffff;
 localparam image_set_register_ADDRESS =4'b0001;
 localparam interrupr_rsgister_ADDRESS =4'b0010;
