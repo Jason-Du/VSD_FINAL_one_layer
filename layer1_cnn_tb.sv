@@ -105,8 +105,9 @@ begin
 			$fwrite(fp_w,"\n");
 		end
 		$fclose(fp_w);	
-		$finish;
-	end
+		$finish;	
+	end	
+end
 initial
 begin
 	$fsdbDumpfile("top_cnn.fsdb");

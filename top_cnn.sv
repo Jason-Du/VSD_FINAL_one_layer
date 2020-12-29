@@ -22,7 +22,7 @@ module top_cnn(
 	logic [15:0] output_row;
 	logic [15:0] output_col;
 	logic layer1_calculation_done;
-	logic	[127:0]output_data;
+	logic [127:0]output_data;
 	logic [15:0] weight_count_data;
 	logic        weight_count_clear;
 	logic        weight_count_keep;
@@ -64,9 +64,10 @@ module top_cnn(
 		.clk(clk),
 		.rst(rst),
 		.count(pixel_count_data),
-		.clear(1'b0),
+		.clear(pixel_count_clear),
 		.keep(1'b0)
 	);
+	/*
 	counter save_result_counter(
 		.clk(clk),
 		.rst(rst),
@@ -76,12 +77,15 @@ module top_cnn(
 	);
 	logic [5:0] row_register_in;
 	logic [5:0] row_register_out;
-
+*/
+	logic pixel_store_done;
 	always_comb
 	begin
 		weight_data    =mem_weight_in[weight_count_data];
 		bias_data      =mem_bias_in  [  bias_count_data];
-		pixel_data     =mem_pixel_in [ pixel_count_data[9:5]][ pixel_count_data[4:0]];
+		pixel_data     =mem_pixel_in [pixel_count_data[9:5]][pixel_count_data[4:0]];
+		//pixel_count_data[4:0]
+		
 		if (save_enable)
 		begin
 			mem_result_in[output_row][output_col]=output_data;
@@ -90,7 +94,8 @@ module top_cnn(
 		begin
 			mem_result_in[output_row][output_col]=mem_result[output_row][output_col];
 		end
-		cnndonesignal=layer1_calculation_done;
+		pixel_count_clear=(weight_count_data>16'd72)? 1'b0:1'b1;
+		pixel_store_done =(weight_count_data==16'd72)?1'b1:1'b0;
 		/*
 		mem_result[row_register_out][save_count_data] =output_data;
 		weight_set_done=(weight_count_data==WEIGHT_NUM)?1'b1:weight_set_done_register_out;
@@ -118,6 +123,7 @@ module top_cnn(
 			
 			row_register_out<=6'd0;
 			*/
+			cnndonesignal<=1'b0;
 			for (int i=0;i<=30;i++)
 			begin
 				for (int j=0;j<=30;j++)
@@ -128,12 +134,13 @@ module top_cnn(
 		end
 		else
 		begin
-		/*
+		/*	
 			weight_set_done_register_out<=weight_set_done;
 			bias_set_done_register_out<=bias_set_done;
 			pixel_set_done_register_out<=pixel_set_done;
 			row_register_out<=row_register_in;
 			*/
+			cnndonesignal<=layer1_calculation_done;
 			for (int i=0;i<=30;i++)
 			begin
 				for (int j=0;j<=30;j++)
@@ -165,7 +172,7 @@ module top_cnn(
 	.bias_data(bias_data),
 	.weight_store_done(1'b1),
 	.bias_store_done(1'b1),
-	.pixel_store_done(1'b1),
+	.pixel_store_done(pixel_store_done),
 	
 	.save_enable(save_enable),
 	.output_row(output_row),

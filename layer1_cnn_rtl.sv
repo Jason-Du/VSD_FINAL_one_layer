@@ -77,8 +77,8 @@ module layer1_cnn(
 	logic  [47:0] weight_register_out8[8];
 	logic  [47:0] weight_register_out9[8];
 	
-	logic  [15:0] bias_register_in [9];
-	logic  [15:0] bias_register_out[9];
+	logic  [15:0] bias_register_in [8];
+	logic  [15:0] bias_register_out[8];
 	
 	logic  [15:0] systolic1_output[8];
 	logic  [15:0] systolic2_output[8];
@@ -97,11 +97,11 @@ module layer1_cnn(
 	localparam SAVE_SETTING=2'b01;
 	localparam SAVE_ENABLE=2'b10;
 	logic  [15:0] save_address_row_count;
+	logic         save_address_row_clear;
 	logic         save_address_row_keep;
 	
 	logic  [15:0] set_count;
 	logic         set_clear;
-	
 	logic         set_keep;
 	logic  [1:0]  save_cs;
 	logic  [1:0]  save_ns;
@@ -125,6 +125,7 @@ module layer1_cnn(
 		begin
 			save_address_row_keep=1'b1;
 			layer1_calculation_done=1'b0;
+			save_address_row_clear=1'b1;
 			save_enable=1'b0;
 			set_clear=1'b1;
 			if(pixel_store_done)
@@ -140,21 +141,24 @@ module layer1_cnn(
 		begin
 			save_address_row_keep=1'b1;
 			layer1_calculation_done=1'b0;
-			save_enable=1'b0;
-			if(set_count==16'd67)
+			save_address_row_clear=1'b1;
+			if(set_count==16'd66)
 			begin
 				set_clear=1'b1;
+				save_enable=1'b0;
 				save_ns=SAVE_ENABLE;
 			end
 			else
 			begin
 				set_clear=1'b0;
+				save_enable=1'b0;
 				save_ns=SAVE_SETTING;
 			end
 		end
 		SAVE_ENABLE:
 		begin
-			if(set_count==16'd32)
+			save_address_row_clear=1'b0;
+			if(set_count==16'd31)
 			begin
 				set_clear=1'b1;
 				save_address_row_keep=1'b0;
@@ -165,7 +169,7 @@ module layer1_cnn(
 				save_address_row_keep=1'b1;
 			end
 			
-			if(save_address_row_count==16'd30&&set_count==16'd30)
+			if(save_address_row_count==16'd29&&set_count==16'd29)
 			begin
 				save_ns=SAVE_IDLE;
 				layer1_calculation_done=1'b1;
@@ -176,7 +180,7 @@ module layer1_cnn(
 				layer1_calculation_done=1'b0;
 			end
 			
-			if(set_count>16'd30)
+			if(set_count>16'd29)
 			begin
 				save_enable=1'b0;
 			end
@@ -206,7 +210,7 @@ module layer1_cnn(
 	.clk(clk),
 	.rst(rst),
 	.count(save_address_row_count),
-	.clear(1'b0),
+	.clear(save_address_row_clear),
 	.keep(save_address_row_keep)
 	);
 	//----------------------------------------bias_SETTING-----------------------------------------------//
@@ -249,7 +253,7 @@ module layer1_cnn(
 		end
 		BIAS_SET:
 		begin
-			if(bias_set_count==16'd7)
+			if(bias_set_count==16'd8)
 			begin
 				bias_set_keep=1'b1;
 				bias_set_done=1'b1;
@@ -276,8 +280,8 @@ module layer1_cnn(
 	begin
 		if(bias_set_done==1'b0)
 		begin
-			bias_register_in[8]=bias_data;
-			bias_register_in[7]=bias_register_out[8];
+			//bias_register_in[8]=bias_data;
+			bias_register_in[7]=bias_data;
 			bias_register_in[6]=bias_register_out[7];
 			bias_register_in[5]=bias_register_out[6];
 			bias_register_in[4]=bias_register_out[5];
@@ -288,7 +292,7 @@ module layer1_cnn(
 		end
 		else
 		begin
-			for(byte i=0;i<=8;i++)
+			for(byte i=0;i<=7;i++)
 			begin
 				bias_register_in[i]=bias_register_out[i];
 			end		
@@ -298,14 +302,14 @@ module layer1_cnn(
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=8;i++)
+			for(byte i=0;i<=7;i++)
 			begin
 				bias_register_out[i]<=16'd0;
 			end	
 		end
 		else
 		begin
-			for(byte i=0;i<=8;i++)
+			for(byte i=0;i<=7;i++)
 			begin
 				bias_register_out[i]<=bias_register_in[i];
 			end		
@@ -351,7 +355,7 @@ module layer1_cnn(
 		end
 		WEIGHT_SET:
 		begin
-			if(weight_set_count==16'd71)
+			if(weight_set_count==16'd72)
 			begin
 				weight_set_keep=1'b1;
 				weight_set_done=1'b1;

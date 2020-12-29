@@ -18,11 +18,16 @@ logic        [47:0] Reg_out [29];
 			for(byte i=0;i<=28;i++)
 			begin
 				Reg_out[i]<=48'd0;
+				//$display("rst check");
+				//$display(i);
 			end
 		end
-		for(byte i=0;i<=28;i++)
+		else
 		begin
-			Reg_out[i]<=Reg_in[i];
+			for(byte i=0;i<=28;i++)
+			begin
+				Reg_out[i]<=Reg_in[i];
+			end
 		end
 	end
 	always_comb
