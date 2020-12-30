@@ -9,15 +9,24 @@ module layer1_cnn(
 	input_data,
 	weight_data,
 	bias_data,
+	
 	weight_store_done,
 	bias_store_done,
 	pixel_store_done,
-	
+	//IN OUT PORT
 	save_enable,
 	output_row,
 	output_col,
+	
 	layer1_calculation_done,
-	output_data
+	output_data,
+	
+	read_pixel_addr,
+	read_pixel_signal,
+	read_weight_addr,
+	read_weight_signal,
+	read_bias_addr,
+	read_bias_signal
 );
 	input                clk;
 	input                rst;
@@ -27,11 +36,22 @@ module layer1_cnn(
 	input        [ 47:0] weight_data;
 	input        [ 47:0] input_data;
 	input        [ 15:0] bias_data;
+	
 	output logic         save_enable;
 	output logic [ 15:0] output_row;
 	output logic [ 15:0] output_col;
 	output logic [127:0] output_data;
 	output logic         layer1_calculation_done;
+	
+	output logic  [15:0] read_pixel_addr;
+	output logic         read_pixel_signal;
+	
+	output logic  [15:0] read_weight_addr;
+	output logic         read_weight_signal;
+	
+	output logic  [15:0] read_bias_addr;
+	output logic         read_bias_signal;
+	
 	
 	logic  [47:0] buffer2_output;
 	logic  [47:0] buffer3_output;
@@ -92,13 +112,17 @@ module layer1_cnn(
 
 
 	//----------------------------SAVE ADDRESS SIGNAL CONTROL----------------------------//
-	//set counter is slso col counter
+	//set counter is also col counter
 	localparam SAVE_IDLE=2'b00;
 	localparam SAVE_SETTING=2'b01;
 	localparam SAVE_ENABLE=2'b10;
 	logic  [15:0] save_address_row_count;
 	logic         save_address_row_clear;
 	logic         save_address_row_keep;
+	
+
+	logic  [15:0] read_pixel_count;
+	logic  read_pixel_clear;
 	
 	logic  [15:0] set_count;
 	logic         set_clear;
@@ -118,6 +142,7 @@ module layer1_cnn(
 	end
 	always_comb
 	begin
+		read_pixel_addr=read_pixel_count;
 		output_row=save_address_row_count;
 		output_col=set_count;
 		case(save_cs)
@@ -128,6 +153,8 @@ module layer1_cnn(
 			save_address_row_clear=1'b1;
 			save_enable=1'b0;
 			set_clear=1'b1;
+			read_pixel_signal=1'b0;
+			read_pixel_clear=1'b1;
 			if(pixel_store_done)
 			begin
 				save_ns=SAVE_SETTING;
@@ -142,6 +169,9 @@ module layer1_cnn(
 			save_address_row_keep=1'b1;
 			layer1_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
+			read_pixel_signal=1'b1;
+			read_pixel_signal=1'b1;
+			read_pixel_clear=1'b0;
 			if(set_count==16'd66)
 			begin
 				set_clear=1'b1;
@@ -158,6 +188,8 @@ module layer1_cnn(
 		SAVE_ENABLE:
 		begin
 			save_address_row_clear=1'b0;
+			read_pixel_signal=1'b1;
+			read_pixel_clear=1'b0;
 			if(set_count==16'd31)
 			begin
 				set_clear=1'b1;
@@ -195,10 +227,19 @@ module layer1_cnn(
 			save_address_row_keep=1'b1;
 			layer1_calculation_done=1'b0;
 			save_enable=1'b0;
-			save_ns=SAVE_IDLE;	
+			save_ns=SAVE_IDLE;
+			read_pixel_signal=1'b0;
+			read_pixel_clear=1'b1;			
 		end
 		endcase
 	end
+	counter read_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(read_pixel_count),
+	.clear(read_pixel_clear),
+	.keep(1'b0)
+	);
 	counter set_counter(
 	.clk(clk),
 	.rst(rst),
@@ -222,6 +263,10 @@ module layer1_cnn(
 	logic [15:0] bias_set_count;
 	logic        bias_set_clear;
 	logic        bias_set_keep;
+	logic [15:0] bias_read_count;
+	logic [15:0] bias_read_clear;
+	
+	
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
@@ -235,20 +280,27 @@ module layer1_cnn(
 	end
 	always_comb
 	begin
+		read_bias_addr= bias_read_count;
 		case(bias_cs)
 		BIAS_IDLE:
 		begin
 			bias_set_keep=1'b0;
 			bias_set_done=1'b0;
+
 			if(bias_store_done)
 			begin
 				bias_ns=BIAS_SET;
 				bias_set_clear=1'b0;
+				bias_read_clear=1'b0;
+				read_bias_signal=1'b1;
+
 			end
 			else
 			begin
 				bias_ns=BIAS_IDLE;
 				bias_set_clear=1'b1;
+				bias_read_clear=1'b1;
+				read_bias_signal=1'b0;
 			end
 		end
 		BIAS_SET:
@@ -257,17 +309,32 @@ module layer1_cnn(
 			begin
 				bias_set_keep=1'b1;
 				bias_set_done=1'b1;
+				read_bias_signal=1'b0;
+				bias_read_clear=1'b1;
 			end
 			else
 			begin
+
 				bias_set_keep=1'b0;
 				bias_set_done=1'b0;
+				read_bias_signal=1'b1;
+				bias_read_clear=1'b0;
+				
 			end
 			bias_ns=BIAS_SET;
 			bias_set_clear=1'b0;
 		end
 		endcase
 	end
+	
+	counter bias_read_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(bias_read_count),
+	.clear(bias_read_clear),
+	.keep(1'b0)
+	);
+	
 	counter bias_set_counter(
 	.clk(clk),
 	.rst(rst),
@@ -324,6 +391,9 @@ module layer1_cnn(
 	logic [15:0] weight_set_count;
 	logic        weight_set_clear;
 	logic        weight_set_keep;
+	logic [15:0] weight_read_count;
+	logic        weight_read_clear;
+	
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
@@ -337,39 +407,59 @@ module layer1_cnn(
 	end
 	always_comb
 	begin
+		read_weight_addr=weight_read_count;
 		case(weight_cs)
 		WEIGHT_IDLE:
 		begin
 			weight_set_keep=1'b0;
 			weight_set_done=1'b0;
+			
 			if(weight_store_done)
 			begin
 				weight_ns=WEIGHT_SET;
 				weight_set_clear=1'b0;
+				weight_read_clear=1'b0;
+				read_weight_signal=1'b1;
 			end
 			else
 			begin
 				weight_ns=WEIGHT_IDLE;
 				weight_set_clear=1'b1;
+				weight_read_clear=1'b1;
+				read_weight_signal=1'b0;
 			end	
 		end
 		WEIGHT_SET:
 		begin
+			
 			if(weight_set_count==16'd72)
 			begin
 				weight_set_keep=1'b1;
 				weight_set_done=1'b1;
+				weight_read_clear=1'b1;
+				read_weight_signal=1'b0;
 			end
 			else
 			begin
 				weight_set_keep=1'b0;
 				weight_set_done=1'b0;
+				weight_read_clear=1'b0;
+				read_weight_signal=1'b1;
 			end
 			weight_ns=WEIGHT_SET;
 			weight_set_clear=1'b0;
 		end
 		endcase
 	end
+	
+	counter weight_read_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(weight_read_count),
+	.clear(weight_read_clear),
+	.keep(1'b0)
+	);
+	
 	counter weight_set_counter(
 	.clk(clk),
 	.rst(rst),

@@ -3,6 +3,7 @@
 `define		MEM_PIXEL_FILE		"./cnn_submodule_data/pixel.data"
 `define		MEM_WEIGHT_FILE		"./cnn_submodule_data/weight.data"
 `define		MEM_BIAS_FILE		"./cnn_submodule_data/bias.data"
+`define		GOLDEN_FILE		    "./cnn_submodule_data/CORRECT.data"
 `define		RESULT_FILE		    "RESULT.csv"
 `define MAX 50000
 `define CYCLE 2.0
@@ -15,10 +16,13 @@ logic [47:0]mem_weight_in[72];
 logic [15:0]mem_bias_in[8];
 
 logic [47:0] reg1;
+logic [127:0]result_reg;
 integer row=0;
 integer col=0;
 integer bias_num=0;
 integer weight_num=0;
+integer pass_count=0;
+integer err=0;
 integer fp_r, fp_w, cnt;
 logic        cnndonesignal;
  top_cnn TOP(
@@ -85,6 +89,13 @@ begin
 	#(`CYCLE) rst=1'b0;
 end
 //Initialize
+initial
+begin
+	$fsdbDumpfile("top_cnn.fsdb");
+	$fsdbDumpvars("+struct", "+mda",TOP);
+	#(`CYCLE*`MAX)
+	$finish;
+end
 always
 begin
 	#(`CYCLE/2) clk = ~clk;
@@ -104,16 +115,75 @@ begin
 			end
 			$fwrite(fp_w,"\n");
 		end
-		$fclose(fp_w);	
+		$fclose(fp_w);
+		
+		row=0;
+		col=0;
+		
+		fp_r = $fopen(`GOLDEN_FILE, "r");
+		while(!$feof(fp_r)) 
+		begin
+			cnt = $fscanf(fp_r, "%h",result_reg);			
+			if(result_reg==TOP.mem_result[row][col])
+			begin
+				pass_count=pass_count+1;
+			end
+			if(col==29)
+			begin
+				col=0;
+				row=row+1;
+			end
+			else
+			begin
+				col=col+1;
+			end
+		end
+		$fclose(fp_r);
+		if (pass_count==900)
+		begin
+			$display("%d PASS",pass_count);
+			$display("\n");
+			$display("\n");
+			$display("        ****************************               ");
+			$display("        **                        **       |\__||  ");
+			$display("        **  Congratulations !!    **      / O.O  | ");
+			$display("        **                        **    /_____   | ");
+			$display("        **  Simulation PASS!!     **   /^ ^ ^ \\  |");
+			$display("        **                        **  |^ ^ ^ ^ |w| ");
+			$display("        ****************************   \\m___m__|_|");
+			$display("\n");
+		end
+		else
+		begin
+			err=900-pass_count;
+
+			$display("        ****************************   ");
+			$display("        **                        **   ");
+			$display("        **  OOPS!!                **   ");
+			$display("        **                        **   ");
+			$display("        **  Simulation Failed!!   **   ");
+			$display("        **                        **   ");
+			$display("        ****************************   ");
+			$display("   ⠄⠄⠄⠄⠄⠄⠄⠄⢀⣀⣤⣤⣤⣤⣤⣤⣤⣀⣀⠄⠄⠄⠄⠄⠄⠄⠄	  ");
+			$display("⠄⠄⠄⠄⠄⠄⢠⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠄⠄⠄⠄	  ");
+			$display("⠄⠄⠄⠄⠄⣰⣿⣿⡟⠻⣿⠟⠻⣿⣿⠛⢻⣿⡿⠻⣿⣿⣿⣦⡀⠄⠄	  ");
+			$display("⠄⠄⠄⠄⣰⣿⡿⠋⠤⢤⡉⢰⡀⡈⢁⠄⠄⣙⡁⢀⡘⢿⢿⣿⣿⡄⠄	  ");
+			$display("⠄⠄⠄⢠⣿⣿⠁⠄⠄⠄⢳⡀⢉⡀⣼⠄⠄⢨⠞⠉⠄⣀⡀⢿⣿⣿⠄	  ");
+			$display("⠄⠄⣠⣼⣿⠇⠄⢀⡴⣒⢲⣷⠲⠇⠻⢧⣴⣿⢺⡙⣦⡌⠁⠄⣿⣿⣇	  ");
+			$display("⠄⡞⠁⠄⡼⠄⠄⢹⡧⣉⠊⡟⠂⠄⠄⠄⠈⡇⣏⡷⣸⠁⠄⠄⢹⣿⢡	  ");
+			$display("⠄⡇⠄⡀⠃⠄⠄⠄⠃⠩⠘⠂⢖⣛⠙⡦⠐⠛⠬⠕⠛⠃⠄⠄⠘⠃⢾	  ");
+			$display("⠄⠳⣴⠃⠈⠚⠄⢠⠄⠄⠄⠄⠄⣹⣉⣀⣀⠄⠄⠄⡀⢢⣠⠄⠄⠄⡀	  ");
+			$display("⠄⠄⡟⠄⠄⠄⠄⠘⢦⡤⠤⠖⠋⠉⠄⠄⠉⠉⠙⠲⡌⠃⠁⠄⠄⠄⣿	  ");
+			$display("⠄⠄⡇⠄⠄⠄⢆⡄⢸⣇⣠⠖⠚⠩⠟⠉⠉⠙⠓⢢⡇⠄⠄⠄⠄⠄⣿	  ");
+			$display("⠄⠄⡇⠄⠄⠄⠈⠄⠄⠙⢤⣤⠤⠖⠒⡒⠒⠒⠚⠁⠄⠐⡄⡀⠄⢀⡇	  ");
+			$display("⠄⠄⢹⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⠉⠁⠄⠄⠄⠄⠄⠄⠉⠠⢆⡞⠄	  ");
+			$display("⠄⠄⠄⠱⣄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢀⣠⠴⠋⠄⠄	  ");
+			$display("⠄⠄⠄⠄⠈⠓⠒⠒⠒⠒⠒⠒⠛⠉⠉⠉⠉⠉⠉⠉⠉⠉⠄⠄⠄⠄       ");
+			$display("         Totally has %d errors ", err); 
+			$display("\n");
+		end
 		$finish;	
 	end	
-end
-initial
-begin
-	$fsdbDumpfile("top_cnn.fsdb");
-	$fsdbDumpvars("+struct", "+mda",TOP);
-	#(`CYCLE*`MAX)
-	$finish;
 end
 endmodule
 /*

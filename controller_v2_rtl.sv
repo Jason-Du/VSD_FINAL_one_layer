@@ -2,8 +2,8 @@
 module controller(
 	clk,
 	rst,
-	bus_write_signal,
-	bus_read_signal,
+	//bus_write_signal,
+	//bus_read_signal,
 	
 	image_set_register_data_output,
 	wdata,
@@ -20,26 +20,26 @@ module controller(
 	
 	image_set_register_data_in,
 	image_set_register_write_signal,
-	interrupr_rsgister_data_in,
-	interrupr_rsgister_write_signal,
+	interrupr_register_data_in,
+	interrupr_register_write_signal,
 	
 	layer1_weight_set_done,
 	layer1_bias_set_done,
 	layer1_pixel_set_done,
 	//setdone signal
 	
-	read_pixel_mem,
+	//read_pixel_mem,
 	write_pixel_mem,
 	pixel_mem_addr,
 	pixel_mem_data,
 	
-	read_weight_mem,
+	//read_weight_mem,
 	write_weight_mem,
 	weight_mem_addr,
 	weight_mem_data,
 	
 	
-	read_bias_mem,
+	//read_bias_mem,
 	write_bias_mem,
 	bias_mem_addr,
 	bias_mem_data,
@@ -68,18 +68,20 @@ module controller(
 
 */
 
-localparam result_address             =32'hffffffff;
-localparam image_set_register_ADDRESS =4'b0001;
-localparam interrupr_rsgister_ADDRESS =4'b0010;
-localparam local_pixel_mem_ADDRESS    =4'b0100;
-localparam local_weight_mem_ADDRESS   =4'b1000;
-localparam local_bias_mem_ADDRESS     =4'b1001;
+localparam result_address             =32'hd000_0000;
+localparam image_set_register_ADDRESS =32'hd111_0000;
+localparam interrupr_rsgister_ADDRESS =32'hd222_0000;
+localparam local_pixel_mem_ADDRESS    =16'hd333;
+localparam local_weight_mem_ADDRESS   =16'hd444;
+localparam local_bias_mem_ADDRESS     =16'hd555;
 input               clk;
 input               rst;
 input        [31:0] awaddr;
 input        [31:0] araddr;
-input               bus_read_signal;
-input               bus_write_signal;
+
+//input               bus_read_signal;
+//input               bus_write_signal;
+
 input        [31:0] wdata;
 input        [ 1:0] image_set_register_data_output;
 input               wvalid;
@@ -90,20 +92,20 @@ output logic     	layer1_pixel_set_done;
 
 output logic [ 1:0] image_set_register_data_in;
 output logic        image_set_register_write_signal;
-output logic        interrupr_rsgister_data_in;
-output logic        interrupr_rsgister_write_signal;
+output logic        interrupr_register_data_in;
+output logic        interrupr_register_write_signal;
 
-output logic        read_pixel_mem;
+//output logic        read_pixel_mem;
 output logic        write_pixel_mem;
 output logic [15:0] pixel_mem_addr;
 output logic [15:0] pixel_mem_data;
 
-output logic        read_weight_mem;
+//output logic        read_weight_mem;
 output logic        write_weight_mem;
 output logic [15:0] weight_mem_addr;
 output logic [15:0] weight_mem_data;
 
-output logic 	    read_bias_mem;
+//output logic 	    read_bias_mem;
 output logic     	write_bias_mem;
 output logic [15:0]	bias_mem_addr;
 output logic [15:0] bias_mem_data;
@@ -118,27 +120,27 @@ output logic [4:0] 	layer_bias_sel;
 //----------------------------INTTERUPT RESET FROM CPU--------MEMORY MAPPING-------//
 always_comb
 begin
-	if(awaddr[31:28]==interrupr_rsgister_ADDRESS)
+	if(awaddr==interrupr_rsgister_ADDRESS)
 	begin
-		interrupr_rsgister_write_signal=1'b1;
-		interrupr_rsgister_data_in=1'b0;
+		interrupr_register_write_signal=1'b1;
+		interrupr_register_data_in=1'b0;
 	end
 	else
 	begin
-		interrupr_rsgister_write_signal=1'b0;
-		interrupr_rsgister_data_in=1'b0;
+		interrupr_register_write_signal=1'b0;
+		interrupr_register_data_in=1'b0;
 	end
 end
 //-------------------------CPU READ DATA----------------------------------------//
 //----------------------------TRANSSFER  DATA--MEMORY MAPPING------------//
 always_comb
 begin
-	if(awaddr[31:28]==image_set_register_ADDRESS)
+	if(awaddr==image_set_register_ADDRESS)
 	begin
 		image_set_register_write_signal=1'b1;
 		image_set_register_data_in=wdata[1:0];
 	end
-	else if(image_set_register_data_output)
+	else if(image_set_register_data_output!=2'b00)
 	begin
 		image_set_register_write_signal=1'b1;
 		image_set_register_data_in=2'b00;
@@ -181,7 +183,7 @@ begin
 		weight_store_count_clear=1'b0;
 		layer1_weight_store_done=1'b0;
 		layer_weight_sel        =5'd0;
-		if(wvalid&&awaddr[31:28]==local_weight_mem_ADDRESS)
+		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
 		begin
 			weight_store_count_keep=1'b0;
 			write_weight_mem =1'b1;
@@ -201,7 +203,7 @@ begin
 	WEIGHT_LAYER1_STORE:
 	begin
 		layer_weight_sel         =5'd0;
-		if(wvalid&&awaddr[31:28]==local_weight_mem_ADDRESS)
+		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
 		begin
 			weight_store_count_keep=1'b0;
 			write_weight_mem =1'b1;
@@ -292,7 +294,7 @@ begin
 		bias_store_count_clear=1'b0;
 		layer1_bias_store_done=1'b0;
 		layer_bias_sel        =5'd0;
-		if(wvalid&&awaddr[31:28]==local_bias_mem_ADDRESS)
+		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
 		begin
 			bias_store_count_keep=1'b0;
 			write_bias_mem =1'b1;
@@ -312,7 +314,7 @@ begin
 	BIAS_LAYER1_STORE:
 	begin
 		layer_bias_sel         =5'd0;
-		if(wvalid&&awaddr[31:28]==local_bias_mem_ADDRESS)
+		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
 		begin
 			bias_store_count_keep=1'b0;
 			write_bias_mem =1'b1;
@@ -398,7 +400,7 @@ begin
 		begin
 			pixel_store_count_clear=1'b0;
 			layer1_input_store_done=1'b0;
-			if(wvalid&&awaddr[31:28]==local_pixel_mem_ADDRESS)
+			if(wvalid&&awaddr[31:16]==local_pixel_mem_ADDRESS)
 			begin
 				pixel_store_count_keep=1'b0;
 				write_pixel_mem =1'b1;
@@ -417,7 +419,7 @@ begin
 		end
 		PIXEL_LAYER1_STORE:
 		begin
-			if(wvalid&&awaddr[31:28]==local_pixel_mem_ADDRESS)
+			if(wvalid&&awaddr[31:16]==local_pixel_mem_ADDRESS)
 			begin
 				pixel_store_count_keep=1'b0;
 				write_pixel_mem =1'b1;

@@ -21,7 +21,7 @@ module top_cnn(
 	logic        save_enable;
 	logic [15:0] output_row;
 	logic [15:0] output_col;
-	logic layer1_calculation_done;
+	logic        layer1_calculation_done;
 	logic [127:0]output_data;
 	logic [15:0] weight_count_data;
 	logic        weight_count_clear;
@@ -38,6 +38,9 @@ module top_cnn(
 	logic        weight_set_done_register_out;
 	logic        bias_set_done_register_out;
 	logic        pixel_set_done_register_out;
+	logic        weight_store_done;
+	logic        bias_store_done;
+
 	output logic cnndonesignal;
 
 	logic [47:0]mem_pixel_in[32][32];
@@ -45,6 +48,16 @@ module top_cnn(
 	logic [15:0]mem_bias_in[8];
 	logic [127:0]mem_result[30][30];
 	logic [127:0]mem_result_in[30][30];
+	
+	logic [15:0] read_bias_addr;
+	logic        read_bias_signal;
+	logic [15:0] read_weight_addr;
+	logic        read_weight_signal;
+	
+	
+	
+	logic        read_pixel_signal;
+	logic [15:0] read_pixel_address;
 
 	counter weight_set_counter(
 		.clk(clk),
@@ -81,9 +94,9 @@ module top_cnn(
 	logic pixel_store_done;
 	always_comb
 	begin
-		weight_data    =mem_weight_in[weight_count_data];
-		bias_data      =mem_bias_in  [  bias_count_data];
-		pixel_data     =mem_pixel_in [pixel_count_data[9:5]][pixel_count_data[4:0]];
+		weight_data    =read_weight_signal?mem_weight_in[read_weight_addr]:48'd0;
+		bias_data      =read_bias_signal?mem_bias_in[read_bias_addr]:16'd0;
+		pixel_data     =read_pixel_signal?mem_pixel_in[read_pixel_address[9:5]][read_pixel_address[4:0]]:48'd0;
 		//pixel_count_data[4:0]
 		
 		if (save_enable)
@@ -96,6 +109,9 @@ module top_cnn(
 		end
 		pixel_count_clear=(weight_count_data>16'd72)? 1'b0:1'b1;
 		pixel_store_done =(weight_count_data==16'd72)?1'b1:1'b0;
+		
+		bias_store_done  =(weight_count_data==16'd10)?1'b1:1'b0;
+		weight_store_done  =(weight_count_data==16'd10)?1'b1:1'b0;
 		/*
 		mem_result[row_register_out][save_count_data] =output_data;
 		weight_set_done=(weight_count_data==WEIGHT_NUM)?1'b1:weight_set_done_register_out;
@@ -164,20 +180,28 @@ module top_cnn(
 		.output_data(output_data)
 	);
 	*/
+
+	
 	layer1_cnn LAYER1_CNN(
 	.clk(clk),
 	.rst(rst),
 	.input_data(pixel_data),
 	.weight_data(weight_data),
 	.bias_data(bias_data),
-	.weight_store_done(1'b1),
-	.bias_store_done(1'b1),
+	.weight_store_done(weight_store_done),
+	.bias_store_done(bias_store_done),
 	.pixel_store_done(pixel_store_done),
 	
 	.save_enable(save_enable),
 	.output_row(output_row),
 	.output_col(output_col),
 	.layer1_calculation_done(layer1_calculation_done),
-	.output_data(output_data)
+	.output_data(output_data),
+	.read_pixel_addr(read_pixel_address),
+	.read_pixel_signal(read_pixel_signal),
+	.read_weight_addr(read_weight_addr),
+	.read_weight_signal(read_weight_signal),
+	.read_bias_addr(read_bias_addr),
+	.read_bias_signal(read_bias_signal)
 );
 endmodule
