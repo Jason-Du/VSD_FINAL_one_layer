@@ -1,12 +1,14 @@
-module local_bias(
+module local_mem_bias(
 	clk,
 	rst,
-	read_bias_signal,
-	bias_addr,
+	
+	write_bias_addr,
 	write_bias_data,
 	write_bias_signal,
 	
-	read_bias_data
+	read_bias_addr,
+	read_bias_data,
+	read_bias_signal
 
 );
 localparam maximum_bias_num=10;
@@ -16,9 +18,10 @@ input rst;
 input read_bias_signal;
 input write_bias_signal;
 input [15:0]write_bias_data;
+input [15:0]read_bias_addr;
 input [15:0]bias_addr;
 
-output logic [31:0] read_bias_data;
+output logic [15:0] read_bias_data;
 
 
 logic [15:0]bias_mem_in [maximum_bias_num];
@@ -45,11 +48,11 @@ always_comb
 begin
 	if(write_bias_signal)
 	begin
-		bias_mem_in[bias_addr]=write_bias_data;
+		bias_mem_in[write_bias_addr]=write_bias_data;
 	end
 	else
 	begin
-		bias_mem_in[bias_addr]=bias_mem_out[bias_addr];
+		bias_mem_in[write_bias_addr]=bias_mem_out[write_bias_addr];
 	end
 end
 //---------------------------------------------READ-----------------------------------------------------
@@ -57,12 +60,11 @@ always_comb
 begin
 	if(read_bias_signal)
 	begin
-		read_bias_data[ 15:0]=bias_mem_out[      2*bias_addr];
-		read_bias_data[31:16]=bias_mem_out[2*bias_addr+16'd1];
+		read_bias_data=bias_mem_out[read_bias_addr];
 	end
 	else
 	begin
-		read_bias_data=48'd0;
+		read_bias_data=16'd0;
 	end
 end
 endmodule

@@ -23,6 +23,7 @@ module layer1_cnn(
 	
 	read_pixel_addr,
 	read_pixel_signal,
+	read_weights_buffer_num_sel,
 	read_weight_addr,
 	read_weight_signal,
 	read_bias_addr,
@@ -51,6 +52,7 @@ module layer1_cnn(
 	
 	output logic  [15:0] read_bias_addr;
 	output logic         read_bias_signal;
+	output logic  [ 4:0] read_weights_buffer_num_sel;
 	
 	
 	logic  [47:0] buffer2_output;
@@ -145,6 +147,7 @@ module layer1_cnn(
 		read_pixel_addr=read_pixel_count;
 		output_row=save_address_row_count;
 		output_col=set_count;
+		read_weights_buffer_num_sel=5'd3;
 		case(save_cs)
 		SAVE_IDLE:
 		begin
