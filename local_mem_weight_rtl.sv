@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module local_mem_weight(
 	clk,
 	rst,
@@ -27,7 +28,7 @@ input [ 4:0]buffer_num_sel;
 output logic [127:0] read_weight_data;
 
 
-logic [15:0]weight_mem_in[maximum_weight_num];
+//logic [15:0]weight_mem_in[maximum_weight_num];
 logic [15:0]weight_mem_out[maximum_weight_num];
 always_ff@(posedge clk or posedge rst)
 begin
@@ -40,34 +41,29 @@ begin
 	end
 	else
 	begin
-		for(byte i=0;i<=maximum_weight_num-1;i++)
+	//---------------------------------------------WRITE-----------------------------------------------------
+		if(write_weight_signal)
 		begin
-			weight_mem_out[i]<=weight_mem_in[i];
+			weight_mem_out[write_weight_addr]=write_weight_data;
+		end
+		else
+		begin
+			weight_mem_out<=weight_mem_out;
 		end
 	end
 end
-//---------------------------------------------WRITE-----------------------------------------------------
-always_comb
-begin
-	if(write_weight_signal)
-	begin
-		weight_mem_in[write_weight_addr]=write_weight_data;
-	end
-	else
-	begin
-		weight_mem_in[write_weight_addr]=weight_mem_out[write_weight_addr];
-	end
-end
+
 //---------------------------------------------READ-----------------------------------------------------
 always_comb
 begin
-	if(read_weight_signal&&buffer_num_sel==5'd3)
+	if(read_weight_signal&&buffer_num_sel==5'd1)
 	begin
-		read_weight_data[ 15:0]=weight_mem_out[      read_weight_addr<<1+read_weight_addr];
-		read_weight_data[31:16]=weight_mem_out[read_weight_addr<<1+read_weight_addr+16'd1];
-		read_weight_data[47:32]=weight_mem_out[read_weight_addr<<1+read_weight_addr+16'd2];
+		read_weight_data[  15:0]=weight_mem_out[      read_weight_addr<<1+read_weight_addr];
+		read_weight_data[ 31:16]=weight_mem_out[read_weight_addr<<1+read_weight_addr+16'd1];
+		read_weight_data[ 47:32]=weight_mem_out[read_weight_addr<<1+read_weight_addr+16'd2];
+		read_weight_data[127:48]=80'd0;
 	end
-	else if(read_weight_signal&&buffer_num_sel==5'd8)
+	else if(read_weight_signal&&buffer_num_sel==5'd2)
 	begin
 		read_weight_data[   15:0]=weight_mem_out[            read_weight_addr<<3];
 		read_weight_data[  31:16]=weight_mem_out[      read_weight_addr<<3+16'd1];

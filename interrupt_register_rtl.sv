@@ -8,6 +8,7 @@ module interrupt_register(
 input clk;
 input rst;
 input write_data;
+input write_signal;
 output logic interrupt_signal;
 
 logic interrupt_signal_register_in;
@@ -25,7 +26,7 @@ begin
 end
 always_comb
 begin
-	if (write_data)
+	if (write_signal)
 	begin
 		interrupt_signal_register_in=write_data;
 	end
@@ -34,3 +35,4 @@ begin
 		interrupt_signal_register_in=interrupt_signal;
 	end
 end
+endmodule

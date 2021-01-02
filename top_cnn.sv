@@ -53,7 +53,8 @@ module top_cnn(
 	logic        read_bias_signal;
 	logic [15:0] read_weight_addr;
 	logic        read_weight_signal;
-	
+	logic [15:0] read_row;
+	logic [15:0] read_col;
 	
 	
 	logic        read_pixel_signal;
@@ -96,7 +97,7 @@ module top_cnn(
 	begin
 		weight_data    =read_weight_signal?mem_weight_in[read_weight_addr]:48'd0;
 		bias_data      =read_bias_signal?mem_bias_in[read_bias_addr]:16'd0;
-		pixel_data     =read_pixel_signal?mem_pixel_in[read_pixel_address[9:5]][read_pixel_address[4:0]]:48'd0;
+		pixel_data     =read_pixel_signal?mem_pixel_in[read_row][read_col]:48'd0;
 		//pixel_count_data[4:0]
 		
 		if (save_enable)
@@ -197,7 +198,9 @@ module top_cnn(
 	.output_col(output_col),
 	.layer1_calculation_done(layer1_calculation_done),
 	.output_data(output_data),
-	.read_pixel_addr(read_pixel_address),
+	//.read_pixel_addr(read_pixel_address),
+	.read_row_addr(read_row),
+	.read_col_addr(read_col),
 	.read_pixel_signal(read_pixel_signal),
 	.read_weight_addr(read_weight_addr),
 	.read_weight_signal(read_weight_signal),

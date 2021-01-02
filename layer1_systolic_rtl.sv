@@ -1,4 +1,5 @@
 `timescale 1ns/10ps
+`include"def.svh"
 module layer1_systolic(
 	input_channel,
 	
@@ -19,24 +20,24 @@ module layer1_systolic(
 	weight7,
 	weight8
 );
-	input         [47:0] input_channel;
-	input         [47:0] weight1;
-	input         [47:0] weight2;
-	input         [47:0] weight3;
-	input         [47:0] weight4;
-	input         [47:0] weight5;
-	input         [47:0] weight6;
-	input         [47:0] weight7;
-	input         [47:0] weight8;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] input_channel;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight1;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight2;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight3;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight4;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight5;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight6;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight7;
+	input         [`LAYER1_WEIGHT_INPUT_LENGTH-1:0] weight8;
 	
-	output logic signed [15:0] output_channel1;
-	output logic signed [15:0] output_channel2;
-	output logic signed [15:0] output_channel3;
-	output logic signed [15:0] output_channel4;
-	output logic signed [15:0] output_channel5;
-	output logic signed [15:0] output_channel6;
-	output logic signed [15:0] output_channel7;
-	output logic signed [15:0] output_channel8;
+	output logic signed [`WORDLENGTH-1:0] output_channel1;
+	output logic signed [`WORDLENGTH-1:0] output_channel2;
+	output logic signed [`WORDLENGTH-1:0] output_channel3;
+	output logic signed [`WORDLENGTH-1:0] output_channel4;
+	output logic signed [`WORDLENGTH-1:0] output_channel5;
+	output logic signed [`WORDLENGTH-1:0] output_channel6;
+	output logic signed [`WORDLENGTH-1:0] output_channel7;
+	output logic signed [`WORDLENGTH-1:0] output_channel8;
 	
 	logic  signed       [31:0] channel1_data1;
 	logic  signed       [31:0] channel1_data2;

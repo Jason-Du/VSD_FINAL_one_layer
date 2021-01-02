@@ -1,9 +1,9 @@
 `include"top_cnn.sv"
 `timescale 1ns/10ps
-`define		MEM_PIXEL_FILE		"./cnn_submodule_data/pixel.data"
-`define		MEM_WEIGHT_FILE		"./cnn_submodule_data/weight.data"
-`define		MEM_BIAS_FILE		"./cnn_submodule_data/bias.data"
-`define		GOLDEN_FILE		    "./cnn_submodule_data/CORRECT.data"
+`define		MEM_PIXEL_FILE		"./cnn_layer1_data/pixel.data"
+`define		MEM_WEIGHT_FILE		"./cnn_layer1_data/weight.data"
+`define		MEM_BIAS_FILE		"./cnn_layer1_data/bias.data"
+`define		GOLDEN_FILE		    "./cnn_layer1_data/CORRECT.data"
 `define		RESULT_FILE		    "RESULT.csv"
 `define MAX 50000
 `define CYCLE 2.0

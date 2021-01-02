@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module local_mem_pixel(
 	clk,
 	rst,
@@ -42,16 +43,49 @@ begin
 	end
 	else
 	begin
-		for(byte i=0;i<=31;i++)
+		if(write_pixel_signal)
 		begin
-			for(byte j=0;j<=31;j++)
+			case(write_pixel_addr[11:10])
+				red_write_pixel_addr:
+				begin
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=write_pixel_data;
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
+				end
+				green_write_pixel_addr:
+				begin
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=write_pixel_data;
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
+				end
+				blue_write_pixel_addr:
+				begin
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=write_pixel_data;
+				end
+				default
+				begin
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
+					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
+				end
+			endcase
+		end
+		else
+		begin
+			for(byte i=0;i<=31;i++)
 			begin
-				pixel_mem_out[i][j]<=pixel_mem_in[i][j];
+				for(byte j=0;j<=31;j++)
+				begin
+					pixel_mem_out[i][j]<=pixel_mem_out[i][j];
+				end
 			end
 		end
 	end
 end
 //---------------------------------------------WRITE-----------------------------------------------------
+/*
 always_comb
 begin
 	if(write_pixel_signal)
@@ -90,6 +124,7 @@ begin
 		pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
 	end
 end
+*/
 //---------------------------------------------READ-----------------------------------------------------
 always_comb
 begin
