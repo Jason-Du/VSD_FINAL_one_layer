@@ -230,8 +230,8 @@ local_mem_pixel pixel_st_mem(
 	.read_pixel_data(read_pixel_data)
 
 );
-
 */
+
 layer1_cnn layer1(
 	.clk(clk),
 	.rst(rst),

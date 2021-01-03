@@ -76,7 +76,7 @@ module controller(
 localparam result_address             =32'hd000_0000;
 localparam image_set_register_ADDRESS =32'hd111_0000;
 localparam interrupr_rsgister_ADDRESS =32'hd222_0000;
-localparam local_pixel_mem_ADDRESS    =16'hd444;
+localparam local_pixel_mem_ADDRESS    =16'hd555;
 localparam local_weight_mem_ADDRESS   =16'hd333;
 localparam local_bias_mem_ADDRESS     =16'hd444;
 input               clk;
@@ -264,14 +264,14 @@ begin
 			weight_store_count_clear=1'b1;
 			layer2_weight_store_done=1'b1;
 			weight_fsm_ns           =WEIGHT_FINISH;
-			layer_weight_sel         =5'd1;
+			layer_weight_sel         =5'd2;
 		end
 		else
 		begin
 			weight_store_count_clear=1'b0;
 			layer2_weight_store_done=1'b0;
 			weight_fsm_ns           =WEIGHT_LAYER2_STORE;
-			layer_weight_sel         =5'd0;
+			layer_weight_sel         =5'd1;
 		end
 	end
 	WEIGHT_FINISH:
@@ -284,7 +284,7 @@ begin
 		weight_store_count_clear=1'b1;
 		layer1_weight_store_done=1'b0;
 		layer2_weight_store_done=1'b0;
-		layer_weight_sel        =5'd1;
+		layer_weight_sel        =5'd2;
 	end
 	default:
 	begin
@@ -415,7 +415,7 @@ begin
 			bias_store_count_clear=1'b1;
 			layer2_bias_store_done=1'b1;
 			bias_fsm_ns           =BIAS_FINISH;
-			layer_bias_sel         =5'd1;
+			layer_bias_sel         =5'd2;
 			//NORMAL CASE SWITCH SETTING LAYER
 		end
 		else
@@ -423,7 +423,7 @@ begin
 			bias_store_count_clear=1'b0;
 			layer2_bias_store_done=1'b0;
 			bias_fsm_ns           =BIAS_LAYER2_STORE;
-			layer_bias_sel         =5'd0;
+			layer_bias_sel         =5'd1;
 		end
 	end
 	BIAS_FINISH:
@@ -436,7 +436,7 @@ begin
 		bias_store_count_clear=1'b1;
 		layer1_bias_store_done=1'b0;
 		layer2_bias_store_done=1'b0;
-		layer_bias_sel        =5'd1;
+		layer_bias_sel        =5'd2;
 	end
 	default:
 	begin
@@ -524,14 +524,14 @@ begin
 			begin
 				pixel_store_count_clear=1'b1;
 				layer1_input_store_done=1'b1;
-				pixel_fsm_ns           =PIXEL_LAYER1_STORE;
+				pixel_fsm_ns           =PIXEL_IDLE;
 			end
 			else
 			begin
 				
 				pixel_store_count_clear    =1'b0;
 				layer1_input_store_done    =1'b0;
-				pixel_fsm_ns               =PIXEL_IDLE;
+				pixel_fsm_ns               =PIXEL_LAYER1_STORE;
 			end
 		end
 		default
