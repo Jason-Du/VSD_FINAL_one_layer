@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module local_mem_result(
 	clk,
 	rst,

@@ -184,7 +184,8 @@ begin
 	interrupt_register_data_in=layer1_calculation_done?1'b1:1'b0;
 	interrupt_register_write_signal=layer1_calculation_done?1'b1:1'b0;;
 end
-/*
+
+
 local_mem_bias bias_st_mem(
 	.clk(clk),
 	.rst(rst),
@@ -230,7 +231,7 @@ local_mem_pixel pixel_st_mem(
 	.read_pixel_data(read_pixel_data)
 
 );
-*/
+
 
 layer1_cnn layer1(
 	.clk(clk),
@@ -262,7 +263,7 @@ layer1_cnn layer1(
 	.read_bias_signal(layer1_read_bias_signal)
 );
 
-/*
+
 layer1_result_mem layer1_data_mem(
 	.clk(clk),
 	.rst(rst),
@@ -277,7 +278,7 @@ layer1_result_mem layer1_data_mem(
 	.layer1_result_output(layer1_result)
 );
 
-*/
+
 weight_bias_arbitor wb_arbitor(
 	.weight_sel(layer_weight_sel),
 	.bias_sel(layer_bias_sel),

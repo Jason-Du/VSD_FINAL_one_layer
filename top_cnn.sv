@@ -1,5 +1,5 @@
-`include "./layer1_cnn_rtl.sv"
 `timescale 1ns/10ps
+`include "./layer1_cnn_rtl.sv"
 module top_cnn(
 	clk,
 	rst,

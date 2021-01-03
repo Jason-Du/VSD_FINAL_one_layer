@@ -1,12 +1,12 @@
+`timescale 1ns/10ps
 `include "top_rtl.sv"
 `include "counter_rtl.sv"
-`timescale 1ns/10ps
 `define		MEM_PIXEL_FILE		"./top_data/pixel.data"
 `define		MEM_WEIGHT_FILE		"./top_data/weight.data"
 `define		MEM_BIAS_FILE		"./top_data/bias.data"
 `define		GOLDEN_FILE		    "./top_data/CORRECT.data"
 `define		RESULT_FILE		    "RESULT.csv"
-`define MAX 20000
+`define MAX 40000
 `define CYCLE 2.0
 module top_tb;
 
@@ -126,13 +126,11 @@ begin
 	$finish;
 end
 
-always
-begin
+
 	//$display("%d",$time);
 	//$display("%d",weight_set_count);
 	//$display("%d",weight_set_clear);
-	#(`CYCLE/2) clk = ~clk;
-end
+	
 logic [15:0] weight_count;
 logic weight_clear;
 logic weight_keep;
@@ -325,9 +323,9 @@ begin
 	endcase
 end
 
-/*
 always
 begin
+	#(`CYCLE/2) clk = ~clk;
 	if(interrupt_signal)
 	begin
 		fp_w= $fopen(`RESULT_FILE, "w");
@@ -406,7 +404,7 @@ begin
 		$finish;	
 	end	
 end
-*/
+
 endmodule
 
 

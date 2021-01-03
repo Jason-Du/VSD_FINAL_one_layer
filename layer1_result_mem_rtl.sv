@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 `include"def.svh"
 module layer1_result_mem(
 	clk,

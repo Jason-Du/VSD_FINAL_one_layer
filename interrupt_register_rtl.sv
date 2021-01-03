@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module interrupt_register(
 	clk,
 	rst,

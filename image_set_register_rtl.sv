@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module image_set_register(
 	clk,
 	rst,

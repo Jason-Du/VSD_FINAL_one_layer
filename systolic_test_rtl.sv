@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 `include "layer1_systolic_rtl.sv"
 module systolic_test(
 	 testin,

@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module weight_bias_arbitor(
 	weight_sel,
 	bias_sel,
