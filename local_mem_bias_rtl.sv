@@ -40,11 +40,6 @@ begin
 	end
 	else
 	begin
-		for(byte i=0;i<=maximum_bias_num-1;i++)
-		begin
-			bias_mem_out[i]<=bias_mem_out[i];
-		end
-	
 		if(write_bias_signal)
 		begin
 			bias_mem_out[write_bias_addr]=write_bias_data;

@@ -30,8 +30,8 @@ module controller(
 	
 	image_set_register_data_in,
 	image_set_register_write_signal,
-	interrupr_register_data_in,
-	interrupr_register_write_signal,
+	interrupt_register_data_in,
+	interrupt_register_write_signal,
 	
 	
 	//read_pixel_mem,
@@ -97,8 +97,8 @@ input        [ 1:0] image_set_register_data_output;
 
 output logic [ 1:0] image_set_register_data_in;
 output logic        image_set_register_write_signal;
-output logic        interrupr_register_data_in;
-output logic        interrupr_register_write_signal;
+output logic        interrupt_register_data_in;
+output logic        interrupt_register_write_signal;
 
 //output logic        read_pixel_mem;
 output logic        write_pixel_mem;
@@ -130,13 +130,13 @@ always_comb
 begin
 	if(awaddr==interrupr_rsgister_ADDRESS&&awvalid==1'b1)
 	begin
-		interrupr_register_write_signal=1'b1;
-		interrupr_register_data_in=1'b0;
+		interrupt_register_write_signal=1'b1;
+		interrupt_register_data_in=1'b0;
 	end
 	else
 	begin
-		interrupr_register_write_signal=1'b0;
-		interrupr_register_data_in=1'b0;
+		interrupt_register_write_signal=1'b0;
+		interrupt_register_data_in=1'b0;
 	end
 end
 //-------------------------CPU READ DATA----------------------------------------//
