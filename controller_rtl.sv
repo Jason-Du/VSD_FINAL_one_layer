@@ -76,9 +76,9 @@ module controller(
 localparam result_address             =32'hd000_0000;
 localparam image_set_register_ADDRESS =32'hd111_0000;
 localparam interrupr_rsgister_ADDRESS =32'hd222_0000;
-localparam local_pixel_mem_ADDRESS    =16'hd333;
-localparam local_weight_mem_ADDRESS   =16'hd444;
-localparam local_bias_mem_ADDRESS     =16'hd555;
+localparam local_pixel_mem_ADDRESS    =16'hd444;
+localparam local_weight_mem_ADDRESS   =16'hd333;
+localparam local_bias_mem_ADDRESS     =16'hd444;
 input               clk;
 input               rst;
 input        [31:0] awaddr;
@@ -282,8 +282,8 @@ begin
 		weight_mem_data         =16'd0;
 		weight_mem_addr         =16'd0;
 		weight_store_count_clear=1'b1;
-		layer1_weight_store_done=1'b1;
-		layer2_weight_store_done=1'b1;
+		layer1_weight_store_done=1'b0;
+		layer2_weight_store_done=1'b0;
 		layer_weight_sel        =5'd1;
 	end
 	default:
