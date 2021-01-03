@@ -6,7 +6,7 @@
 `define		MEM_BIAS_FILE		"./top_data/bias.data"
 `define		GOLDEN_FILE		    "./top_data/CORRECT.data"
 `define		RESULT_FILE		    "RESULT.csv"
-`define MAX 40000
+`define MAX 50000
 `define CYCLE 2.0
 module top_tb;
 
@@ -121,6 +121,7 @@ initial
 begin
 	$fsdbDumpfile("top.fsdb");
 	$fsdbDumpvars("+struct", "+mda",TOP);
+	//$fsdbDumpvars(0,TOP);
 	//Simulation Limitation
 	#(`CYCLE*`MAX);
 	$finish;

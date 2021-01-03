@@ -93,6 +93,7 @@ initial
 begin
 	$fsdbDumpfile("top_cnn.fsdb");
 	$fsdbDumpvars("+struct", "+mda",TOP);
+	
 	#(`CYCLE*`MAX)
 	$finish;
 end

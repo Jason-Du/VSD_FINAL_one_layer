@@ -200,7 +200,7 @@ local_mem_bias bias_st_mem(
 	.read_bias_signal(read_bias_signal_data)
 
 );
-
+/*
 local_mem_weight weight_st_mem(
 	.clk(clk),
 	.rst(rst),
@@ -217,6 +217,7 @@ local_mem_weight weight_st_mem(
 
 );
 
+*/
 local_mem_pixel pixel_st_mem(
 	.clk(clk),
 	.rst(rst),

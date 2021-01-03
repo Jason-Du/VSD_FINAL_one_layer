@@ -45,32 +45,7 @@ begin
 	begin
 		if(write_pixel_signal)
 		begin
-			case(write_pixel_addr[11:10])
-				red_write_pixel_addr:
-				begin
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=write_pixel_data;
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-				end
-				green_write_pixel_addr:
-				begin
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=write_pixel_data;
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-				end
-				blue_write_pixel_addr:
-				begin
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=write_pixel_data;
-				end
-				default
-				begin
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-					pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-				end
-			endcase
+			pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][write_pixel_addr[11:10]]=write_pixel_data;
 		end
 		else
 		begin
