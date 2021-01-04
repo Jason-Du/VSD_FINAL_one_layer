@@ -913,12 +913,6 @@ module layer1_cnn(
 	.output_data(output_data[127:112])
 	);
 //----------------------------------------BUFFER_CHAIN--------------------------------------------//
-	stage29_fifo first_stage(
-	.clk(clk),
-	.rst(rst),
-	.input_data(input_data),
-	.output_data(buffer1_output)
-	);
 	stage29_fifo second_stage(
 	.clk(clk),
 	.rst(rst),
