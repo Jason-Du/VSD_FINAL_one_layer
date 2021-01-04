@@ -14,7 +14,7 @@ module local_mem_weight(
 	read_weight_data
 
 );
-localparam maximum_weight_num=580;//8010
+localparam maximum_weight_num=2000;//8010
 
 input clk;
 input rst;
@@ -46,9 +46,9 @@ always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
 	begin
-		for(byte i=0;i<=maximum_weight_num-1;i++)
+		for(int i=0;i<=maximum_weight_num-1;i++)
 		begin
-			weight_mem_out[i]<=16'd0;
+			weight_mem_out[i]<=128'd0;
 		end
 	end
 	else
