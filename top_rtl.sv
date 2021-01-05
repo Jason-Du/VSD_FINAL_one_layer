@@ -218,8 +218,8 @@ always_comb
 begin
 	read_pixel_addr={layer1_read_row[10:0],layer1_read_col[4:0]};
 	//read_pixel_addr={layer1_read_col[10:0],layer1_read_row[4:0]};
-	interrupt_register_data_in=layer2_calculation_done?1'b1:1'b0;
-	interrupt_register_write_signal=layer2_calculation_done?1'b1:1'b0;;
+	interrupt_register_data_in=layer3_calculation_done?1'b1:1'b0;
+	interrupt_register_write_signal=(layer3_calculation_done||cpu_interrupt_register_write_signal)?1'b1:1'b0;
 end
 
 
