@@ -11,10 +11,10 @@ module local_mem_result(
 	input clk;
 	input rst;
 	input read_result_signal;
-	input write_result_data;
+	input [31:0] write_result_data;
 	input write_result_signal;
 
-	output logic read_result_data;
+	output logic [31:0] read_result_data;
 	
 	logic [31:0] result_mem_in;
 	logic [31:0] result_mem_out;
@@ -26,7 +26,7 @@ module local_mem_result(
 		end
 		else
 		begin
-			read_result_data=32'd0
+			read_result_data=32'd0;
 		end
 	end
 	always_comb

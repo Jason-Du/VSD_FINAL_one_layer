@@ -8,7 +8,8 @@
 `include "local_mem_pixel_rtl.sv"
 `include "local_mem_weight_rtl.sv"
 `include "layer1_result_mem_rtl.sv"
-
+`include "layer2_result_mem_rtl.sv"
+`include "local_mem_result_rtl.sv"
 `timescale 1ns/10ps
 module top(
 	clk,
@@ -110,6 +111,11 @@ logic [ 15:0] layer2_read_bias_addr;
 logic         layer2_read_bias_signal;
 
 
+
+logic write_result_signal;
+logic read_result_signal;
+logic [127:0] layer2_result;
+
 controller ctlr(
 	.clk(clk),
 	.rst(rst),
@@ -180,9 +186,10 @@ interrupt_register interpt_reg(
 
 always_comb
 begin
-	read_pixel_addr={layer1_read_col[10:0],layer1_read_row[4:0]};
-	interrupt_register_data_in=layer1_calculation_done?1'b1:1'b0;
-	interrupt_register_write_signal=layer1_calculation_done?1'b1:1'b0;;
+	read_pixel_addr={layer1_read_row[10:0],layer1_read_col[4:0]};
+	//read_pixel_addr={layer1_read_col[10:0],layer1_read_row[4:0]};
+	interrupt_register_data_in=layer2_calculation_done?1'b1:1'b0;
+	interrupt_register_write_signal=layer2_calculation_done?1'b1:1'b0;;
 end
 
 
@@ -253,8 +260,8 @@ layer1_cnn layer1(
 	.output_data(layer1_output_data),
 	//fix
 	//read_pixel_addr,
-	.read_col_addr(layer1_read_row),
-	.read_row_addr(layer1_read_col),
+	.read_col_addr(layer1_read_col),
+	.read_row_addr(layer1_read_row),
 	//fix
 	.read_pixel_signal(read_pixel_signal),
 	//.read_weights_buffer_num_sel(),
@@ -331,6 +338,38 @@ layer2_cnn layer2(
 );
 
 
+layer2_result_mem layer2_data_mem(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer2_save_enable),
+	.layer2_result_store_data_in(layer2_output_data),
+	.save_row_addr(layer2_save_row),
+	.save_col_addr(layer2_save_col),
+	.read_row_addr(16'd0),
+	.read_col_addr(16'd0),
+	.layer2_result_read_signal(1'd0),
+	//INOUT
+	
+	.layer2_result_output(layer2_result)
+);
+
+
+always_comb
+begin
+	//FIX
+	write_result_signal=layer2_calculation_done?1'b1:1'b0;
+	read_result_signal=(araddr==32'hd000_0000)?1'b1:1'b0;
+	//
+end
+local_mem_result result_st_mem(
+	.clk(clk),
+	.rst(rst),
+	.read_result_signal(read_result_signal),
+	.write_result_data(32'h1111_1111),
+	.write_result_signal(write_result_signal),
+	
+	.read_result_data(rdata)
+);
 
 
 

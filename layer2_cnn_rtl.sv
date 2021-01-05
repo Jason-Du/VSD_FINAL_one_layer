@@ -287,7 +287,7 @@ module layer2_cnn(
 	end
 // fix
 
-	counter read_col_counter(
+	counter read_row_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_row_count),
@@ -295,6 +295,13 @@ module layer2_cnn(
 	.keep(read_pixel_row_keep)
 	);
 // fix
+	counter read_counter(
+	.clk(clk),
+	.rst(rst),
+	.count(read_pixel_count),
+	.clear(read_pixel_clear),
+	.keep(1'b0)
+	);
 	counter set_counter(
 	.clk(clk),
 	.rst(rst),

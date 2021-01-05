@@ -29,6 +29,10 @@ output logic [47:0] read_pixel_data;
 
 logic [2:0][15:0]pixel_mem_in[32][32];
 logic [2:0][15:0]pixel_mem_out[32][32];
+logic [5:0] write_row;
+logic [5:0] write_col;
+logic [5:0] read_row;
+logic [5:0] read_col;
 always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
@@ -58,6 +62,13 @@ begin
 			end
 		end
 	end
+end
+always_comb
+begin
+	write_col=write_pixel_addr[4:0];
+	write_row=write_pixel_addr[9:5];
+	read_row=read_pixel_addr[9:5];
+	read_col=read_pixel_addr[4:0];
 end
 //---------------------------------------------WRITE-----------------------------------------------------
 /*

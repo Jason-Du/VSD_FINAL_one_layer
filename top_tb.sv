@@ -1,10 +1,14 @@
 `timescale 1ns/10ps
 `include "top_rtl.sv"
+`include "def.svh"
 `include "counter_rtl.sv"
 `define		MEM_PIXEL_FILE		"./top_data/pixel.data"
 `define		MEM_WEIGHT_FILE		"./top_data/weight.data"
 `define		MEM_BIAS_FILE		"./top_data/bias.data"
-`define		GOLDEN_FILE		    "./top_data/CORRECT.data"
+`define		PIC1_GOLDEN_FILE_LAYER1		"./top_data/PIC1_CORRECT_LAYER1.data"
+`define		PIC1_GOLDEN_FILE_LAYER2		"./top_data/PIC1_CORRECT_LAYER2.data"
+`define		PIC2_GOLDEN_FILE_LAYER1	    "./top_data/PIC2_CORRECT_LAYER1.data"
+`define		PIC2_GOLDEN_FILE_LAYER2		"./top_data/PIC2_CORRECT_LAYER2.data"
 `define		RESULT_FILE		    "RESULT.csv"
 `define MAX 50000
 `define CYCLE 2.0
@@ -60,6 +64,7 @@ top TOP(
 
 initial 
 begin
+	
 	fp_r = $fopen(`MEM_PIXEL_FILE, "r");
 		while(!$feof(fp_r)) 
 		begin
@@ -113,6 +118,7 @@ end
 */
 initial
 begin
+	araddr=32'h0000_0000;
 	clk   =1'b0;
 	rst   =1'b1;
 	#(`CYCLE) rst   =1'b0;
@@ -156,6 +162,11 @@ logic pixel_set_keep;
 
 logic [2:0] cs;
 logic [2:0] ns;
+logic [5:0] picture_count_in;
+logic [5:0] picture_count_out;
+logic STAGE1_COMPLETE;
+logic STAGE2_COMPLETE;
+
 localparam FEED_WEIGHT=3'b000;
 localparam FEED_BIAS  =3'b001;
 localparam FEED_PIXEL =3'b010;
@@ -207,11 +218,17 @@ begin
 	if(rst)
 	begin
 		cs<=3'd0;
+		picture_count_out<=6'd0;
 	end
 	else
 	begin
 		cs<=ns;
+		picture_count_out<=picture_count_in;
 	end
+end
+always_comb
+begin
+	picture_count_in=interrupt_signal?picture_count_out+6'd1:picture_count_out;
 end
 always_comb
 begin
@@ -323,32 +340,42 @@ begin
 		end
 	endcase
 end
-
+always_ff@(posedge clk)
+begin
+	if(rst)
+	begin	
+		STAGE1_COMPLETE<=0;
+		STAGE2_COMPLETE<=0;
+	end
+	else
+	begin
+		STAGE1_COMPLETE<=TOP.layer1_calculation_done;
+		STAGE2_COMPLETE<=TOP.layer2_calculation_done;
+	end
+end
+integer picture_layer2=1;
+integer picture_layer1=1;
 always
 begin
 	#(`CYCLE/2) clk = ~clk;
-	if(interrupt_signal)
+end
+always
+begin
+	#(`CYCLE);
+	if(STAGE1_COMPLETE&&(picture_layer1<=2))
 	begin
-		fp_w= $fopen(`RESULT_FILE, "w");
-		for(int row=0;row<=29;row++)
-		begin
-			for(int col=0;col<=29;col++)
-			begin
-				$fwrite(fp_w,"%h",TOP.layer1_data_mem.layer1_results_mem[row][col]);
-				if(col<29)
-				begin
-					$fwrite(fp_w,",");				
-				end
-					
-			end
-			$fwrite(fp_w,"\n");
-		end
-		$fclose(fp_w);
-		
+		$display("PICTURE %d STAGE1_COMPLETE",picture_layer1);
+		$display("%d",$time);
 		row=0;
 		col=0;
-		
-		fp_r = $fopen(`GOLDEN_FILE, "r");
+		if(picture_layer1==1)
+		begin
+			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER1, "r");
+		end
+		if(picture_layer1==2)
+		begin
+			fp_r = $fopen(`PIC2_GOLDEN_FILE_LAYER1, "r");
+		end
 		while(!$feof(fp_r)) 
 		begin
 			cnt = $fscanf(fp_r, "%h",result_reg);			
@@ -369,6 +396,7 @@ begin
 		$fclose(fp_r);
 		if (pass_count==900)
 		begin
+			$display("PICTURE %d STAGE1 IS PASS",picture_layer1);
 			$display("%d PASS",pass_count);
 			$display("\n");
 			$display("\n");
@@ -401,15 +429,126 @@ begin
 			$display("         Totally has %d errors ", err); 
 			$display("\n");
 		end
-		#(`CYCLE*10)
-		$finish;	
-	end	
+		/*
+		if (picture_layer1==2)
+		begin
+			$finish;
+		end
+		*/
+		picture_layer1++;
+		//$finish;	
+	end
+	pass_count=0;
+	if(STAGE2_COMPLETE)
+	begin
+		$display("PICTURE %d STAGE2_COMPLETE",picture_layer2);
+		$display("%d",$time);
+		
+		row=0;
+		col=0;
+		if(picture_layer2==1)
+		begin
+			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER2,"r");
+		end
+		if(picture_layer2==2)
+		begin
+			fp_r = $fopen(`PIC2_GOLDEN_FILE_LAYER2,"r");
+		end
+		
+		while(!$feof(fp_r)) 
+		begin
+			cnt = $fscanf(fp_r, "%h",result_reg);			
+			if(result_reg==TOP.layer2_data_mem.layer2_results_mem[row][col])
+			begin
+				pass_count=pass_count+1;
+			end
+			if(col==27)
+			begin
+				col=0;
+				row=row+1;
+			end
+			else
+			begin
+				col=col+1;
+			end
+		end
+		$fclose(fp_r);
+		if (pass_count==784)
+		begin
+			$display("%d PASS",pass_count);
+			$display("PICTURE %d STAGE2 IS PASS",picture_layer2);
+			$display("\n");
+			$display("\n");
+			$display("        ****************************               ");
+			$display("        **                        **       |\__||  ");
+			$display("        **  Congratulations !!    **      / O.O  | ");
+			$display("        **                        **    /_____   | ");
+			$display("        **  Simulation PASS!!     **   /^ ^ ^ \\  |");
+			$display("        **                        **  |^ ^ ^ ^ |w| ");
+			$display("        ****************************   \\m___m__|_|");
+			$display("\n");
+		end
+		else
+		begin
+			err=784-pass_count;
+
+			$display("        ****************************   ");
+			$display("        **                        **   ");
+			$display("        **  OOPS!!                **   ");
+			$display("        **                        **   ");
+			$display("        **  Simulation Failed!!   **   ");
+			$display("        **                        **   ");
+			$display("        ****************************   ");
+			$display("                 .   .                 ");
+			$display("                . ':' .                ");
+			$display("                ___:____     |//\//|   ");
+			$display("              ,'        `.    \  /     ");
+			$display("              |  O        \___/  |     ");
+			$display("~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~");
+			$display("         Totally has %d errors ", err); 
+			$display("\n");
+		end
+		//#(`CYCLE*10)
+		if (picture_layer2==2)
+		begin
+			$finish;
+		end
+		picture_layer2++;	
+	end
+	/*
+	if(TOP.interrupt_signal)
+	begin
+		araddr=32'hd000_0000;
+		# (`CYCLE)
+		if(TOP.rdata==32'h1111_1111)
+		begin
+			$display("INTERRUPT RESULT MATCH");
+		end
+		else
+		begin
+			$display("INTERRUPT RESULT MISMATCH ERROR");
+		end
+		//$finish;
+	end
+	*/
 end
-
 endmodule
-
-
-
+/*fp_w= $fopen(`RESULT_FILE, "w");
+		for(int row=0;row<=27;row++)
+		begin
+			for(int col=0;col<=27;col++)
+			begin
+				$fwrite(fp_w,"%h",TOP.layer2_data_mem.layer2_results_mem[row][col]);
+				if(col<27)
+				begin
+					$fwrite(fp_w,", ");				
+				end
+					
+			end
+			$fwrite(fp_w,"\n");
+		end
+		$fclose(fp_w);
+*/
 /*
 always
 begin
@@ -466,4 +605,7 @@ begin
 
 	end
 end
-		*/
+*/
+
+
+
