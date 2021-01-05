@@ -7,8 +7,10 @@
 `define		MEM_BIAS_FILE		"./top_data/bias.data"
 `define		PIC1_GOLDEN_FILE_LAYER1		"./top_data/PIC1_CORRECT_LAYER1.data"
 `define		PIC1_GOLDEN_FILE_LAYER2		"./top_data/PIC1_CORRECT_LAYER2.data"
+`define		PIC1_GOLDEN_FILE_LAYER3		"./top_data/PIC1_CORRECT_LAYER3.data"
 `define		PIC2_GOLDEN_FILE_LAYER1	    "./top_data/PIC2_CORRECT_LAYER1.data"
 `define		PIC2_GOLDEN_FILE_LAYER2		"./top_data/PIC2_CORRECT_LAYER2.data"
+`define		PIC2_GOLDEN_FILE_LAYER3		"./top_data/PIC2_CORRECT_LAYER3.data"
 `define		RESULT_FILE		    "RESULT.csv"
 `define MAX 50000
 `define CYCLE 2.0
@@ -29,8 +31,10 @@ logic [31:0]rdata;
 logic interrupt_signal;
 
 
-logic [15:0] reg1;
-logic [127:0]result_reg;
+logic [           `WORDLENGTH-1:0] reg1;
+logic [ `LAYER1_OUTPUT_LENGTH-1:0] result_reg1;
+logic [ `LAYER2_OUTPUT_LENGTH-1:0] result_reg2;
+logic [ `LAYER3_OUTPUT_LENGTH-1:0] result_reg3;
 
 integer row=0;
 integer col=0;
@@ -68,7 +72,7 @@ begin
 	fp_r = $fopen(`MEM_PIXEL_FILE, "r");
 		while(!$feof(fp_r)) 
 		begin
-			$display("pixel_setting");
+			//$display("pixel_setting");
 			cnt = $fscanf(fp_r, "%h",reg1);
 			//$display("%h",reg1);
 			mem_pixel_in[pic_num]={16'd0,reg1};
@@ -78,7 +82,7 @@ begin
 	fp_r = $fopen(`MEM_BIAS_FILE, "r");
 		while(!$feof(fp_r)) 
 		begin
-			$display("bias_setting");
+			//$display("bias_setting");
 			cnt = $fscanf(fp_r, "%h",reg1);
 			//$display("%h",reg1);
 			mem_bias_in[bias_num]={16'd0,reg1};
@@ -88,7 +92,7 @@ begin
 	fp_r = $fopen(`MEM_WEIGHT_FILE, "r");
 		while(!$feof(fp_r)) 
 		begin
-			$display("weight_setting");
+			//$display("weight_setting");
 			cnt = $fscanf(fp_r, "%h",reg1);
 			//$display("%h",reg1);
 			mem_weight_in[weight_num]={16'd0,reg1};
@@ -96,6 +100,7 @@ begin
 		end
 	$fclose(fp_r);
 end
+
 //Initialize
 /*
 `define SLAVE6_ADDR_START 32'hd000_0000
@@ -166,6 +171,7 @@ logic [5:0] picture_count_in;
 logic [5:0] picture_count_out;
 logic STAGE1_COMPLETE;
 logic STAGE2_COMPLETE;
+logic STAGE3_COMPLETE;
 
 localparam FEED_WEIGHT=3'b000;
 localparam FEED_BIAS  =3'b001;
@@ -346,13 +352,16 @@ begin
 	begin	
 		STAGE1_COMPLETE<=0;
 		STAGE2_COMPLETE<=0;
+		STAGE3_COMPLETE<=0;
 	end
 	else
 	begin
 		STAGE1_COMPLETE<=TOP.layer1_calculation_done;
 		STAGE2_COMPLETE<=TOP.layer2_calculation_done;
+		STAGE3_COMPLETE<=TOP.layer3_calculation_done;
 	end
 end
+integer picture_layer3=1;
 integer picture_layer2=1;
 integer picture_layer1=1;
 always
@@ -378,12 +387,12 @@ begin
 		end
 		while(!$feof(fp_r)) 
 		begin
-			cnt = $fscanf(fp_r, "%h",result_reg);			
-			if(result_reg==TOP.layer1_data_mem.layer1_results_mem[row][col])
+			cnt = $fscanf(fp_r, "%h",result_reg1);			
+			if(result_reg1==TOP.layer1_data_mem.layer1_results_mem[row][col])
 			begin
 				pass_count=pass_count+1;
 			end
-			if(col==29)
+			if(col==`LAYER2_WIDTH-1)
 			begin
 				col=0;
 				row=row+1;
@@ -394,7 +403,7 @@ begin
 			end
 		end
 		$fclose(fp_r);
-		if (pass_count==900)
+		if (pass_count==`LAYER2_WIDTH**2)
 		begin
 			$display("PICTURE %d STAGE1 IS PASS",picture_layer1);
 			$display("%d PASS",pass_count);
@@ -411,7 +420,7 @@ begin
 		end
 		else
 		begin
-			err=900-pass_count;
+			err=`LAYER2_WIDTH**2-pass_count;
 
 			$display("        ****************************   ");
 			$display("        **                        **   ");
@@ -438,6 +447,7 @@ begin
 		picture_layer1++;
 		//$finish;	
 	end
+	////////////////////////////////////////////////////////////////////
 	pass_count=0;
 	if(STAGE2_COMPLETE)
 	begin
@@ -457,12 +467,12 @@ begin
 		
 		while(!$feof(fp_r)) 
 		begin
-			cnt = $fscanf(fp_r, "%h",result_reg);			
-			if(result_reg==TOP.layer2_data_mem.layer2_results_mem[row][col])
+			cnt = $fscanf(fp_r, "%h",result_reg2);			
+			if(result_reg2==TOP.layer2_data_mem.layer2_results_mem[row][col])
 			begin
 				pass_count=pass_count+1;
 			end
-			if(col==27)
+			if(col==`LAYER3_WIDTH-1)
 			begin
 				col=0;
 				row=row+1;
@@ -473,7 +483,7 @@ begin
 			end
 		end
 		$fclose(fp_r);
-		if (pass_count==784)
+		if (pass_count==`LAYER3_WIDTH**2)
 		begin
 			$display("%d PASS",pass_count);
 			$display("PICTURE %d STAGE2 IS PASS",picture_layer2);
@@ -490,7 +500,7 @@ begin
 		end
 		else
 		begin
-			err=784-pass_count;
+			err=`LAYER3_WIDTH**2-pass_count;
 
 			$display("        ****************************   ");
 			$display("        **                        **   ");
@@ -509,12 +519,106 @@ begin
 			$display("\n");
 		end
 		//#(`CYCLE*10)
+		/*
 		if (picture_layer2==2)
 		begin
 			$finish;
 		end
+		*/
 		picture_layer2++;	
 	end
+	////////////////////////////////////////////////////////////////////
+	pass_count=0;
+	if(STAGE3_COMPLETE)
+	begin
+		$display("PICTURE %d STAGE3_COMPLETE",picture_layer3);
+		$display("%d",$time);
+		fp_w= $fopen(`RESULT_FILE, "w");
+		for(int row=0;row<=13;row++)
+		begin
+			for(int col=0;col<=13;col++)
+			begin
+				$fwrite(fp_w,"%h",TOP.layer3_data_mem.layer3_results_mem[row][col]);
+				if(col<27)
+				begin
+					$fwrite(fp_w,", ");				
+				end
+					
+			end
+			$fwrite(fp_w,"\n");
+		end
+		$fclose(fp_w);
+		row=0;
+		col=0;
+		if(picture_layer3==1)
+		begin
+			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER3,"r");
+		end
+		if(picture_layer3==2)
+		begin
+			fp_r = $fopen(`PIC2_GOLDEN_FILE_LAYER3,"r");
+		end
+		while(!$feof(fp_r)) 
+		begin
+			cnt = $fscanf(fp_r, "%h",result_reg3);			
+			if(result_reg3==TOP.layer3_data_mem.layer3_results_mem[row][col])
+			begin
+				pass_count=pass_count+1;
+			end
+			if(col==`LAYER4_WIDTH-1)
+			begin
+				col=0;
+				row=row+1;
+			end
+			else
+			begin
+				col=col+1;
+			end
+		end
+		$fclose(fp_r);
+		if (pass_count==`LAYER4_WIDTH**2)
+		begin
+			$display("%d PASS",pass_count);
+			$display("PICTURE %d STAGE3 IS PASS",picture_layer3);
+			$display("\n");
+			$display("\n");
+			$display("        ****************************               ");
+			$display("        **                        **       |\__||  ");
+			$display("        **  Congratulations !!    **      / O.O  | ");
+			$display("        **                        **    /_____   | ");
+			$display("        **  Simulation PASS!!     **   /^ ^ ^ \\  |");
+			$display("        **                        **  |^ ^ ^ ^ |w| ");
+			$display("        ****************************   \\m___m__|_|");
+			$display("\n");
+		end
+		else
+		begin
+			err=`LAYER4_WIDTH**2-pass_count;
+
+			$display("        ****************************   ");
+			$display("        **                        **   ");
+			$display("        **  OOPS!!                **   ");
+			$display("        **                        **   ");
+			$display("        **  Simulation Failed!!   **   ");
+			$display("        **                        **   ");
+			$display("        ****************************   ");
+			$display("                 .   .                 ");
+			$display("                . ':' .                ");
+			$display("                ___:____     |//\//|   ");
+			$display("              ,'        `.    \  /     ");
+			$display("              |  O        \___/  |     ");
+			$display("~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~");
+			$display("         Totally has %d errors ", err); 
+			$display("\n");
+		end
+		//#(`CYCLE*10)
+		if (picture_layer3==2)
+		begin
+			$finish;
+		end
+		picture_layer3++;	
+	end
+	////////////////////////////////////////////////////////////////////INTERRUPT_TEST
 	/*
 	if(TOP.interrupt_signal)
 	begin
@@ -533,79 +637,10 @@ begin
 	*/
 end
 endmodule
-/*fp_w= $fopen(`RESULT_FILE, "w");
-		for(int row=0;row<=27;row++)
-		begin
-			for(int col=0;col<=27;col++)
-			begin
-				$fwrite(fp_w,"%h",TOP.layer2_data_mem.layer2_results_mem[row][col]);
-				if(col<27)
-				begin
-					$fwrite(fp_w,", ");				
-				end
-					
-			end
-			$fwrite(fp_w,"\n");
-		end
-		$fclose(fp_w);
-*/
 /*
-always
-begin
-	if(~rst)
-	begin
-		$display("ttt");
-		if(weight_index<=(216+576))
-		begin
-			$display("weight_SETTING");
-			#(`CYCLE/2);
-			awaddr=32'hd333_0000;
-			wdata=mem_weight_in[weight_index];
-			wvalid=1'b1;
-			weight_index++;
-			#(`CYCLE/2);
-			awaddr=32'hd000_0000;
-			wvalid=1'b0;
-			#(`CYCLE*3);
-			awaddr=32'h0000_0000;
-			wdata=32'h0000_0000;
-			wvalid=1'b0;
-		end
-	
-		else if(bias_index<=(8+8))
-		begin
-			#(`CYCLE/2); 
-			awaddr=32'hd444_0000;
-			wdata=mem_bias_in[bias_index];
-			wvalid=1'b1;
-			bias_index++;
-			#(`CYCLE/2);
-			awaddr=32'hd000_0000;
-			wvalid=1'b0;
-			#(`CYCLE*3);
-			awaddr=32'h0000_0000;
-			wdata=32'h0000_0000;
-			wvalid=1'b0;
-		end
-		else
-		begin
-			#(`CYCLE/2); 
-			awaddr=32'hd555_0000;
-			wdata=mem_pixel_in[pixel_index];
-			wvalid=1'b1;
-			pixel_index++;
-			#(`CYCLE/2);
-			awaddr=32'h0000_0000;
-			wvalid=1'b0;
-			#(`CYCLE*3);
-			awaddr=32'h0000_0000;
-			wdata=32'h0000_0000;
-			wvalid=1'b0;
-		end
 
-	end
-end
 */
+
 
 
 

@@ -24,24 +24,24 @@ module layer3_maxpooling(
 	read_pixel_signal,
 
 );
-	input                                           clk,
-	input                                           rst,
-	input        [`LAYER3_WEIGHT_INPUT_LENGTH-1:0]  input_data,
+	input                                           clk;
+	input                                           rst;
+	input        [`LAYER3_WEIGHT_INPUT_LENGTH-1:0]  input_data;
 	
-	input                                           pixel_store_done,
+	input                                           pixel_store_done;
 	//IN OUT PORT
-	output logic                                    save_enable,
-	output logic [                `WORDLENGTH-1:0]  output_row,
-	output logic [                `WORDLENGTH-1:0]  output_col,
+	output logic                                    save_enable;
+	output logic [                `WORDLENGTH-1:0]  output_row;
+	output logic [                `WORDLENGTH-1:0]  output_col;
 	
-	output logic                                    layer3_calculation_done,
-	output logic [      `LAYER3_OUTPUT_LENGTH-1:0]  output_data,
+	output logic                                    layer3_calculation_done;
+	output logic [      `LAYER3_OUTPUT_LENGTH-1:0]  output_data;
 	//fix
-	//read_pixel_addr,
-	output logic [                `WORDLENGTH-1:0]  read_col_addr,
-	output logic [                `WORDLENGTH-1:0]  read_row_addr,
+	//read_pixel_addr;
+	output logic [                `WORDLENGTH-1:0]  read_col_addr;
+	output logic [                `WORDLENGTH-1:0]  read_row_addr;
 	//fix
-	output logic [                `WORDLENGTH-1:0]  read_pixel_signal,
+	output logic [                `WORDLENGTH-1:0]  read_pixel_signal;
 	
 	
 	
@@ -101,17 +101,18 @@ module layer3_maxpooling(
 		//read_pixel_addr=read_pixel_count;
 		read_col_addr=read_pixel_count;
 		read_row_addr=read_pixel_row_count;
-		output_row=save_address_row_count;
-		output_col=set_count;
+		output_row=save_address_row_count>>1;
+		output_col=set_count>>1;
 		//read_weights_buffer_num_sel=5'd3;
 		case(save_cs)
 		SAVE_IDLE:
 		begin
 			save_address_row_keep=1'b1;
-			layer1_calculation_done=1'b0;
+			layer3_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			save_enable=1'b0;
 			set_clear=1'b1;
+			set_keep=1'b0;
 			read_pixel_signal=1'b0;
 			read_pixel_clear=1'b1;
 			//keep
@@ -130,13 +131,14 @@ module layer3_maxpooling(
 		SAVE_SETTING:
 		begin
 			save_address_row_keep=1'b1;
-			layer1_calculation_done=1'b0;
+			layer3_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			read_pixel_signal=1'b1;
+			set_keep=1'b0;
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER1_WIDTH-1)
+			if (read_pixel_count==16'd`LAYER3_WIDTH-1)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -147,7 +149,7 @@ module layer3_maxpooling(
 				read_pixel_row_keep=1'b1;
 			end
 			//fix
-			if(set_count==16'd`LAYER1_SET_COUNT)
+			if(set_count==16'd`LAYER3_SET_COUNT)
 			begin
 				set_clear=1'b1;
 				save_enable=1'b0;
@@ -164,10 +166,11 @@ module layer3_maxpooling(
 		begin
 			save_address_row_clear=1'b0;
 			read_pixel_signal=1'b1;
+			set_keep=1'b0;
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER1_WIDTH-1)
+			if (read_pixel_count==16'd`LAYER3_WIDTH-1)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -178,7 +181,8 @@ module layer3_maxpooling(
 				read_pixel_row_keep=1'b1;
 			end
 			//fix
-			if(set_count==16'd`LAYER1_WIDTH-1)
+			////////////////////////////////////////////////////////////////
+			if(set_count==16'd`LAYER3_WIDTH-1)
 			begin
 				set_clear=1'b1;
 				save_address_row_keep=1'b0;
@@ -188,19 +192,19 @@ module layer3_maxpooling(
 				set_clear=1'b0;
 				save_address_row_keep=1'b1;
 			end
-			
-			if(save_address_row_count==16'd`LAYER1_WIDTH-3&&set_count==16'd`LAYER1_WIDTH-3)
+			//////////////////////////////////////////////////////////////
+			if(save_address_row_count==16'd`LAYER3_WIDTH-2&&set_count==16'd`LAYER3_WIDTH-2)
 			begin
 				save_ns=SAVE_IDLE;
-				layer1_calculation_done=1'b1;
+				layer3_calculation_done=1'b1;
 			end
 			else
 			begin
 				save_ns=SAVE_ENABLE;
-				layer1_calculation_done=1'b0;
+				layer3_calculation_done=1'b0;
 			end
 			
-			if(set_count>16'd`LAYER1_WIDTH-3)
+			if(set_count>16'd`LAYER3_WIDTH-2||set_count[0]==1||save_address_row_count[0]==1)
 			begin
 				save_enable=1'b0;
 			end
@@ -212,9 +216,10 @@ module layer3_maxpooling(
 		default:
 		begin
 			set_clear=1'b1;
+			set_keep=1'b0;
 			save_address_row_clear=1'b1;
 			save_address_row_keep=1'b0;
-			layer1_calculation_done=1'b0;
+			layer3_calculation_done=1'b0;
 			save_enable=1'b0;
 			save_ns=SAVE_IDLE;
 			read_pixel_signal=1'b0;
@@ -267,7 +272,7 @@ maxpooling_2x2 max_channel1(
 	.input_channel3(col_2_1_register_out[15:0]),
 	.input_channel4(col_2_2_register_out[15:0]),
 	
-	.output_channel(output_data[15:0]),
+	.output_channel(output_data[15:0])
 );
 maxpooling_2x2 max_channel2(
 	.input_channel1(col_1_1_register_out[31:16]),
@@ -275,7 +280,7 @@ maxpooling_2x2 max_channel2(
 	.input_channel3(col_2_1_register_out[31:16]),
 	.input_channel4(col_2_2_register_out[31:16]),
 	
-	.output_channel(output_data[31:16]),
+	.output_channel(output_data[31:16])
 );
 maxpooling_2x2 max_channel3(
 	.input_channel1(col_1_1_register_out[47:32]),
@@ -283,7 +288,7 @@ maxpooling_2x2 max_channel3(
 	.input_channel3(col_2_1_register_out[47:32]),
 	.input_channel4(col_2_2_register_out[47:32]),
 	
-	.output_channel(output_data[47:32]),
+	.output_channel(output_data[47:32])
 );
 maxpooling_2x2 max_channel4(
 	.input_channel1(col_1_1_register_out[63:48]),
@@ -291,7 +296,7 @@ maxpooling_2x2 max_channel4(
 	.input_channel3(col_2_1_register_out[63:48]),
 	.input_channel4(col_2_2_register_out[63:48]),
 	
-	.output_channel(output_data[63:48]),
+	.output_channel(output_data[63:48])
 );
 maxpooling_2x2 max_channel5(
 	.input_channel1(col_1_1_register_out[79:64]),
@@ -299,7 +304,7 @@ maxpooling_2x2 max_channel5(
 	.input_channel3(col_2_1_register_out[79:64]),
 	.input_channel4(col_2_2_register_out[79:64]),
 	
-	.output_channel(output_data[79:64]),
+	.output_channel(output_data[79:64])
 );
 maxpooling_2x2 max_channel6(
 	.input_channel1(col_1_1_register_out[95:80]),
@@ -307,7 +312,7 @@ maxpooling_2x2 max_channel6(
 	.input_channel3(col_2_1_register_out[95:80]),
 	.input_channel4(col_2_2_register_out[95:80]),
 	
-	.output_channel(output_data[95:80]),
+	.output_channel(output_data[95:80])
 );
 maxpooling_2x2 max_channel7(
 	.input_channel1(col_1_1_register_out[111:96]),
@@ -315,7 +320,7 @@ maxpooling_2x2 max_channel7(
 	.input_channel3(col_2_1_register_out[111:96]),
 	.input_channel4(col_2_2_register_out[111:96]),
 	
-	.output_channel(output_data[111:96]),
+	.output_channel(output_data[111:96])
 );
 maxpooling_2x2 max_channel8(
 	.input_channel1(col_1_1_register_out[127:112]),
@@ -323,7 +328,7 @@ maxpooling_2x2 max_channel8(
 	.input_channel3(col_2_1_register_out[127:112]),
 	.input_channel4(col_2_2_register_out[127:112]),
 	
-	.output_channel(output_data[127:112]),
+	.output_channel(output_data[127:112])
 );	
 //----------------------------------------BUFFER_CHAIN--------------------------------------------//
 	stage26_fifo first_stage(
@@ -343,7 +348,7 @@ maxpooling_2x2 max_channel8(
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
-
+		begin
 			col_2_2_register_out<=16'd0;
 			col_2_1_register_out<=16'd0;
 			

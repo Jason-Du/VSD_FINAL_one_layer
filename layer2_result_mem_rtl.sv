@@ -28,18 +28,18 @@ module layer2_result_mem(
 	
 	output logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_result_output;
 	
-	logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_results_mem    [30][30];
-	logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_results_mem_in [30][30];
+	logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_results_mem    [`LAYER3_WIDTH][`LAYER3_WIDTH];
+	logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_results_mem_in [`LAYER3_WIDTH][`LAYER3_WIDTH];
 	
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=29;i++)
+			for(byte i=0;i<=`LAYER3_WIDTH-1;i++)
 			begin
-				for(byte j=0;j<=29;j++)
+				for(byte j=0;j<=`LAYER3_WIDTH-1;j++)
 				begin
-					layer2_results_mem[i][j]<=127'd0;
+					layer2_results_mem[i][j]<=`LAYER2_OUTPUT_LENGTH'd0;
 				end
 			end
 			
@@ -66,7 +66,7 @@ module layer2_result_mem(
 		end
 		else
 		begin
-			layer2_result_output=128'd0;
+			layer2_result_output=`LAYER2_OUTPUT_LENGTH'd0;
 		end
 	end
 endmodule
