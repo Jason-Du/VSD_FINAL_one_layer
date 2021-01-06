@@ -41,7 +41,7 @@ module layer3_maxpooling(
 	output logic [                `WORDLENGTH-1:0]  read_col_addr;
 	output logic [                `WORDLENGTH-1:0]  read_row_addr;
 	//fix
-	output logic [                `WORDLENGTH-1:0]  read_pixel_signal;
+	output logic                                    read_pixel_signal;
 	
 	
 	
@@ -203,7 +203,6 @@ module layer3_maxpooling(
 				save_ns=SAVE_ENABLE;
 				layer3_calculation_done=1'b0;
 			end
-			
 			if(set_count>16'd`LAYER3_WIDTH-2||set_count[0]==1||save_address_row_count[0]==1)
 			begin
 				save_enable=1'b0;
@@ -212,6 +211,7 @@ module layer3_maxpooling(
 			begin
 				save_enable=1'b1;
 			end
+			
 		end
 		default:
 		begin

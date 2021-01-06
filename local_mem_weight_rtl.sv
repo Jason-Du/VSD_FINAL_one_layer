@@ -84,7 +84,7 @@ begin
 		read_weight_data[ 47:32]=weight_mem_out[output_addr3];
 		read_weight_data[127:48]=80'd0;
 	end
-	else if(read_weight_signal&&buffer_num_sel==5'd2)
+	else if(read_weight_signal&&(buffer_num_sel==5'd2||buffer_num_sel==5'd4||buffer_num_sel==5'd5))
 	begin
 		output_data_shift=read_weight_addr<<3;
 		output_addr1=output_data_shift;

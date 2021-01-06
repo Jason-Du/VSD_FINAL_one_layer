@@ -3,13 +3,21 @@ module weight_bias_arbitor(
 	weight_sel,
 	bias_sel,
 	layer1_read_weight_signal,
-	layer2_read_weight_signal,
 	layer1_read_bias_signal,
-	layer2_read_bias_signal,
 	layer1_read_weight_addr,
-	layer2_read_weight_addr,
 	layer1_read_bias_addr,
+	layer2_read_weight_signal,
+	layer2_read_bias_signal,
+	layer2_read_weight_addr,
 	layer2_read_bias_addr,
+	layer4_read_weight_signal,
+	layer4_read_bias_signal,
+	layer4_read_weight_addr,
+	layer4_read_bias_addr,
+	layer5_read_weight_signal,
+	layer5_read_bias_signal,
+	layer5_read_weight_addr,
+	layer5_read_bias_addr,
 	//INOUT
 	read_weight_signal_data,
 	read_weight_addr_data,
@@ -20,13 +28,22 @@ module weight_bias_arbitor(
 input [4:0] weight_sel;
 input [4:0] bias_sel;
 input layer1_read_bias_signal;
-input layer2_read_bias_signal;
 input layer1_read_weight_signal;
-input layer2_read_weight_signal;
 input [15:0] layer1_read_bias_addr;
-input [15:0] layer2_read_bias_addr;
 input [15:0] layer1_read_weight_addr;
+input layer2_read_bias_signal;
+input layer2_read_weight_signal;
+input [15:0] layer2_read_bias_addr;
 input [15:0] layer2_read_weight_addr;
+input layer4_read_bias_signal;
+input layer4_read_weight_signal;
+input [15:0] layer4_read_bias_addr;
+input [15:0] layer4_read_weight_addr;
+input layer5_read_bias_signal;
+input layer5_read_weight_signal;
+input [15:0] layer5_read_bias_addr;
+input [15:0] layer5_read_weight_addr;
+
 
 output logic read_weight_signal_data;
 output logic [15:0] read_weight_addr_data;
@@ -43,6 +60,16 @@ begin
 	begin
 		read_weight_addr_data=layer2_read_weight_addr;
 		read_weight_signal_data=layer2_read_weight_signal;
+	end
+	else if(weight_sel==5'd4)
+	begin
+		read_weight_addr_data=layer4_read_weight_addr;
+		read_weight_signal_data=layer4_read_weight_signal;
+	end
+	else if(weight_sel==5'd5)
+	begin
+		read_weight_addr_data=layer5_read_weight_addr;
+		read_weight_signal_data=layer5_read_weight_signal;
 	end
 	else
 	begin
@@ -61,6 +88,16 @@ begin
 	begin
 		read_bias_addr_data=layer2_read_bias_addr;
 		read_bias_signal_data=layer2_read_bias_signal;
+	end
+	else if(bias_sel==5'd4)
+	begin
+		read_bias_addr_data=layer4_read_bias_addr;
+		read_bias_signal_data=layer4_read_bias_signal;
+	end
+	else if(bias_sel==5'd5)
+	begin
+		read_bias_addr_data=layer5_read_bias_addr;
+		read_bias_signal_data=layer5_read_bias_signal;
 	end
 	else
 	begin

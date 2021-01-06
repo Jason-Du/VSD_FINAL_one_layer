@@ -1,4 +1,5 @@
 `timescale 1ns/10ps
+`include "def.svh"
 module controller(
 	clk,
 	rst,
@@ -23,6 +24,12 @@ module controller(
 	layer2_weight_store_done,
 	layer2_bias_store_done,
 	
+	layer4_weight_store_done,
+	layer4_bias_store_done,
+	
+	layer5_weight_store_done,
+	layer5_bias_store_done,
+	//////////////////
 	
 	
 	layer_weight_sel,
@@ -72,7 +79,6 @@ module controller(
 `endif
 
 */
-
 localparam result_address             =32'hd000_0000;
 localparam image_set_register_ADDRESS =32'hd111_0000;
 localparam interrupr_rsgister_ADDRESS =32'hd222_0000;
@@ -122,6 +128,12 @@ output logic	layer1_bias_store_done;
 output logic	layer2_weight_store_done;
 output logic	layer2_bias_store_done;
 
+output logic	layer4_weight_store_done;
+output logic	layer4_bias_store_done;
+
+output logic	layer5_weight_store_done;
+output logic	layer5_bias_store_done;
+
 output logic [4:0] 	layer_weight_sel;
 output logic [4:0] 	layer_bias_sel;
 
@@ -163,10 +175,15 @@ end
 localparam WEIGHT_IDLE                    =4'b0000;
 localparam WEIGHT_LAYER1_STORE            =4'b0001;
 localparam WEIGHT_LAYER2_STORE            =4'b0010;
+localparam WEIGHT_LAYER4_STORE            =4'b0011;
+localparam WEIGHT_LAYER5_STORE            =4'b0100;
 localparam WEIGHT_FINISH                  =4'b1111;
 
 localparam LAYER1_WEIGHT_NUM              =16'd216;//9*8*3
 localparam LAYER2_WEIGHT_NUM              =16'd576;//9*8*8
+localparam LAYER4_WEIGHT_NUM              =16'd576;//9*8*8
+localparam LAYER5_WEIGHT_NUM              =16'd576;//9*8*8
+//localparam LAYER5_WEIGHT_NUM              =16'd576;//9*8*8
 
 logic [ 3:0] weight_fsm_cs;
 logic [ 3:0] weight_fsm_ns;
@@ -192,6 +209,8 @@ begin
 		weight_store_count_clear=1'b0;
 		layer1_weight_store_done=1'b0;
 		layer2_weight_store_done=1'b0;
+		layer4_weight_store_done=1'b0;
+		layer5_weight_store_done=1'b0;
 		layer_weight_sel        =5'd0;
 		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
 		begin
@@ -213,6 +232,8 @@ begin
 	WEIGHT_LAYER1_STORE:
 	begin
 		layer2_weight_store_done=1'b0;
+		layer4_weight_store_done=1'b0;
+		layer5_weight_store_done=1'b0;
 		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
 		begin
 			weight_store_count_keep=1'b0;
@@ -245,6 +266,8 @@ begin
 	WEIGHT_LAYER2_STORE:
 	begin
 		layer1_weight_store_done=1'b0;
+		layer4_weight_store_done=1'b0;
+		layer5_weight_store_done=1'b0;
 		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
 		begin
 			weight_store_count_keep=1'b0;
@@ -263,7 +286,7 @@ begin
 		begin
 			weight_store_count_clear=1'b1;
 			layer2_weight_store_done=1'b1;
-			weight_fsm_ns           =WEIGHT_FINISH;
+			weight_fsm_ns           =WEIGHT_LAYER4_STORE;
 			layer_weight_sel         =5'd2;
 		end
 		else
@@ -272,6 +295,74 @@ begin
 			layer2_weight_store_done=1'b0;
 			weight_fsm_ns           =WEIGHT_LAYER2_STORE;
 			layer_weight_sel         =5'd1;
+		end
+	end
+	WEIGHT_LAYER4_STORE:
+	begin
+		layer1_weight_store_done=1'b0;
+		layer2_weight_store_done=1'b0;
+		layer5_weight_store_done=1'b0;
+		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
+		begin
+			weight_store_count_keep=1'b0;
+			write_weight_mem =1'b1;
+			weight_mem_data  =wdata[15:0];
+			weight_mem_addr  =weight_store_count_data;			
+		end
+		else
+		begin
+			weight_store_count_keep=1'b1;
+			write_weight_mem =1'b0;
+			weight_mem_data  =16'd0;
+			weight_mem_addr  =16'd0;			
+		end
+		if(weight_store_count_data==LAYER4_WEIGHT_NUM)
+		begin
+			weight_store_count_clear=1'b1;
+			layer4_weight_store_done=1'b1;
+			weight_fsm_ns           =WEIGHT_LAYER5_STORE;
+			layer_weight_sel         =5'd4;
+		end
+		else
+		begin
+			weight_store_count_clear=1'b0;
+			layer4_weight_store_done=1'b0;
+			weight_fsm_ns           =WEIGHT_LAYER4_STORE;
+			layer_weight_sel         =5'd2;
+		end
+	end
+	WEIGHT_LAYER5_STORE:
+	begin
+		layer1_weight_store_done=1'b0;
+		layer2_weight_store_done=1'b0;
+		layer4_weight_store_done=1'b0;
+		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
+		begin
+			weight_store_count_keep=1'b0;
+			write_weight_mem =1'b1;
+			weight_mem_data  =wdata[15:0];
+			weight_mem_addr  =weight_store_count_data;			
+		end
+		else
+		begin
+			weight_store_count_keep=1'b1;
+			write_weight_mem =1'b0;
+			weight_mem_data  =16'd0;
+			weight_mem_addr  =16'd0;			
+		end
+		if(weight_store_count_data==LAYER5_WEIGHT_NUM)
+		begin
+			weight_store_count_clear=1'b1;
+			layer5_weight_store_done=1'b1;
+			weight_fsm_ns           =WEIGHT_FINISH;
+			layer_weight_sel         =5'd5;
+		end
+		else
+		begin
+			weight_store_count_clear=1'b0;
+			layer5_weight_store_done=1'b0;
+			weight_fsm_ns           =WEIGHT_LAYER5_STORE;
+			layer_weight_sel         =5'd4;
 		end
 	end
 	WEIGHT_FINISH:
@@ -284,7 +375,9 @@ begin
 		weight_store_count_clear=1'b1;
 		layer1_weight_store_done=1'b0;
 		layer2_weight_store_done=1'b0;
-		layer_weight_sel        =5'd2;
+		layer4_weight_store_done=1'b0;
+		layer5_weight_store_done=1'b0;
+		layer_weight_sel        =5'd5;
 	end
 	default:
 	begin
@@ -296,6 +389,8 @@ begin
 		weight_store_count_clear=1'b1;
 		layer1_weight_store_done=1'b0;
 		layer2_weight_store_done=1'b0;
+		layer4_weight_store_done=1'b0;
+		layer5_weight_store_done=1'b0;
 		layer_weight_sel        =5'd0;
 	end
 	endcase
@@ -312,11 +407,14 @@ counter weight_store_counter(
 localparam BIAS_IDLE                    =4'b0000;
 localparam BIAS_LAYER1_STORE            =4'b0001;
 localparam BIAS_LAYER2_STORE            =4'b0010;
+localparam BIAS_LAYER4_STORE            =4'b0011;
+localparam BIAS_LAYER5_STORE            =4'b0100;
 localparam BIAS_FINISH                  =4'b1111;
 
 localparam LAYER1_BIAS_NUM              =16'd8;
 localparam LAYER2_BIAS_NUM              =16'd8;
-localparam LAYER1_BIAS_NUM_SET_COUNT    =16'd8;
+localparam LAYER4_BIAS_NUM              =16'd8;
+localparam LAYER5_BIAS_NUM              =16'd8;
 
 logic [ 3:0] bias_fsm_cs;
 logic [ 3:0] bias_fsm_ns;
@@ -342,6 +440,7 @@ begin
 		bias_store_count_clear=1'b0;
 		layer1_bias_store_done=1'b0;
 		layer2_bias_store_done=1'b0;
+		layer4_bias_store_done=1'b0;
 		layer_bias_sel        =5'd0;
 		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
 		begin
@@ -363,6 +462,7 @@ begin
 	BIAS_LAYER1_STORE:
 	begin
 		layer2_bias_store_done=1'b0;
+		layer4_bias_store_done=1'b0;
 		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
 		begin
 			bias_store_count_keep=1'b0;
@@ -396,6 +496,7 @@ begin
 	BIAS_LAYER2_STORE:
 	begin
 		layer1_bias_store_done=1'b0;
+		layer4_bias_store_done=1'b0;
 		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
 		begin
 			bias_store_count_keep=1'b0;
@@ -414,7 +515,7 @@ begin
 		begin
 			bias_store_count_clear=1'b1;
 			layer2_bias_store_done=1'b1;
-			bias_fsm_ns           =BIAS_FINISH;
+			bias_fsm_ns           =BIAS_LAYER4_STORE;
 			layer_bias_sel         =5'd2;
 			//NORMAL CASE SWITCH SETTING LAYER
 		end
@@ -424,6 +525,75 @@ begin
 			layer2_bias_store_done=1'b0;
 			bias_fsm_ns           =BIAS_LAYER2_STORE;
 			layer_bias_sel         =5'd1;
+		end
+	end
+	BIAS_LAYER4_STORE:
+	begin
+		layer1_bias_store_done=1'b0;
+		layer2_bias_store_done=1'b0;
+		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
+		begin
+			bias_store_count_keep=1'b0;
+			write_bias_mem =1'b1;
+			bias_mem_data  =wdata[15:0];
+			bias_mem_addr  =bias_store_count_data;			
+		end
+		else
+		begin
+			bias_store_count_keep=1'b1;
+			write_bias_mem =1'b0;
+			bias_mem_data  =16'd0;
+			bias_mem_addr  =16'd0;			
+		end
+		if(bias_store_count_data==LAYER4_BIAS_NUM)
+		begin
+			bias_store_count_clear=1'b1;
+			layer4_bias_store_done=1'b1;
+			bias_fsm_ns           =BIAS_LAYER5_STORE;
+			layer_bias_sel         =5'd4;
+			//NORMAL CASE SWITCH SETTING LAYER
+		end
+		else
+		begin
+			bias_store_count_clear=1'b0;
+			layer4_bias_store_done=1'b0;
+			bias_fsm_ns           =BIAS_LAYER4_STORE;
+			layer_bias_sel         =5'd2;
+		end
+	end
+	BIAS_LAYER5_STORE:
+	begin
+		layer1_bias_store_done=1'b0;
+		layer2_bias_store_done=1'b0;
+		layer4_bias_store_done=1'b0;
+		if(wvalid&&awaddr[31:16]==local_bias_mem_ADDRESS)
+		begin
+			bias_store_count_keep=1'b0;
+			write_bias_mem =1'b1;
+			bias_mem_data  =wdata[15:0];
+			bias_mem_addr  =bias_store_count_data;			
+		end
+		else
+		begin
+			bias_store_count_keep=1'b1;
+			write_bias_mem =1'b0;
+			bias_mem_data  =16'd0;
+			bias_mem_addr  =16'd0;			
+		end
+		if(bias_store_count_data==LAYER4_BIAS_NUM)
+		begin
+			bias_store_count_clear=1'b1;
+			layer5_bias_store_done=1'b1;
+			bias_fsm_ns           =BIAS_FINISH;
+			layer_bias_sel         =5'd5;
+			//NORMAL CASE SWITCH SETTING LAYER
+		end
+		else
+		begin
+			bias_store_count_clear=1'b0;
+			layer5_bias_store_done=1'b0;
+			bias_fsm_ns           =BIAS_LAYER5_STORE;
+			layer_bias_sel         =5'd4;
 		end
 	end
 	BIAS_FINISH:
@@ -436,7 +606,8 @@ begin
 		bias_store_count_clear=1'b1;
 		layer1_bias_store_done=1'b0;
 		layer2_bias_store_done=1'b0;
-		layer_bias_sel        =5'd2;
+		layer4_bias_store_done=1'b0;
+		layer_bias_sel        =5'd5;
 	end
 	default:
 	begin
@@ -448,6 +619,7 @@ begin
 		bias_store_count_clear=1'b1;
 		layer1_bias_store_done=1'b0;
 		layer2_bias_store_done=1'b0;
+		layer4_bias_store_done=1'b0;
 		layer_bias_sel        =5'd0;
 	end
 	endcase

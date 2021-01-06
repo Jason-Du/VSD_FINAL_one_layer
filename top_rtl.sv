@@ -1,6 +1,10 @@
 `include "controller_rtl.sv"
 `include "layer1_cnn_rtl.sv"
 `include "layer2_cnn_rtl.sv"
+`include "layer3_maxpooling_rtl.sv"
+`include "layer4_cnn_rtl.sv"
+`include "layer5_cnn_rtl.sv"
+`include "layer6_maxpooling_rtl.sv"
 `include "weight_bias_arbitor_rtl.sv"
 `include "image_set_register_rtl.sv"
 `include "interrupt_register_rtl.sv"
@@ -10,8 +14,11 @@
 `include "layer1_result_mem_rtl.sv"
 `include "layer2_result_mem_rtl.sv"
 `include "layer3_result_mem_rtl.sv"
+`include "layer4_result_mem_rtl.sv"
+`include "layer5_result_mem_rtl.sv"
+`include "layer6_result_mem_rtl.sv"
 `include "local_mem_result_rtl.sv"
-`include "layer3_maxpooling_rtl.sv"
+
 `timescale 1ns/10ps
 module top(
 	clk,
@@ -56,6 +63,10 @@ logic [4:0] layer_weight_sel;
 logic [4:0] layer_bias_sel;
 logic layer2_weight_store_done;
 logic layer2_bias_store_done;
+logic layer4_weight_store_done;
+logic layer4_bias_store_done;
+logic layer5_weight_store_done;
+logic layer5_bias_store_done;
 //////////////////////////////////////CONTROLLER
 logic        write_bias_mem_signal;
 logic [15:0] write_bias_mem_data;
@@ -139,6 +150,49 @@ logic         layer3_result_read_signal;
 logic [ 15:0] layer4_read_weight_addr;
 logic [ 15:0] layer4_read_bias_addr;
 
+logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_result;
+logic         layer5_save_enable;
+logic [ 15:0] layer5_save_row;
+logic [ 15:0] layer5_save_col;
+logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_output_data;
+logic         layer5_calculation_done;
+logic [ 15:0] layer5_read_row;
+logic [ 15:0] layer5_read_col;
+logic         layer5_read_bias_signal;
+logic         layer5_read_weight_signal;
+logic         layer4_result_read_signal;
+logic [ 15:0] layer5_read_weight_addr;
+logic [ 15:0] layer5_read_bias_addr;
+
+
+logic [`LAYER6_OUTPUT_LENGTH-1:0] layer6_result;
+logic         layer6_save_enable;
+logic [ 15:0] layer6_save_row;
+logic [ 15:0] layer6_save_col;
+logic [`LAYER6_OUTPUT_LENGTH-1:0] layer6_output_data;
+logic         layer6_calculation_done;
+logic [ 15:0] layer6_read_row;
+logic [ 15:0] layer6_read_col;
+logic         layer6_read_bias_signal;
+logic         layer6_read_weight_signal;
+logic         layer5_result_read_signal;
+logic [ 15:0] layer6_read_weight_addr;
+logic [ 15:0] layer6_read_bias_addr;
+
+
+logic [`LAYER7_OUTPUT_LENGTH-1:0] layer7_result;
+logic         layer7_save_enable;
+logic [ 15:0] layer7_save_row;
+logic [ 15:0] layer7_save_col;
+logic [`LAYER7_OUTPUT_LENGTH-1:0] layer7_output_data;
+logic         layer7_calculation_done;
+logic [ 15:0] layer7_read_row;
+logic [ 15:0] layer7_read_col;
+logic         layer7_read_bias_signal;
+logic         layer7_read_weight_signal;
+logic         layer6_result_read_signal;
+logic [ 15:0] layer7_read_weight_addr;
+logic [ 15:0] layer7_read_bias_addr;
 
 
 //RESULT
@@ -165,6 +219,12 @@ controller ctlr(
 	
 	.layer2_weight_store_done(layer2_weight_store_done),
 	.layer2_bias_store_done(layer2_bias_store_done),
+	
+	.layer4_weight_store_done(layer4_weight_store_done),
+	.layer4_bias_store_done(layer4_bias_store_done),
+	
+	.layer5_weight_store_done(layer5_weight_store_done),
+	.layer5_bias_store_done(layer5_bias_store_done),
 	
 	
 	.layer_weight_sel(layer_weight_sel),
@@ -328,6 +388,15 @@ weight_bias_arbitor wb_arbitor(
 	.layer2_read_weight_addr(layer2_read_weight_addr),
 	.layer1_read_bias_addr(layer1_read_bias_addr),
 	.layer2_read_bias_addr(layer2_read_bias_addr),
+	.layer4_read_weight_signal(layer4_read_weight_signal),
+	.layer4_read_bias_signal(layer4_read_bias_signal),
+	.layer4_read_weight_addr(layer4_read_weight_addr),
+	.layer4_read_bias_addr(layer4_read_bias_addr),
+	.layer5_read_weight_signal(layer5_read_weight_signal),
+	.layer5_read_bias_signal(layer5_read_bias_signal),
+	.layer5_read_weight_addr(layer5_read_weight_addr),
+	.layer5_read_bias_addr(layer5_read_bias_addr),
+	
 	//INOUT
 	.read_weight_signal_data(read_weight_signal_data),
 	.read_weight_addr_data(read_weight_addr_data),
@@ -419,20 +488,131 @@ layer3_result_mem layer3_data_mem(
 	.layer3_result_output(layer3_result)
 );
 
+layer4_cnn layer4(
+	.clk(clk),
+	.rst(rst),
+	.input_data(layer3_result),
+	.weight_data(read_weight_data),
+	.bias_data(read_bias_data),
+	
+	.weight_store_done(layer4_weight_store_done),
+	.bias_store_done(layer4_bias_store_done),
+	.pixel_store_done(layer3_calculation_done),
+	//IN OUT PORT
+	.save_enable(layer4_save_enable),
+	.output_row(layer4_save_row),
+	.output_col(layer4_save_col),
+	
+	.layer4_calculation_done(layer4_calculation_done),
+	.output_data(layer4_output_data),
+	//fix
+	//read_pixel_addr(),
+	.read_col_addr(layer4_read_col),
+	.read_row_addr(layer4_read_row),
+	//fix
+	.read_pixel_signal(layer3_result_read_signal),
+	//read_weights_buffer_num_sel(),
+	.read_weight_addr(layer4_read_weight_addr),
+	.read_weight_signal(layer4_read_weight_signal),
+	.read_bias_addr(layer4_read_bias_addr),
+	.read_bias_signal(layer4_read_bias_signal)
+	);
 
+layer4_result_mem layer4_data_mem(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer4_save_enable),
+	.layer4_result_store_data_in(layer4_output_data),
+	.save_row_addr(layer4_save_row),
+	.save_col_addr(layer4_save_col),
+	.read_row_addr(layer5_read_row),
+	.read_col_addr(layer5_read_col),
+	.layer4_result_read_signal(layer4_result_read_signal),
+	//INOUT
+	
+	.layer4_result_output(layer4_result)
+);
 
+layer5_cnn layer5(
+	.clk(clk),
+	.rst(rst),
+	.input_data(layer4_result),
+	.weight_data(read_weight_data),
+	.bias_data(read_bias_data),
+	
+	.weight_store_done(layer5_weight_store_done),
+	.bias_store_done(layer5_bias_store_done),
+	.pixel_store_done(layer4_calculation_done),
+	//IN OUT PORT
+	.save_enable(layer5_save_enable),
+	.output_row(layer5_save_row),
+	.output_col(layer5_save_col),
+	
+	.layer5_calculation_done(layer5_calculation_done),
+	.output_data(layer5_output_data),
+	//fix
+	//read_pixel_addr(),
+	.read_col_addr(layer5_read_col),
+	.read_row_addr(layer5_read_row),
+	//fix
+	.read_pixel_signal(layer4_result_read_signal),
+	//read_weights_buffer_num_sel(),
+	.read_weight_addr(layer5_read_weight_addr),
+	.read_weight_signal(layer5_read_weight_signal),
+	.read_bias_addr(layer5_read_bias_addr),
+	.read_bias_signal(layer5_read_bias_signal)
+	);
+	
+layer5_result_mem layer5_data_mem(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer5_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row),
+	.save_col_addr(layer5_save_col),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal(layer5_result_read_signal),
+	//INOUT
+	
+	.layer5_result_output(layer5_result)
+);
 
+layer6_maxpooling layer6(
+	.clk(clk),
+	.rst(rst),
+	.input_data(layer5_result),
+	
+	.pixel_store_done(layer5_calculation_done),
+	//IN OUT PORT
+	.save_enable(layer6_save_enable),
+	.output_row(layer6_save_row),
+	.output_col(layer6_save_col),
+	
+	.layer6_calculation_done(layer6_calculation_done),
+	.output_data(layer6_output_data),
+	//fix
+	//read_pixel_addr,
+	.read_col_addr(layer6_read_col),
+	.read_row_addr(layer6_read_row),
+	//fix
+	.read_pixel_signal(layer5_result_read_signal)
+);
 
-
-
-
-
-
-
-
-
-
-
+layer6_result_mem layer6_data_mem(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer6_save_enable),
+	.layer6_result_store_data_in(layer6_output_data),
+	.save_row_addr(layer6_save_row),
+	.save_col_addr(layer6_save_col),
+	.read_row_addr(layer7_read_row),
+	.read_col_addr(layer7_read_col),
+	.layer6_result_read_signal(layer6_result_read_signal),
+	//INOUT
+	
+	.layer6_result_output(layer6_result)
+);
 
 
 
