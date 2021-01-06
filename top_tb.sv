@@ -198,6 +198,7 @@ logic [2:0] cs;
 logic [2:0] ns;
 logic [5:0] picture_count_in;
 logic [5:0] picture_count_out;
+int FAIL_FLAG=0;
 
 
 localparam FEED_WEIGHT=3'b000;
@@ -703,6 +704,7 @@ begin
 			else
 			begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg6,TOP.layer6_data_mem.layer6_results_mem[row][col]);
+				FAIL_FLAG=1;
 			end
 			if(col==`LAYER7_WIDTH-1)
 			begin
@@ -721,6 +723,10 @@ begin
 			$finish;
 		end
 		picture_layer6++;	
+	end
+	if(FAIL_FLAG)
+	begin
+		$finish;
 	end
 end
 	task photo();
