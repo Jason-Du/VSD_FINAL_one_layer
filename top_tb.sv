@@ -427,6 +427,7 @@ begin
 			else
 			begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg1,TOP.layer1_data_mem.layer1_results_mem[row][col]);
+				FAIL_FLAG=1;
 			end
 			if(col==`LAYER2_WIDTH-1)
 			begin
@@ -478,6 +479,7 @@ begin
 			else
 			begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem.layer2_results_mem[row][col]);
+				FAIL_FLAG=1;
 			end
 			if(col==`LAYER3_WIDTH-1)
 			begin
@@ -527,6 +529,7 @@ begin
 			else
 			begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg3,TOP.layer3_data_mem.layer3_results_mem[row][col]);
+				FAIL_FLAG=1;
 			end
 			if(col==`LAYER4_WIDTH-1)
 			begin
@@ -593,6 +596,7 @@ begin
 			else
 			begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg4,TOP.layer4_data_mem.layer4_results_mem[row][col]);
+				FAIL_FLAG=1;
 			end
 			if(col==`LAYER5_WIDTH-1)
 			begin
@@ -642,6 +646,7 @@ begin
 			else
 			begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg5,TOP.layer5_data_mem.layer5_results_mem[row][col]);
+				FAIL_FLAG=1;
 			end
 			if(col==`LAYER6_WIDTH-1)
 			begin
