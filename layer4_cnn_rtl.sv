@@ -20,6 +20,7 @@ module layer4_cnn(
 	output_col,
 	
 	layer4_calculation_done,
+	pipeline_layer4_calculation_done,
 	output_data,
 	//fix
 	//read_pixel_addr,
@@ -48,6 +49,7 @@ module layer4_cnn(
 	output logic [                 `WORDLENGTH-1:0] output_col;
 	output logic [       `LAYER4_OUTPUT_LENGTH-1:0] output_data;
 	output logic                                    layer4_calculation_done;
+	output logic                                    pipeline_layer4_calculation_done;
 	
 	//output logic  [                `WORDLENGTH-1:0] read_pixel_addr;
 	output logic  [                `WORDLENGTH-1:0] read_col_addr;
@@ -168,6 +170,7 @@ module layer4_cnn(
 		begin
 			save_address_row_keep=1'b1;
 			layer4_calculation_done=1'b0;
+			pipeline_layer4_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			save_enable=1'b0;
 			set_clear=1'b1;
@@ -190,6 +193,7 @@ module layer4_cnn(
 		begin
 			save_address_row_keep=1'b1;
 			layer4_calculation_done=1'b0;
+			pipeline_layer4_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			read_pixel_signal=1'b1;
 			//fix
@@ -248,6 +252,14 @@ module layer4_cnn(
 				save_address_row_keep=1'b1;
 			end
 			
+			if(save_address_row_count==16'd`LAYER4_PIPELINE_ROW&&set_count==16'd`LAYER4_PIPELINE_COL)
+			begin
+				pipeline_layer4_calculation_done=1'b1;
+			end
+			else
+			begin
+				pipeline_layer4_calculation_done=1'b0;
+			end
 			if(save_address_row_count==16'd`LAYER4_WIDTH-3&&set_count==16'd`LAYER4_WIDTH-3)
 			begin
 				save_ns=SAVE_IDLE;
@@ -274,6 +286,7 @@ module layer4_cnn(
 			save_address_row_clear=1'b1;
 			save_address_row_keep=1'b0;
 			layer4_calculation_done=1'b0;
+			pipeline_layer4_calculation_done=1'b0;
 			save_enable=1'b0;
 			save_ns=SAVE_IDLE;
 			read_pixel_signal=1'b0;

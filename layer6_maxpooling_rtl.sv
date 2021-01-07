@@ -1,6 +1,5 @@
 `timescale 1ns/10ps
 `include "maxpooling_2x2_rtl.sv"
-`include "stage8_fifo_rtl.sv"
 `include "counter_rtl.sv"
 `include "def.svh"
 module layer6_maxpooling(

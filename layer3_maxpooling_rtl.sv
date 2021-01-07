@@ -15,6 +15,7 @@ module layer3_maxpooling(
 	output_col,
 	
 	layer3_calculation_done,
+	pipeline_layer3_calculation_done,
 	output_data,
 	//fix
 	//read_pixel_addr,
@@ -35,6 +36,7 @@ module layer3_maxpooling(
 	output logic [                `WORDLENGTH-1:0]  output_col;
 	
 	output logic                                    layer3_calculation_done;
+	output logic                                    pipeline_layer3_calculation_done;
 	output logic [      `LAYER3_OUTPUT_LENGTH-1:0]  output_data;
 	//fix
 	//read_pixel_addr;
@@ -109,6 +111,7 @@ module layer3_maxpooling(
 		begin
 			save_address_row_keep=1'b1;
 			layer3_calculation_done=1'b0;
+			pipeline_layer3_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			save_enable=1'b0;
 			set_clear=1'b1;
@@ -132,6 +135,7 @@ module layer3_maxpooling(
 		begin
 			save_address_row_keep=1'b1;
 			layer3_calculation_done=1'b0;
+			pipeline_layer3_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			read_pixel_signal=1'b1;
 			set_keep=1'b0;
@@ -193,6 +197,14 @@ module layer3_maxpooling(
 				save_address_row_keep=1'b1;
 			end
 			//////////////////////////////////////////////////////////////
+			if(save_address_row_count==16'd4&&set_count==`LAYER3_WIDTH-2)
+			begin
+				pipeline_layer3_calculation_done=1'b1;
+			end
+			else
+			begin
+				pipeline_layer3_calculation_done=1'b0;
+			end
 			if(save_address_row_count==16'd`LAYER3_WIDTH-2&&set_count==16'd`LAYER3_WIDTH-2)
 			begin
 				save_ns=SAVE_IDLE;
@@ -220,6 +232,7 @@ module layer3_maxpooling(
 			save_address_row_clear=1'b1;
 			save_address_row_keep=1'b0;
 			layer3_calculation_done=1'b0;
+			pipeline_layer3_calculation_done=1'b0;
 			save_enable=1'b0;
 			save_ns=SAVE_IDLE;
 			read_pixel_signal=1'b0;
