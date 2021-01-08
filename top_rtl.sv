@@ -6,6 +6,7 @@
 `include "layer4_cnn_rtl.sv"
 `include "layer5_cnn_rtl.sv"
 `include "layer6_maxpooling_rtl.sv"
+`include "layer6_maxpooling_v2_rtl.sv"
 `include "weight_bias_arbitor_rtl.sv"
 `include "image_set_register_rtl.sv"
 `include "interrupt_register_rtl.sv"
@@ -18,6 +19,7 @@
 `include "layer3_result_mem_rtl.sv"
 `include "layer4_result_mem_rtl.sv"
 `include "layer5_result_mem_rtl.sv"
+`include "layer5_result_one_side_mem_rtl.sv"
 `include "layer6_result_mem_rtl.sv"
 `include "local_mem_result_rtl.sv"
 
@@ -261,6 +263,16 @@ controller ctlr(
 	.bias_mem_addr(write_bias_mem_addr),
 	.bias_mem_data(write_bias_mem_data)
 );
+layer7_write_mem_arbitor layer7_warb(
+	.layer7_write_sel(),
+	.layer7_write_signal(),
+	
+	.layer7_mem1_write(),
+	.layer7_mem2_write(),
+	.layer7_mem3_write(),
+	.layer7_mem4_write(),
+	.layer7_mem5_write()
+);
 
  image_set_register imag_set_cod(
 	.clk(clk),
@@ -338,6 +350,84 @@ local_mem_pixel pixel_st_mem(
 	.read_pixel_data(read_pixel_data)
 
 );
+
+layer7_local_mem_weight layer7_channel1_2_mem(
+	.clk(),
+	.rst(),
+	.read_weight_signal(),
+	.read_weight_addr1(),
+	.read_weight_addr2(),
+	
+	.write_weight_data(),
+	.write_weight_signal(),
+	.write_weight_addr(),
+	//IN OUT
+	
+	.read_weight_data1(),
+	.read_weight_data2()
+);
+layer7_local_mem_weight layer7_channel3_4_mem(
+	.clk(),
+	.rst(),
+	.read_weight_signal(),
+	.read_weight_addr1(),
+	.read_weight_addr2(),
+	
+	.write_weight_data(),
+	.write_weight_signal(),
+	.write_weight_addr(),
+	//IN OUT
+	
+	.read_weight_data1(),
+	.read_weight_data2()
+);
+layer7_local_mem_weight layer7_channel5_6_mem(
+	.clk(),
+	.rst(),
+	.read_weight_signal(),
+	.read_weight_addr1(),
+	.read_weight_addr2(),
+	
+	.write_weight_data(),
+	.write_weight_signal(),
+	.write_weight_addr(),
+	//IN OUT
+	
+	.read_weight_data1(),
+	.read_weight_data2()
+);
+layer7_local_mem_weight layer7_channel7_8_mem(
+	.clk(),
+	.rst(),
+	.read_weight_signal(),
+	.read_weight_addr1(),
+	.read_weight_addr2(),
+	
+	.write_weight_data(),
+	.write_weight_signal(),
+	.write_weight_addr(),
+	//IN OUT
+	
+	.read_weight_data1(),
+	.read_weight_data2()
+);
+layer7_local_mem_weight layer7_channel9_10_mem(
+	.clk(),
+	.rst(),
+	.read_weight_signal(),
+	.read_weight_addr1(),
+	.read_weight_addr2(),
+	
+	.write_weight_data(),
+	.write_weight_signal(),
+	.write_weight_addr(),
+	//IN OUT
+	
+	.read_weight_data1(),
+	.read_weight_data2()
+);
+
+
 
 
 layer1_cnn layer1(
@@ -677,6 +767,82 @@ layer5_cnn layer5(
 	.read_bias_signal(layer5_read_bias_signal)
 	);
 	
+	
+	
+logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_result_even_even;
+logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_result_even_odd;
+logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_result_odd_odd;
+logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_result_odd_even;
+logic layer5_even_even_save_enable;
+logic layer5_even_odd_save_enable;
+logic layer5_odd_odd_save_enable;
+logic layer5_odd_even_save_enable;
+always_comb
+begin
+	layer5_even_even_save_enable=layer5_save_enable?(layer5_save_row[0]==0&&layer5_save_col[0]==0)?1'b1:1'b0:1'b0;
+	layer5_even_odd_save_enable=layer5_save_enable?(layer5_save_row[0]==0&&layer5_save_col[0]==1)?1'b1:1'b0:1'b0;
+	layer5_odd_even_save_enable=layer5_save_enable?(layer5_save_row[0]==1&&layer5_save_col[0]==0)?1'b1:1'b0:1'b0;
+	layer5_odd_odd_save_enable=layer5_save_enable?(layer5_save_row[0]==1&&layer5_save_col[0]==1)?1'b1:1'b0:1'b0;
+end
+
+
+
+/////////////////////////////////
+
+layer5_result_one_side_mem layer5_data_mem_even_even(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer5_even_even_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row>>1),
+	.save_col_addr(layer5_save_col>>1),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal(layer5_result_read_signal),
+	//INOUT
+	.layer5_result_output(layer5_result_even_even)	
+);
+layer5_result_one_side_mem layer5_data_mem_even_odd(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer5_even_odd_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row>>1),
+	.save_col_addr(layer5_save_col>>1),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal(layer5_result_read_signal),
+	//INOUT
+	.layer5_result_output(layer5_result_even_odd)	
+);
+layer5_result_one_side_mem layer5_data_odd_even(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer5_odd_even_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row>>1),
+	.save_col_addr(layer5_save_col>>1),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal(layer5_result_read_signal),
+	//INOUT
+	.layer5_result_output(layer5_result_odd_even)	
+);
+
+layer5_result_one_side_mem layer5_data_odd_odd(
+	.clk(clk),
+	.rst(rst),
+	.save_enable(layer5_odd_odd_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row>>1),
+	.save_col_addr(layer5_save_col>>1),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal(layer5_result_read_signal),
+	//INOUT
+	.layer5_result_output(layer5_result_odd_odd)	
+);
+	
 layer5_result_mem layer5_data_mem(
 	.clk(clk),
 	.rst(rst),
@@ -691,7 +857,7 @@ layer5_result_mem layer5_data_mem(
 	
 	.layer5_result_output(layer5_result)
 );
-
+/*
 layer6_maxpooling layer6(
 	.clk(clk),
 	.rst(rst),
@@ -712,7 +878,32 @@ layer6_maxpooling layer6(
 	//fix
 	.read_pixel_signal(layer5_result_read_signal)
 );
+*/
+layer6_maxpooling_v2 layer6(
+	.clk(clk),
+	.rst(rst),
+	.input_data_even_even(layer5_result_even_even),
+	.input_data_even_odd(layer5_result_even_odd),
+	.input_data_odd_even(layer5_result_odd_even),
+	.input_data_odd_odd(layer5_result_odd_odd),
+	
+	
+	.pixel_store_done(pipeline_layer5_calculation_done),
+	//IN OUT PORT
+	.save_enable(layer6_save_enable),
+	.output_row(layer6_save_row),
+	.output_col(layer6_save_col),
+	
+	.layer6_calculation_done(layer6_calculation_done),
+	.output_data(layer6_output_data),
+	//fix
+	//read_pixel_addr,
+	.read_col_addr(layer6_read_col),
+	.read_row_addr(layer6_read_row),
+	//fix
+	.read_pixel_signal(layer5_result_read_signal)
 
+);
 layer6_result_mem layer6_data_mem(
 	.clk(clk),
 	.rst(rst),
@@ -728,7 +919,42 @@ layer6_result_mem layer6_data_mem(
 	.layer6_result_output(layer6_result)
 );
 
-
+module layer7_cnn(
+	.clk(),
+	.rst(),
+	.input_data(),
+	.weight_data_channel1(),
+	.weight_data_channel2(),
+	.weight_data_channel3(),
+	.weight_data_channel4(),
+	.weight_data_channel5(),
+	.weight_data_channel6(),
+	.weight_data_channel7(),
+	.weight_data_channel8(),
+	.weight_data_channel9(),
+	.weight_data_channel10(),
+	.bias_data(),
+	
+	.weight_store_done(),
+	.bias_store_done(),
+	.pixel_store_done(),
+	//IN OUT PORT
+	.save_enable(),
+	
+	.layer7_calculation_done(),
+	.output_data(),
+	//fix
+	//read_pixel_addr(),
+	.read_col_addr(),
+	.read_row_addr(),
+	//fix
+	.read_pixel_signal(),
+	//read_weights_buffer_num_sel(),
+	.read_weight_addr(),
+	.read_weight_signal(),
+	.read_bias_addr(),
+	.read_bias_signal()
+);
 
 
 //__________________FINISH_____________________________

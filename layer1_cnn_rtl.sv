@@ -960,17 +960,17 @@ module layer1_cnn(
 	begin
 		if(rst)
 		begin
-			col_3_3_register_out<=16'd0;
-			col_3_2_register_out<=16'd0;
-			col_3_1_register_out<=16'd0;
+			col_3_3_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
+			col_3_2_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
+			col_3_1_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
 			
-			col_2_3_register_out<=16'd0;
-			col_2_2_register_out<=16'd0;
-			col_2_1_register_out<=16'd0;
+			col_2_3_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
+			col_2_2_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
+			col_2_1_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
 			
-			col_1_3_register_out<=16'd0;
-			col_1_2_register_out<=16'd0;
-			col_1_1_register_out<=16'd0;
+			col_1_3_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
+			col_1_2_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
+			col_1_1_register_out<=`LAYER1_WEIGHT_INPUT_LENGTH'd0;
 		end
 		else
 		begin

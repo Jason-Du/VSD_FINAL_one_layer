@@ -2,10 +2,14 @@
 `include "maxpooling_2x2_rtl.sv"
 `include "counter_rtl.sv"
 `include "def.svh"
-module layer6_maxpooling(
+module layer6_maxpooling_v2(
 	clk,
 	rst,
-	input_data,
+	input_data_even_even,
+	input_data_even_odd,
+	input_data_odd_even,
+	input_data_odd_odd,
+	
 	
 	pixel_store_done,
 	//IN OUT PORT
@@ -14,6 +18,7 @@ module layer6_maxpooling(
 	output_col,
 	
 	layer6_calculation_done,
+	pipeline_layer6_calculation_done,
 	output_data,
 	//fix
 	//read_pixel_addr,
@@ -25,7 +30,10 @@ module layer6_maxpooling(
 );
 	input                                           clk;
 	input                                           rst;
-	input        [`LAYER6_WEIGHT_INPUT_LENGTH-1:0]  input_data;
+	input        [`LAYER6_WEIGHT_INPUT_LENGTH-1:0]  input_data_even_even;
+	input        [`LAYER6_WEIGHT_INPUT_LENGTH-1:0]  input_data_even_odd;
+	input        [`LAYER6_WEIGHT_INPUT_LENGTH-1:0]  input_data_odd_even;
+	input        [`LAYER6_WEIGHT_INPUT_LENGTH-1:0]  input_data_odd_odd;
 	
 	input                                           pixel_store_done;
 	//IN OUT PORT
@@ -34,6 +42,7 @@ module layer6_maxpooling(
 	output logic [                `WORDLENGTH-1:0]  output_col;
 	
 	output logic                                    layer6_calculation_done;
+	output logic                                    pipeline_layer6_calculation_done;
 	output logic [      `LAYER6_OUTPUT_LENGTH-1:0]  output_data;
 	//fix
 	//read_pixel_addr;
@@ -100,14 +109,15 @@ module layer6_maxpooling(
 		//read_pixel_addr=read_pixel_count;
 		read_col_addr=read_pixel_count;
 		read_row_addr=read_pixel_row_count;
-		output_row=save_address_row_count>>1;
-		output_col=set_count>>1;
+		output_row=save_address_row_count;
+		output_col=set_count;
 		//read_weights_buffer_num_sel=5'd3;
 		case(save_cs)
 		SAVE_IDLE:
 		begin
 			save_address_row_keep=1'b1;
 			layer6_calculation_done=1'b0;
+			pipeline_layer6_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			save_enable=1'b0;
 			set_clear=1'b1;
@@ -131,24 +141,28 @@ module layer6_maxpooling(
 		begin
 			save_address_row_keep=1'b1;
 			layer6_calculation_done=1'b0;
+			pipeline_layer6_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			read_pixel_signal=1'b1;
 			set_keep=1'b0;
 			//fix
 			//read_pixel_clear=1'b0;
+			/*
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER6_WIDTH-1)
+			if (read_pixel_count==16'd`LAYER7_WIDTH-1)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
 			end
 			else
 			begin
-				read_pixel_clear=1'b0;
-				read_pixel_row_keep=1'b1;
+
 			end
+			*/
+			read_pixel_clear=1'b0;
+			read_pixel_row_keep=1'b1;
 			//fix
-			if(set_count==16'd`LAYER6_SET_COUNT)
+			if(set_count==16'd0)
 			begin
 				set_clear=1'b1;
 				save_enable=1'b0;
@@ -169,7 +183,7 @@ module layer6_maxpooling(
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER6_WIDTH-1)
+			if (read_pixel_count==16'd`LAYER7_WIDTH-1)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -181,7 +195,7 @@ module layer6_maxpooling(
 			end
 			//fix
 			////////////////////////////////////////////////////////////////
-			if(set_count==16'd`LAYER6_WIDTH-1)
+			if(set_count==16'd`LAYER7_WIDTH-1)
 			begin
 				set_clear=1'b1;
 				save_address_row_keep=1'b0;
@@ -192,7 +206,15 @@ module layer6_maxpooling(
 				save_address_row_keep=1'b1;
 			end
 			//////////////////////////////////////////////////////////////
-			if(save_address_row_count==16'd`LAYER6_WIDTH-2&&set_count==16'd`LAYER6_WIDTH-2)
+			if(save_address_row_count==16'd0&&set_count==16'd1)
+			begin
+				pipeline_layer6_calculation_done=1'b1;
+			end
+			else
+			begin
+				pipeline_layer6_calculation_done=1'b0;
+			end
+			if(save_address_row_count==16'd`LAYER7_WIDTH-1&&set_count==16'd`LAYER7_WIDTH-1)
 			begin
 				save_ns=SAVE_IDLE;
 				layer6_calculation_done=1'b1;
@@ -202,15 +224,7 @@ module layer6_maxpooling(
 				save_ns=SAVE_ENABLE;
 				layer6_calculation_done=1'b0;
 			end
-			
-			if(set_count>16'd`LAYER6_WIDTH-2||set_count[0]==1||save_address_row_count[0]==1)
-			begin
-				save_enable=1'b0;
-			end
-			else
-			begin
-				save_enable=1'b1;
-			end
+			save_enable=1'b1;
 		end
 		default:
 		begin
@@ -219,6 +233,7 @@ module layer6_maxpooling(
 			save_address_row_clear=1'b1;
 			save_address_row_keep=1'b0;
 			layer6_calculation_done=1'b0;
+			pipeline_layer6_calculation_done=1'b0;
 			save_enable=1'b0;
 			save_ns=SAVE_IDLE;
 			read_pixel_signal=1'b0;
@@ -330,19 +345,12 @@ maxpooling_2x2 max_channel8(
 	.output_channel(output_data[127:112])
 );	
 //----------------------------------------BUFFER_CHAIN--------------------------------------------//
-	stage8_fifo first_stage(
-	.clk(clk),
-	.rst(rst),
-	.input_data(col_2_1_register_out),
-	.output_data(buffer_output)
-	);
 	always_comb
 	begin
-		col_2_2_register_in=input_data;
-		col_2_1_register_in=col_2_2_register_out;
-		
-		col_1_2_register_in=buffer_output;
-		col_1_1_register_in=col_1_2_register_out;
+		col_2_2_register_in=input_data_odd_odd;
+		col_2_1_register_in=input_data_odd_even;
+		col_1_2_register_in=input_data_even_odd;
+		col_1_1_register_in=input_data_even_even;
 	end
 	always_ff@(posedge clk or posedge rst)
 	begin
@@ -366,3 +374,5 @@ maxpooling_2x2 max_channel8(
 	end
 endmodule
 
+
+;
