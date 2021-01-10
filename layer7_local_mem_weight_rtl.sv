@@ -13,16 +13,16 @@ module layer7_local_mem_weight(
 	read_weight_data1,
 	read_weight_data2
 );
-localparam maximum_weight_num=2000;//8010
+localparam maximum_weight_num=400;//8010
 
 input clk;
 input rst;
 input read_weight_signal;
 input write_weight_signal;
-input [15:0]write_weight_data;
-input [15:0]read_weight_addr1;
-input [15:0]read_weight_addr2;
-input [15:0]write_weight_addr;
+input [15:0] write_weight_data;
+input [15:0] read_weight_addr1;
+input [15:0] read_weight_addr2;
+input [15:0] write_weight_addr;
 
 output logic [127:0] read_weight_data1;
 output logic [127:0] read_weight_data2;
@@ -86,14 +86,14 @@ begin
 		read_weight_data1[ 111:96]=weight_mem_out[output_addr7];
 		read_weight_data1[127:112]=weight_mem_out[output_addr8];
 		
-		read_weight_data2[   15:0]=weight_mem_out[output_addr1+16'd25];
-		read_weight_data2[  31:16]=weight_mem_out[output_addr2+16'd25];
-		read_weight_data2[  47:32]=weight_mem_out[output_addr3+16'd25];
-		read_weight_data2[  63:48]=weight_mem_out[output_addr4+16'd25];
-		read_weight_data2[  79:64]=weight_mem_out[output_addr5+16'd25];
-		read_weight_data2[  95:80]=weight_mem_out[output_addr6+16'd25];
-		read_weight_data2[ 111:96]=weight_mem_out[output_addr7+16'd25];
-		read_weight_data2[127:112]=weight_mem_out[output_addr8+16'd25];
+		read_weight_data2[   15:0]=weight_mem_out[output_addr1+16'd200];
+		read_weight_data2[  31:16]=weight_mem_out[output_addr2+16'd200];
+		read_weight_data2[  47:32]=weight_mem_out[output_addr3+16'd200];
+		read_weight_data2[  63:48]=weight_mem_out[output_addr4+16'd200];
+		read_weight_data2[  79:64]=weight_mem_out[output_addr5+16'd200];
+		read_weight_data2[  95:80]=weight_mem_out[output_addr6+16'd200];
+		read_weight_data2[ 111:96]=weight_mem_out[output_addr7+16'd200];
+		read_weight_data2[127:112]=weight_mem_out[output_addr8+16'd200];
 	end
 	else
 	begin

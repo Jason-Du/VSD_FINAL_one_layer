@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module layer7_write_mem_arbitor(
 	layer7_write_sel,
 	layer7_write_signal,

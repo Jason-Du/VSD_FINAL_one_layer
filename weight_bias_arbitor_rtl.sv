@@ -18,6 +18,10 @@ module weight_bias_arbitor(
 	layer5_read_bias_signal,
 	layer5_read_weight_addr,
 	layer5_read_bias_addr,
+	layer7_read_weight_signal,
+	layer7_read_bias_signal,
+	layer7_read_weight_addr,
+	layer7_read_bias_addr,
 	//INOUT
 	read_weight_signal_data,
 	read_weight_addr_data,
@@ -43,6 +47,11 @@ input layer5_read_bias_signal;
 input layer5_read_weight_signal;
 input [15:0] layer5_read_bias_addr;
 input [15:0] layer5_read_weight_addr;
+input layer7_read_bias_signal;
+input layer7_read_weight_signal;
+input [15:0] layer7_read_bias_addr;
+input [15:0] layer7_read_weight_addr;
+
 
 
 output logic read_weight_signal_data;
@@ -51,58 +60,72 @@ output logic read_bias_signal_data;
 output logic [15:0] read_bias_addr_data;
 always_comb
 begin
-	if(weight_sel==5'd1)
-	begin
-		read_weight_addr_data=layer1_read_weight_addr;
-		read_weight_signal_data=layer1_read_weight_signal;
-	end
-	else if(weight_sel==5'd2)
-	begin
-		read_weight_addr_data=layer2_read_weight_addr;
-		read_weight_signal_data=layer2_read_weight_signal;
-	end
-	else if(weight_sel==5'd4)
-	begin
-		read_weight_addr_data=layer4_read_weight_addr;
-		read_weight_signal_data=layer4_read_weight_signal;
-	end
-	else if(weight_sel==5'd5)
-	begin
-		read_weight_addr_data=layer5_read_weight_addr;
-		read_weight_signal_data=layer5_read_weight_signal;
-	end
-	else
-	begin
-		read_weight_addr_data=16'd0;
-		read_weight_signal_data=1'd0;
-	end
+	case(weight_sel)
+		5'd1:
+		begin
+			read_weight_addr_data=layer1_read_weight_addr;
+			read_weight_signal_data=layer1_read_weight_signal;
+		end
+		5'd2:
+		begin
+			read_weight_addr_data=layer2_read_weight_addr;
+			read_weight_signal_data=layer2_read_weight_signal;
+		end
+		5'd4:
+		begin
+			read_weight_addr_data=layer4_read_weight_addr;
+			read_weight_signal_data=layer4_read_weight_signal;
+		end
+		5'd5:
+		begin
+			read_weight_addr_data=layer5_read_weight_addr;
+			read_weight_signal_data=layer5_read_weight_signal;
+		end
+		5'd7:
+		begin
+			read_weight_addr_data=layer7_read_weight_addr;
+			read_weight_signal_data=layer7_read_weight_signal;
+		end
+		default:
+		begin
+			read_weight_addr_data=16'd0;
+			read_weight_signal_data=1'd0;
+		end
+	endcase
 end
 always_comb
 begin
-	if(bias_sel==5'd1)
-	begin
-		read_bias_addr_data=layer1_read_bias_addr;
-		read_bias_signal_data=layer1_read_bias_signal;
-	end
-	else if(bias_sel==5'd2)
-	begin
-		read_bias_addr_data=layer2_read_bias_addr;
-		read_bias_signal_data=layer2_read_bias_signal;
-	end
-	else if(bias_sel==5'd4)
-	begin
-		read_bias_addr_data=layer4_read_bias_addr;
-		read_bias_signal_data=layer4_read_bias_signal;
-	end
-	else if(bias_sel==5'd5)
-	begin
-		read_bias_addr_data=layer5_read_bias_addr;
-		read_bias_signal_data=layer5_read_bias_signal;
-	end
-	else
-	begin
-		read_bias_addr_data=16'd0;
-		read_bias_signal_data=1'd0;
-	end
+	case(bias_sel)
+		5'd1:
+		begin
+			read_bias_addr_data=layer1_read_bias_addr;
+			read_bias_signal_data=layer1_read_bias_signal;
+		end
+		5'd2:
+		begin
+			read_bias_addr_data=layer2_read_bias_addr;
+			read_bias_signal_data=layer2_read_bias_signal;
+		end
+		5'd4:
+		begin
+			read_bias_addr_data=layer4_read_bias_addr;
+			read_bias_signal_data=layer4_read_bias_signal;
+		end
+		5'd5:
+		begin
+			read_bias_addr_data=layer5_read_bias_addr;
+			read_bias_signal_data=layer5_read_bias_signal;
+		end
+		5'd7:
+		begin
+			read_bias_addr_data=layer7_read_bias_addr;
+			read_bias_signal_data=layer7_read_bias_signal;
+		end
+		default:
+		begin
+			read_bias_addr_data=16'd0;
+			read_bias_signal_data=1'd0;
+		end
+	endcase
 end
 endmodule

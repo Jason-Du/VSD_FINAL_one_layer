@@ -1,7 +1,7 @@
 `timescale 1ns/10ps
 `include "maxpooling_2x2_rtl.sv"
 `include "stage26_fifo_rtl.sv"
-`include "counter_rtl.sv"
+`include "counter_cnn_rtl.sv"
 `include "def.svh"
 module layer3_maxpooling(
 	clk,
@@ -246,7 +246,7 @@ module layer3_maxpooling(
 	end
 // fix
 
-	counter read_col_counter(
+	counter_cnn read_col_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_row_count),
@@ -254,7 +254,7 @@ module layer3_maxpooling(
 	.keep(read_pixel_row_keep)
 	);
 // fix
-	counter read_counter(
+	counter_cnn read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_count),
@@ -262,14 +262,14 @@ module layer3_maxpooling(
 	.keep(1'b0)
 	);
 	
-	counter set_counter(
+	counter_cnn set_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(set_count),
 	.clear(set_clear),
 	.keep(1'b0)
 	);
-	counter save_address_row(
+	counter_cnn save_address_row(
 	.clk(clk),
 	.rst(rst),
 	.count(save_address_row_count),

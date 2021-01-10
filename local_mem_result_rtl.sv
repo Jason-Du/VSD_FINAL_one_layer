@@ -1,4 +1,6 @@
 `timescale 1ns/10ps
+`include "compare_result_rtl.sv"
+
 module local_mem_result(
 	clk,
 	rst,
@@ -11,24 +13,30 @@ module local_mem_result(
 	input clk;
 	input rst;
 	input read_result_signal;
-	input [31:0] write_result_data;
+	input [159:0] write_result_data;
 	input write_result_signal;
 
 	output logic [31:0] read_result_data;
-	
-	logic [31:0] result_mem_in;
-	logic [31:0] result_mem_out;
+	logic [ 31:0] compare_result;
+	logic [159:0] result_mem_in;
+	logic [159:0] result_mem_out;
 	always_comb
 	begin
 		if(read_result_signal)
 		begin
-			read_result_data=result_mem_out;
+			read_result_data=compare_result;
 		end
 		else
 		begin
 			read_result_data=32'd0;
 		end
 	end
+	compare_result comp_re(
+	.input_data(result_mem_out),
+	
+	.compare_result(compare_result)
+);
+	//-------------------------------WRITE-------------------//
 	always_comb
 	begin
 		if(write_result_signal)
@@ -51,7 +59,7 @@ module local_mem_result(
 			result_mem_out<=result_mem_in;
 		end
 	end
-	
+
 endmodule
 
 

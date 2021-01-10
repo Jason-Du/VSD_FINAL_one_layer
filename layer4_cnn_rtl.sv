@@ -2,7 +2,7 @@
 `include "channel8_tree_adder_rtl.sv"
 `include "layer2_systolic_rtl.sv"
 `include "stage11_fifo_rtl.sv"
-`include "counter_rtl.sv"
+`include "counter_cnn_rtl.sv"
 `include "def.svh"
 module layer4_cnn(
 	clk,
@@ -300,7 +300,7 @@ module layer4_cnn(
 	end
 // fix
 
-	counter read_row_counter(
+	counter_cnn read_row_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_row_count),
@@ -308,21 +308,21 @@ module layer4_cnn(
 	.keep(read_pixel_row_keep)
 	);
 // fix
-	counter read_counter(
+	counter_cnn read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_count),
 	.clear(read_pixel_clear),
 	.keep(1'b0)
 	);
-	counter set_counter(
+	counter_cnn set_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(set_count),
 	.clear(set_clear),
 	.keep(1'b0)
 	);
-	counter save_address_row(
+	counter_cnn save_address_row(
 	.clk(clk),
 	.rst(rst),
 	.count(save_address_row_count),
@@ -402,7 +402,7 @@ module layer4_cnn(
 		endcase
 	end
 	
-	counter bias_read_counter(
+	counter_cnn bias_read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(bias_read_count),
@@ -410,7 +410,7 @@ module layer4_cnn(
 	.keep(1'b0)
 	);
 	
-	counter bias_set_counter(
+	counter_cnn bias_set_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(bias_set_count),
@@ -533,7 +533,7 @@ module layer4_cnn(
 		endcase
 	end
 	
-	counter weight_read_counter(
+	counter_cnn weight_read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(weight_read_count),
@@ -541,7 +541,7 @@ module layer4_cnn(
 	.keep(1'b0)
 	);
 	
-	counter weight_set_counter(
+	counter_cnn weight_set_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(weight_set_count),

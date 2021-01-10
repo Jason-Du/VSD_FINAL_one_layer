@@ -1,9 +1,9 @@
 `timescale 1ns/10ps
 `include "layer7_systolic_rtl.sv"
-`include "counter_rtl.sv"
+`include "counter_cnn_rtl.sv"
 `include "def.svh"
 
-module layer7_cnn(
+module layer7_fc(
 	clk,
 	rst,
 	input_data,
@@ -89,6 +89,8 @@ module layer7_cnn(
 	logic  [                 `WORDLENGTH-1:0] bias_register_out[10];
 	logic  [ `LAYER7_WEIGHT_INPUT_LENGTH-1:0] data_register_in;
 	logic  [ `LAYER7_WEIGHT_INPUT_LENGTH-1:0] data_register_out;
+	logic systolic_adder_control_register_out;
+	logic layer7_calculation_done_register_in;
 
 	//----------------------------SAVE ADDRESS SIGNAL CONTROL----------------------------//
 	//set counter is also col counter
@@ -108,7 +110,7 @@ module layer7_cnn(
 	logic        read_pixel_row_clear;
 	logic        read_pixel_row_keep;
 	//fix
-	
+	logic systolic_adder_control;
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
@@ -127,9 +129,9 @@ module layer7_cnn(
 		case(save_cs)
 		SAVE_IDLE:
 		begin
-			layer7_calculation_done=1'b0;
+			layer7_calculation_done_register_in=1'b0;
 			read_pixel_signal=1'b0;
-			
+			systolic_adder_control=1'b0;
 			read_pixel_clear=1'b1;
 			read_pixel_row_clear=1'b1;
 			read_pixel_row_keep=1'b1;
@@ -146,9 +148,10 @@ module layer7_cnn(
 		end
 		SAVE_SETTING:
 		begin
-			layer7_calculation_done=1'b0;
-			read_pixel_signal=1'b1;
+			layer7_calculation_done_register_in=1'b0;
 			
+			systolic_adder_control=1'b0;
+			read_pixel_signal=1'b1;
 			read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
 			read_pixel_row_keep=1'b1;
@@ -159,6 +162,8 @@ module layer7_cnn(
 		begin
 			read_pixel_signal=1'b1;
 			read_pixel_row_clear=1'b0;
+			systolic_adder_control=1'b1;
+			read_pixel_signal=1'b1;
 			if (read_pixel_count==16'd`LAYER7_WIDTH-1)
 			begin
 				read_pixel_clear=1'b1;
@@ -172,21 +177,23 @@ module layer7_cnn(
 			if(read_pixel_row_count==6'd`LAYER7_WIDTH-1&&read_pixel_count==6'd`LAYER7_WIDTH-1)
 			begin
 				save_ns=SAVE_IDLE;
-				layer7_calculation_done=1'b1;
+				layer7_calculation_done_register_in=1'b1;
 				save_enable=1'b1;
 			end
 			else
 			begin
 				save_ns=SAVE_ENABLE;
-				layer7_calculation_done=1'b0;
+				layer7_calculation_done_register_in=1'b0;
 				save_enable=1'b0;
+				
 			end
 			
 		end
 		default:
 		begin
-			layer7_calculation_done=1'b0;
+			layer7_calculation_done_register_in=1'b0;
 			save_enable=1'b0;
+			systolic_adder_control=1'b0;
 			save_ns=SAVE_IDLE;
 			read_pixel_signal=1'b0;
 			read_pixel_clear=1'b1;
@@ -199,7 +206,7 @@ module layer7_cnn(
 	end
 // fix
 
-	counter read_col_counter(
+	counter_cnn read_col_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_row_count),
@@ -207,7 +214,7 @@ module layer7_cnn(
 	.keep(read_pixel_row_keep)
 	);
 // fix
-	counter read_counter(
+	counter_cnn read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(read_pixel_count),
@@ -287,7 +294,7 @@ module layer7_cnn(
 		endcase
 	end
 	
-	counter bias_read_counter(
+	counter_cnn bias_read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(bias_read_count),
@@ -295,7 +302,7 @@ module layer7_cnn(
 	.keep(1'b0)
 	);
 	
-	counter bias_set_counter(
+	counter_cnn bias_set_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(bias_set_count),
@@ -360,25 +367,24 @@ module layer7_cnn(
 	always_comb
 	begin
 		read_weight_addr=weight_read_count;
+		weight_read_clear=1'b1;
 		case(weight_cs)
 		WEIGHT_IDLE:
 		begin
+			read_weight_signal=1'b0;
 			if(pixel_store_done)
 			begin
 				weight_ns=WEIGHT_SET;
-				weight_read_clear=1'b0;
-				read_weight_signal=1'b1;
 			end
 			else
 			begin
 				weight_ns=WEIGHT_IDLE;
-				weight_read_clear=1'b1;
-				read_weight_signal=1'b0;
+				
 			end	
 		end
 		WEIGHT_SET:
 		begin
-			if(weight_read_count==16'd24)
+			if(weight_read_count==16'd25)
 			begin
 				weight_read_clear=1'b1;
 				read_weight_signal=1'b0;
@@ -394,7 +400,7 @@ module layer7_cnn(
 		endcase
 	end
 	
-	counter weight_read_counter(
+	counter_cnn weight_read_counter(
 	.clk(clk),
 	.rst(rst),
 	.count(weight_read_count),
@@ -440,6 +446,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out10),
 		.bias_data(bias_register_out[9]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[159:144])
 	);
@@ -450,6 +457,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out9),
 		.bias_data(bias_register_out[8]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[143:128])
 	);
@@ -460,6 +468,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out8),
 		.bias_data(bias_register_out[7]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[127:112])
 	);
@@ -469,6 +478,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out7),
 		.bias_data(bias_register_out[6]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[111:96])
 	);
@@ -479,6 +489,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out6),
 		.bias_data(bias_register_out[5]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[95:80])
 	);
@@ -489,6 +500,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out5),
 		.bias_data(bias_register_out[4]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[79:64])
 	);
@@ -500,6 +512,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out4),
 		.bias_data(bias_register_out[3]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[63:48])
 	);
@@ -510,6 +523,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out3),
 		.bias_data(bias_register_out[2]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[47:32])
 	);
@@ -520,6 +534,7 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out2),
 		.bias_data(bias_register_out[1]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[31:16])
 	);
@@ -529,20 +544,27 @@ module layer7_cnn(
 		.input_data(data_register_out),
 		.weight_data(weight_register_out1),
 		.bias_data(bias_register_out[0]),
+		.systolic_adder_control(systolic_adder_control_register_out),
 		
 		.result_data_out(output_data[15:0])
 	);
 //----------------------------------------BUFFER_CHAIN--------------------------------------------//
-
+logic layer7_calculation_done_register_in2;
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
 		begin
 			data_register_out<=`LAYER7_WEIGHT_INPUT_LENGTH'd0;
+			systolic_adder_control_register_out<=1'b0;
+			layer7_calculation_done_register_in2<=1'b0;
+			layer7_calculation_done<=1'b0;
 		end
 		else
 		begin
-			data_register_out<=data_register_in;
+			data_register_out<=input_data;
+			systolic_adder_control_register_out<=systolic_adder_control;
+			layer7_calculation_done_register_in2<=layer7_calculation_done_register_in;
+			layer7_calculation_done<=layer7_calculation_done_register_in2;
 		end
 	end
 endmodule
