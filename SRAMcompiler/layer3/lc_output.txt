@@ -1,0 +1,255 @@
+
+Initializing...
+lc_shell> read_lib layer3_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer3_sram_BC' read successfully
+1
+lc_shell> write_lib layer3_sram_BC -format db - output layer3_sram_BC.db
+Error: extra positional option '-' (CMD-012)
+Error: extra positional option 'output' (CMD-012)
+Error: extra positional option 'layer3_sram_BC.db' (CMD-012)
+lc_shell> write_lib layer3_sram_BC -format db -output layer3_sram_BC.db
+Wrote the 'layer3_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_BC.db' successfully
+1
+lc_shell> read_lib layer3_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer3_sram_TC' read successfully
+1
+lc_shell> write_lib layer3_sram_BC -format db -output layer3_sram_TC.db
+Wrote the 'layer3_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_TC.db' successfully
+1
+lc_shell> write_lib layer3_sram_TC -format db -output layer3_sram_TC.db
+Wrote the 'layer3_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_TC.db' successfully
+1
+lc_shell> read_lib layer3_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Warning: Overwriting an old technology library '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_BC.db' file with a new one. (UIL-2)
+1
+lc_shell> write_lib layer3_sram_BC -format db -output layer3_sram_BC.db
+Wrote the 'layer3_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_BC.db' successfully
+1
+lc_shell> read_lib layer3_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer3_sram_WC' read successfully
+1
+lc_shell> write_lib layer3_sram_WC -format db -output layer3_sram_WC.db
+Wrote the 'layer3_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer3_sram_WC.db' successfully
+1
+lc_shell> read_lib layer4_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer4_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer4_sram_BC' read successfully
+1
+lc_shell> write_lib layer4_sram_BC -format db -output layer4_sram_BC.db
+Wrote the 'layer4_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer4_sram_BC.db' successfully
+1
+lc_shell> read_lib layer4_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer4_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer4_sram_TC' read successfully
+1
+lc_shell> write_lib layer4_sram_TC -format db -output layer4_sram_TC.db
+Wrote the 'layer4_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer4_sram_TC.db' successfully
+1
+lc_shell> read_lib layer4_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer4_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer4_sram_WC' read successfully
+1
+lc_shell> write_lib layer4_sram_WC -format db -output layer4_sram_WC.db
+Wrote the 'layer4_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer4_sram_WC.db' successfully
+1
+lc_shell> read_lib layer5_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer5_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer5_sram_BC' read successfully
+1
+lc_shell> write_lib layer5_sram_BC -format db -output layer5_sram_BC.db
+Wrote the 'layer5_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer5_sram_BC.db' successfully
+1
+lc_shell> read_lib layer5_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer5_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer5_sram_TC' read successfully
+1
+lc_shell> write_lib layer5_sram_TC -format db -output layer5_sram_TC.db
+Wrote the 'layer5_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer5_sram_TC.db' successfully
+1
+lc_shell> read_lib layer5_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer5_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer5_sram_WC' read successfully
+1
+lc_shell> write_lib layer5_sram_WC -format db -output layer5_sram_WC.db
+Wrote the 'layer5_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer5_sram_WC.db' successfully
+1
+lc_shell> read_lib layer6_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer6_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer6_sram_BC' read successfully
+1
+lc_shell> write_lib layer6_sram_BC -format db -output layer6_sram_BC.db
+Wrote the 'layer6_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer6_sram_BC.db' successfully
+1
+lc_shell> read_lib layer6_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer6_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer6_sram_TC' read successfully
+1
+lc_shell> write_lib layer6_sram_TC -format db -output layer6_sram_TC.db
+Wrote the 'layer6_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer6_sram_TC.db' successfully
+1
+lc_shell> read_lib layer6_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer6_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer6_sram_WC' read successfully
+1
+lc_shell> write_lib layer6_sram_WC -format db -output layer6_sram_WC.db
+Wrote the 'layer6_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer6_sram_WC.db' successfully
+1
+lc_shell> read_lib pixel_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'pixel_sram_BC' read successfully
+1
+lc_shell> write_lib pixel_sram_BC -format db -output pixel_sram_BC.db
+Wrote the 'pixel_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_BC.db' successfully
+1
+lc_shell> read_lib pixel_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'pixel_sram_TC' read successfully
+1
+lc_shell> write_lib pixel_sram_TC -format db -output pixel_sram_TC.db
+Wrote the 'pixel_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_TC.db' successfully
+1
+lc_shell> read_lib pixel_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'pixel_sram_WC' read successfully
+1
+lc_shell> write_lib pixel_sram_WC -format db -output pixel_sram_WC.db
+Wrote the 'pixel_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_WC.db' successfully
+1
+lc_shell> read_lib weight_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'weight_sram_BC' read successfully
+1
+lc_shell> write_lib weight_sram_BC -format db -output weight_sram_BC.db
+Wrote the 'weight_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_BC.db' successfully
+1
+lc_shell> read_lib weight_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'weight_sram_TC' read successfully
+1
+lc_shell> write_lib pixel_sram_TC -format db -output weight_sram_TC.db
+Wrote the 'pixel_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_TC.db' successfully
+1
+lc_shell> write_lib weight_sram_TC -format db -output weight_sram_TC.db
+Wrote the 'weight_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_TC.db' successfully
+1
+lc_shell> read_lib weight_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'weight_sram_WC' read successfully
+1
+lc_shell> write_lib weight_sram_WC -format db -output weight_sram_WC.db
+Wrote the 'weight_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_WC.db' successfully
+1
+lc_shell> read_lib layer2_sram_BC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer2_sram_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer2_sram_BC' read successfully
+1
+lc_shell> write_lib layer2_sram_BC -format db -output layer2_sram_BC.db
+Wrote the 'layer2_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer2_sram_BC.db' successfully
+1
+lc_shell> read_lib layer2_sram_TC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer2_sram_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer2_sram_TC' read successfully
+1
+lc_shell> write_lib layer2_sram_TC -format db -output layer2_sram_TC.db
+Wrote the 'layer2_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer2_sram_TC.db' successfully
+1
+lc_shell> read_lib layer2_sram_WC.lib
+Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer2_sram_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'layer2_sram_WC' read successfully
+1
+lc_shell> write_lib layer2_sram_WC -format db -output layer2_sram_WC.db
+Wrote the 'layer2_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/layer2_sram_WC.db' successfully
+1
+lc_shell> 

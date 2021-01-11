@@ -1,0 +1,8 @@
+
+Initializing...
+lc_shell> exit
+Maximum memory usage for this session: 63.82 MB
+CPU usage for this session:      3 seconds (  0.00 hours)
+Elapsed time for this session:     34 seconds (  0.01 hours)
+Thank you for using Library Compiler.
+

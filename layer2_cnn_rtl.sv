@@ -495,20 +495,16 @@ module layer2_cnn(
 		begin
 			weight_set_keep=1'b0;
 			weight_set_done=1'b0;
-			
+			weight_set_clear=1'b1;
+			weight_read_clear=1'b1;
+			read_weight_signal=1'b0;
 			if(weight_store_done)
 			begin
 				weight_ns=WEIGHT_SET;
-				weight_set_clear=1'b0;
-				weight_read_clear=1'b0;
-				read_weight_signal=1'b1;
 			end
 			else
 			begin
 				weight_ns=WEIGHT_IDLE;
-				weight_set_clear=1'b1;
-				weight_read_clear=1'b1;
-				read_weight_signal=1'b0;
 			end	
 		end
 		WEIGHT_SET:

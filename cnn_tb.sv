@@ -21,7 +21,7 @@
 `define		PIC2_GOLDEN_FILE_LAYER7		"./top_data/PIC2_CORRECT_LAYER7.data"
 `define		RESULT_FILE		    "RESULT.csv"
 `define MAX 80000
-`define CYCLE 2.0
+`define CYCLE 20.0
 localparam PIC_NUM=2;
 localparam PIXEL_NUM=3072;
 localparam TOTAL_WEIGHT_NUM=(`PICTURE_CHANNEL*`LAYER1_OUTPUT_CHANNEL_NUM+
@@ -276,7 +276,7 @@ begin
 		case(cs)
 			FEED_WEIGHT:
 			begin
-			
+			/*
 				if(weight_set_count==16'd4)
 				begin
 					weight_set_clear=1'd1;
@@ -299,13 +299,13 @@ begin
 					awaddr=32'h0000_0000;
 					wdata=32'd0;
 				end
+				*/
 				
-				/*
 				awaddr=32'hd333_0000;
 				wvalid=1'd1;
 				weight_keep=1'd0;
 				wdata=mem_weight_in[weight_count];
-				*/
+				
 				if(weight_count==TOTAL_WEIGHT_NUM)
 				begin
 					ns=FEED_BIAS;
@@ -317,7 +317,7 @@ begin
 			end
 			FEED_BIAS:
 			begin
-			
+			/*
 				if(bias_set_count==16'd4)
 				begin
 					bias_set_clear=1'd1;
@@ -340,12 +340,12 @@ begin
 					awaddr=32'h0000_0000;
 					wdata=32'd0;
 				end
-				/*
+				*/
 				wvalid=1'd1;
 				bias_keep=1'd0;
 				awaddr=32'hd444_0000;
 				wdata=mem_bias_in[bias_count];
-				*/
+				
 				if(bias_count==TOTAL_BIAS_NUM)
 				begin
 					ns=FEED_PIXEL;
@@ -357,7 +357,7 @@ begin
 			end
 			FEED_PIXEL:
 			begin
-			
+			/*
 				if(pixel_set_count==16'd4)
 				begin
 					pixel_set_clear=1'd1;
@@ -380,13 +380,13 @@ begin
 					awaddr=32'h0000_0000;
 					wdata=32'd0;
 				end
-				/*
+				*/
 				ns=FEED_PIXEL;
 				wvalid=1'd1;
 				pixel_keep=1'd0;
 				awaddr=32'hd555_0000;
 				wdata=mem_pixel_in[pixel_count];
-				*/
+				
 			end
 			default
 			begin
@@ -444,6 +444,13 @@ always
 begin
 	#(`CYCLE/2) clk = ~clk;
 end
+int memory_index=0;
+int memory_even_even=0;
+int memory_even_odd=0;
+int memory_odd_even=0;
+int memory_odd_odd=0;
+int row_even=0;
+int col_even=0;
 always
 begin
 	#(`CYCLE);
@@ -453,6 +460,11 @@ begin
 		$display("%d",$time);
 		row=0;
 		col=0;
+		memory_index=0;
+		memory_even_even=0;
+		memory_even_odd=0;
+		memory_odd_even=0;
+		memory_odd_odd=0;
 		if(picture_layer1==1)
 		begin
 			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER1, "r");
@@ -464,14 +476,14 @@ begin
 		while(!$feof(fp_r)) 
 		begin
 			cnt = $fscanf(fp_r, "%h",result_reg1);			
-			if(result_reg1==TOP.layer1_data_mem.layer1_results_mem[row][col])
+			if(result_reg1==TOP.layer1_data_mem.layer1_st.i_layer1_sram.Memory[memory_index])
 			begin
 				pass_count=pass_count+1;
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg1);
 			end
 			else
 			begin
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg1,TOP.layer1_data_mem.layer1_results_mem[row][col]);
+				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg1,TOP.layer1_data_mem.layer1_st.i_layer1_sram.Memory[memory_index]);
 				FAIL_FLAG=1;
 			end
 			if(col==`LAYER2_WIDTH-1)
@@ -483,21 +495,23 @@ begin
 			begin
 				col=col+1;
 			end
+			memory_index++;
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER2_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer1),.STAGE("STAGE1"));
-		
-		if (picture_layer1==2)
+		/*
+		if (picture_layer1==1)
 		begin
 			$finish;
 		end
-		
+		*/
 		
 		picture_layer1++;
 		//$finish;	
 	end
 	////////////////////////////////////////////////////////////////////
 	pass_count=0;
+
 	if(STAGE2_COMPLETE)
 	begin
 		$display("PICTURE %d STAGE2_COMPLETE",picture_layer2);
@@ -505,6 +519,11 @@ begin
 		
 		row=0;
 		col=0;
+		memory_index=0;
+		memory_even_even=0;
+		memory_even_odd=0;
+		memory_odd_even=0;
+		memory_odd_odd=0;
 		if(picture_layer2==1)
 		begin
 			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER2,"r");
@@ -516,16 +535,65 @@ begin
 		
 		while(!$feof(fp_r)) 
 		begin
-			cnt = $fscanf(fp_r, "%h",result_reg2);			
-			if(result_reg2==TOP.layer2_data_mem.layer2_results_mem[row][col])
+			cnt = $fscanf(fp_r, "%h",result_reg2);
+			row_even=row%2;
+			col_even=col%2;
+			
+			if (row_even==0&&col_even==0)
 			begin
-				pass_count=pass_count+1;
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				if(result_reg2==TOP.layer2_data_mem_even_even.layer2_st.i_layer3_sram.Memory[memory_even_even])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_even_even.layer2_st.i_layer3_sram.Memory[memory_even_even]);
+					FAIL_FLAG=1;
+				end
+				memory_even_even++;
 			end
-			else
+			else if (row_even==0&&col_even==1)
 			begin
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem.layer2_results_mem[row][col]);
-				FAIL_FLAG=1;
+				if(result_reg2==TOP.layer2_data_mem_even_odd.layer2_st.i_layer3_sram.Memory[memory_even_odd])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_even_odd.layer2_st.i_layer3_sram.Memory[memory_even_odd]);
+					FAIL_FLAG=1;
+				end
+				memory_even_odd++;
+			end
+			else if (row_even==1&&col_even==0)
+			begin
+				if(result_reg2==TOP.layer2_data_mem_odd_even.layer2_st.i_layer3_sram.Memory[memory_odd_even])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_odd_even.layer2_st.i_layer3_sram.Memory[memory_odd_even]);
+					FAIL_FLAG=1;
+				end
+				memory_odd_even++;
+			end
+			else if(row_even==1&&col_even==1)
+			begin
+				if(result_reg2==TOP.layer2_data_mem_odd_odd.layer2_st.i_layer3_sram.Memory[memory_odd_odd])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_odd_odd.layer2_st.i_layer3_sram.Memory[memory_odd_odd]);
+					FAIL_FLAG=1;
+				end
+				memory_odd_odd++;
 			end
 			if(col==`LAYER3_WIDTH-1)
 			begin
@@ -536,6 +604,7 @@ begin
 			begin
 				col=col+1;
 			end
+			
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER3_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer2),.STAGE("STAGE2"));
@@ -545,8 +614,9 @@ begin
 		begin
 			$finish;
 		end
-	
 		*/
+	
+		
 		picture_layer2++;	
 	end
 	////////////////////////////////////////////////////////////////////
@@ -557,6 +627,11 @@ begin
 		$display("%d",$time);
 		row=0;
 		col=0;
+		memory_index=0;
+		memory_even_even=0;
+		memory_even_odd=0;
+		memory_odd_even=0;
+		memory_odd_odd=0;
 		if(picture_layer3==1)
 		begin
 			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER3,"r");
@@ -568,14 +643,14 @@ begin
 		while(!$feof(fp_r)) 
 		begin
 			cnt = $fscanf(fp_r, "%h",result_reg3);			
-			if(result_reg3==TOP.layer3_data_mem.layer3_results_mem[row][col])
+			if(result_reg3==TOP.layer3_data_mem.layer3_st.i_layer3_sram.Memory[memory_index])
 			begin
 				pass_count=pass_count+1;
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg3);
 			end
 			else
 			begin
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg3,TOP.layer3_data_mem.layer3_results_mem[row][col]);
+				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg3,TOP.layer3_data_mem.layer3_st.i_layer3_sram.Memory[memory_index]);
 				FAIL_FLAG=1;
 			end
 			if(col==`LAYER4_WIDTH-1)
@@ -587,6 +662,7 @@ begin
 			begin
 				col=col+1;
 			end
+			memory_index++;
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER4_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer3),.STAGE("STAGE3"));
@@ -624,6 +700,11 @@ begin
 		*/
 		row=0;
 		col=0;
+		memory_index=0;
+		memory_even_even=0;
+		memory_even_odd=0;
+		memory_odd_even=0;
+		memory_odd_odd=0;
 		if(picture_layer4==1)
 		begin
 			fp_r = $fopen(`PIC1_GOLDEN_FILE_LAYER4,"r");
@@ -634,15 +715,16 @@ begin
 		end
 		while(!$feof(fp_r)) 
 		begin
+
 			cnt = $fscanf(fp_r, "%h",result_reg4);			
-			if(result_reg4==TOP.layer4_data_mem.layer4_results_mem[row][col])
+			if(result_reg4==TOP.layer4_data_mem.layer4_st.i_layer4_sram.Memory[memory_index])
 			begin
 				pass_count=pass_count+1;
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg4);
 			end
 			else
 			begin
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg4,TOP.layer4_data_mem.layer4_results_mem[row][col]);
+				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg4,TOP.layer4_data_mem.layer4_st.i_layer4_sram.Memory[memory_index]);
 				FAIL_FLAG=1;
 			end
 			if(col==`LAYER5_WIDTH-1)
@@ -654,6 +736,7 @@ begin
 			begin
 				col=col+1;
 			end
+			memory_index++;
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER5_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer4),.STAGE("STAGE4"));
@@ -672,6 +755,13 @@ begin
 	begin
 		$display("PICTURE %d STAGE5_COMPLETE",picture_layer5);
 		$display("%d",$time);
+		memory_index=0;
+		memory_even_even=0;
+		memory_even_odd=0;
+		memory_odd_even=0;
+		memory_odd_odd=0;
+		row_even=0;
+		col_even=0;
 		row=0;
 		col=0;
 		if(picture_layer5==1)
@@ -684,16 +774,60 @@ begin
 		end
 		while(!$feof(fp_r)) 
 		begin
-			cnt = $fscanf(fp_r, "%h",result_reg5);			
-			if(result_reg5==TOP.layer5_data_mem.layer5_results_mem[row][col])
+			cnt = $fscanf(fp_r, "%h",result_reg5);
+			row_even=row%2;
+			col_even=col%2;
+			if (row_even==0&&col_even==0)
 			begin
-				pass_count=pass_count+1;
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg5);
+				if(result_reg5==TOP.layer5_data_mem_even_even.layer5_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg5);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg5,TOP.layer5_data_mem_even_even.layer5_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
+			end
+			else if (row_even==0&&col_even==1)
+			begin
+				if(result_reg5==TOP.layer5_data_mem_even_odd.layer5_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg5);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg5,TOP.layer5_data_mem_even_odd.layer5_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
+			end
+			else if (row_even==1&&col_even==0)
+			begin
+				if(result_reg5==TOP.layer5_data_mem_odd_even.layer5_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg5);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg5,TOP.layer5_data_mem_odd_even.layer5_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
 			end
 			else
 			begin
-				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg5,TOP.layer5_data_mem.layer5_results_mem[row][col]);
-				FAIL_FLAG=1;
+				if(result_reg5==TOP.layer5_data_mem_odd_odd.layer5_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg5);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg5,TOP.layer5_data_mem_odd_odd.layer5_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
 			end
 			if(col==`LAYER6_WIDTH-1)
 			begin
@@ -772,12 +906,12 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER7_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer6),.STAGE("STAGE6"));
-		/*
+		
 		if (picture_layer6==1)
 		begin
 			$finish;
 		end
-		*/
+		
 		picture_layer6++;	
 	end
 	pass_count=0;
@@ -884,3 +1018,90 @@ end
 	endtask
 	
 endmodule
+
+
+			/*
+			if(result_reg2==TOP.layer2_data_mem.layer2_results_mem[row][col])
+			begin
+				pass_count=pass_count+1;
+				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+			end
+			else
+			begin
+				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem.layer2_results_mem[row][col]);
+				FAIL_FLAG=1;
+			end
+			*/
+			/*
+			if(result_reg2==TOP.layer2_data_mem_even_even.layer2_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_even_even.layer2_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
+			end
+			else if (row_even==0&&col_even==1)
+			begin
+				if(result_reg2==TOP.layer2_data_mem_even_odd.layer2_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_even_odd.layer2_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
+			end
+			else if (row_even==1&&col_even==0)
+			begin
+				if(result_reg2==TOP.layer2_data_mem_odd_even.layer2_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_odd_even.layer2_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
+			end
+			else
+			begin
+				if(result_reg2==TOP.layer2_data_mem_odd_odd.layer2_results_mem[row>>1][col>>1])
+				begin
+					pass_count=pass_count+1;
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ] PASS",row,col,result_reg2);
+				end
+				else
+				begin
+					$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg2,TOP.layer2_data_mem_odd_odd.layer2_results_mem[row>>1][col>>1]);
+					FAIL_FLAG=1;
+				end
+			end
+			if(col==`LAYER3_WIDTH-1)
+			begin
+				col=0;
+				row=row+1;
+			end
+			else
+			begin
+				col=col+1;
+			end
+		end
+		$fclose(fp_r);
+		photo(.CORRECT_pass_count(`LAYER3_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer2),.STAGE("STAGE2"));
+		//#(`CYCLE*10)
+		if (picture_layer2==1)
+		begin
+			$finish;
+		end
+	
+		
+		picture_layer2++;	
+	end
+			*/

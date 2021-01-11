@@ -32,6 +32,26 @@ output logic [127:0] read_weight_data1;
 output logic [127:0] read_weight_data2;
 
 
+always_comb
+begin
+	
+end
+
+word72_wrapper weight_st(
+  .CK(~clk),
+  .OEA(),
+  .OEB(),
+  .WEAN(),
+  .WEBN(),
+  .A(),
+  .B(),
+  .DOA(),
+  .DOB(),
+  .DIA(),
+  .DIB()
+);
+
+/*
 logic [15:0] output_addr1;
 logic [15:0] output_addr2;
 logic [15:0] output_addr3;
@@ -153,6 +173,7 @@ begin
 		output_addr8=16'd0;
 	end
 end
+*/
 endmodule
 
 

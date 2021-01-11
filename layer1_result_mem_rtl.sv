@@ -1,5 +1,6 @@
 `timescale 1ns/10ps
 `include"def.svh"
+`include "LocalBuffer/layer1_wrapper.sv"
 module layer1_result_mem(
 	clk,
 	rst,
@@ -27,7 +28,45 @@ module layer1_result_mem(
 	//INOUT
 	
 	output logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_result_output;
+	logic        [`LAYER1_OUTPUT_LENGTH-1:0] null_wire1;
+	//A WRITE B READ
+	logic [ 9:0]   read_addr_sram;
+	logic [15:0]   read_addr_minus;
+	logic [15:0]   read_addr_add;
+	logic [9:0]    save_addr_sram;
+	logic [15:0]   save_addr_add;
+	logic [15:0]   save_addr_minus;
 	
+	always_comb
+	begin
+		read_addr_add=(read_row_addr)<<5;
+		read_addr_minus=(read_row_addr)<<1;
+		read_addr_sram=read_addr_add[9:0]+read_col_addr[9:0]-read_addr_minus[9:0];
+		save_addr_add=(save_row_addr)<<5;
+		save_addr_minus=(save_row_addr)<<1;
+		save_addr_sram=save_addr_add[9:0]+save_col_addr[9:0]-save_addr_minus[9:0];
+	end
+	
+layer1_wrapper layer1_st(
+  .CK(~clk),
+  .OEA(1'b0),
+  .OEB(layer1_result_read_signal),
+  .WEAN(~save_enable),
+  .WEBN(1'b1),
+  .A(save_addr_sram),
+  .B(read_addr_sram),
+  .DOA(null_wire1),
+  .DOB(layer1_result_output),
+  .DIA(layer1_result_store_data_in),
+  .DIB(128'd0)
+);
+
+	/*
+	
+
+	
+	
+
 	logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_results_mem    [`LAYER2_WIDTH][`LAYER2_WIDTH];
 	logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_results_mem_in [`LAYER2_WIDTH][`LAYER2_WIDTH];
 	
@@ -69,4 +108,6 @@ module layer1_result_mem(
 			layer1_result_output=`LAYER1_OUTPUT_LENGTH'd0;
 		end
 	end
+	
+*/
 endmodule

@@ -1,0 +1,7 @@
+ncverilog: 15.20-s039: (c) Copyright 1995-2017 Cadence Design Systems, Inc.
+TOOL:	ncverilog	15.20-s039: Started on Jan 11, 2021 at 16:20:43 CST
+ncverilog
+	cnn_tb.sv
+	+access+r
+ncverilog: *E,FILEMIS: Cannot find the provided file cnn_tb.sv.
+TOOL:	ncverilog	15.20-s039: Exiting on Jan 11, 2021 at 16:20:43 CST  (total: 00:00:00)

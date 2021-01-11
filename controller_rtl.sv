@@ -269,17 +269,18 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
+		layer1_weight_store_done=(weight_store_count_data==LAYER1_WEIGHT_NUM-1)?1'b1:1'b0;
 		if(weight_store_count_data==LAYER1_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
-			layer1_weight_store_done=1'b1;
+			//layer1_weight_store_done=1'b1;
 			weight_fsm_ns           =WEIGHT_LAYER2_STORE;
 			layer_weight_sel         =5'd1;
 		end
 		else
 		begin
 			weight_store_count_clear=1'b0;
-			layer1_weight_store_done=1'b0;
+			//layer1_weight_store_done=1'b0;
 			weight_fsm_ns           =WEIGHT_LAYER1_STORE;
 			layer_weight_sel         =5'd0;
 		end
@@ -306,17 +307,18 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
+		layer2_weight_store_done=(weight_store_count_data==LAYER2_WEIGHT_NUM-1)?1'b1:1'b0;
 		if(weight_store_count_data==LAYER2_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
-			layer2_weight_store_done=1'b1;
+			//layer2_weight_store_done=1'b1;
 			weight_fsm_ns           =WEIGHT_LAYER4_STORE;
 			layer_weight_sel         =5'd2;
 		end
 		else
 		begin
 			weight_store_count_clear=1'b0;
-			layer2_weight_store_done=1'b0;
+			//layer2_weight_store_done=1'b0;
 			weight_fsm_ns           =WEIGHT_LAYER2_STORE;
 			layer_weight_sel         =5'd1;
 		end
@@ -343,17 +345,18 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
+		layer4_weight_store_done=(weight_store_count_data==LAYER4_WEIGHT_NUM-1)?1'b1:1'b0;
 		if(weight_store_count_data==LAYER4_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
-			layer4_weight_store_done=1'b1;
+			//layer4_weight_store_done=1'b1;
 			weight_fsm_ns           =WEIGHT_LAYER5_STORE;
 			layer_weight_sel         =5'd4;
 		end
 		else
 		begin
 			weight_store_count_clear=1'b0;
-			layer4_weight_store_done=1'b0;
+			//layer4_weight_store_done=1'b0;
 			weight_fsm_ns           =WEIGHT_LAYER4_STORE;
 			layer_weight_sel         =5'd2;
 		end
@@ -380,17 +383,18 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
+		layer5_weight_store_done=(weight_store_count_data==LAYER5_WEIGHT_NUM-1)?1'b1:1'b0;
 		if(weight_store_count_data==LAYER5_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
-			layer5_weight_store_done=1'b1;
+			//layer5_weight_store_done=1'b1;
 			weight_fsm_ns           =WEIGHT_LAYER7_STORE;
 			layer_weight_sel         =5'd5;
 		end
 		else
 		begin
 			weight_store_count_clear=1'b0;
-			layer5_weight_store_done=1'b0;
+			//layer5_weight_store_done=1'b0;
 			weight_fsm_ns           =WEIGHT_LAYER5_STORE;
 			layer_weight_sel         =5'd4;
 		end
@@ -840,17 +844,17 @@ begin
 				pixel_mem_data  =16'd0;
 				pixel_mem_addr  =16'd0;
 			end
+			layer1_input_store_done=(pixel_store_count_data==LAYER1_PIXEL_NUM-1)?1'b1:1'b0;
+	
 			if(pixel_store_count_data==LAYER1_PIXEL_NUM&&wvalid)
 			begin
 				pixel_store_count_clear=1'b1;
-				layer1_input_store_done=1'b1;
 				pixel_fsm_ns           =PIXEL_IDLE;
 			end
 			else
 			begin
 				
 				pixel_store_count_clear    =1'b0;
-				layer1_input_store_done    =1'b0;
 				pixel_fsm_ns               =PIXEL_LAYER1_STORE;
 			end
 		end

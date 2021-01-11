@@ -1,4 +1,5 @@
 `timescale 1ns/10ps
+`include "LocalBuffer/pixel_wrapper.sv"
 module local_mem_pixel(
 	clk,
 	rst,
@@ -27,6 +28,61 @@ input [15:0]write_pixel_addr;
 
 output logic [47:0] read_pixel_data;
 
+
+logic [	2:0] write_web;
+logic [47:0] write_data_sram;
+logic [47:0] null_wire;
+
+logic [9:0] write_addr_sram;
+logic [9:0] read_addr_sram;
+
+always_comb
+begin
+	if(write_pixel_signal)
+	case(write_pixel_addr[11:10])
+		2'b00:
+		begin
+			write_web=3'b110;
+			write_data_sram={32'd0,write_pixel_data};
+		end
+		2'b01:
+		begin
+			write_web=3'b101;
+			write_data_sram={16'd0,write_pixel_data,16'd0};
+		end
+		2'b10:
+		begin
+			write_web=3'b011;
+			write_data_sram={write_pixel_data,32'd0};
+		end
+		default:
+		begin
+			write_web=3'b111;
+			write_data_sram=48'd0;
+		end
+	endcase
+	else
+	begin
+		write_web=3'b111;
+		write_data_sram=48'd0;
+	end
+	read_addr_sram=read_pixel_addr[9:0];
+	write_addr_sram=write_pixel_addr[9:0];
+end
+pixel_wrapper pixel_st(
+ .CK(~clk),
+ .OEA(1'b0),
+ .OEB(read_pixel_signal),
+ .WEAN(write_web),
+ .WEBN(3'b111),
+ .A(write_addr_sram),
+ .B(read_addr_sram),
+ .DOA(null_wire),
+ .DOB(read_pixel_data),
+ .DIA(write_data_sram),
+ .DIB(48'd0)
+);
+/*
 logic [2:0][15:0]pixel_mem_in[32][32];
 logic [2:0][15:0]pixel_mem_out[32][32];
 logic [5:0] write_row;
@@ -70,48 +126,6 @@ begin
 	read_row=read_pixel_addr[9:5];
 	read_col=read_pixel_addr[4:0];
 end
-//---------------------------------------------WRITE-----------------------------------------------------
-/*
-always_comb
-begin
-	if(write_pixel_signal)
-	begin
-		case(write_pixel_addr[11:10])
-			red_write_pixel_addr:
-			begin
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=write_pixel_data;
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-			end
-			green_write_pixel_addr:
-			begin
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=write_pixel_data;
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-			end
-			blue_write_pixel_addr:
-			begin
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=write_pixel_data;
-			end
-			default
-			begin
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-				pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-			end
-		endcase
-	end
-	else
-	begin
-		pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][0];
-		pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][1];
-		pixel_mem_in[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2]=pixel_mem_out[write_pixel_addr[9:5]][write_pixel_addr[4:0]][2];
-	end
-end
-*/
-//---------------------------------------------READ-----------------------------------------------------
 always_comb
 begin
 	if(read_pixel_signal)
@@ -125,6 +139,7 @@ begin
 		read_pixel_data=48'd0;
 	end
 end
+*/
 endmodule
 
 

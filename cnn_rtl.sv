@@ -23,6 +23,7 @@
 `include "layer4_result_mem_rtl.sv"
 `include "layer5_result_mem_rtl.sv"
 `include "layer5_result_one_side_mem_rtl.sv"
+`include "layer5_result_one_side_mem_v2_rtl.sv"
 `include "layer6_result_mem_rtl.sv"
 `include "local_mem_result_rtl.sv"
 
@@ -600,7 +601,7 @@ layer2_result_one_side_mem layer2_data_mem_even_odd(
 	//INOUT
 	.layer2_result_output(layer2_result_even_odd)	
 );
-layer2_result_one_side_mem layer2_data_odd_even(
+layer2_result_one_side_mem layer2_data_mem_odd_even(
 	.clk(clk),
 	.rst(rst),
 	.save_enable(layer2_odd_even_save_enable),
@@ -614,7 +615,7 @@ layer2_result_one_side_mem layer2_data_odd_even(
 	.layer2_result_output(layer2_result_odd_even)	
 );
 
-layer2_result_one_side_mem layer2_data_odd_odd(
+layer2_result_one_side_mem layer2_data_mem_odd_odd(
 	.clk(clk),
 	.rst(rst),
 	.save_enable(layer2_odd_odd_save_enable),
@@ -628,7 +629,7 @@ layer2_result_one_side_mem layer2_data_odd_odd(
 	.layer2_result_output(layer2_result_odd_odd)	
 );
 
-
+/*
 layer2_result_mem layer2_data_mem(
 	.clk(clk),
 	.rst(rst),
@@ -643,7 +644,7 @@ layer2_result_mem layer2_data_mem(
 	
 	.layer2_result_output(layer2_result)
 );
-/*
+
 layer3_maxpooling layer3(
 	.clk(clk),
 	.rst(rst),
@@ -806,6 +807,42 @@ end
 
 
 /////////////////////////////////
+/*
+layer5_result_one_side_mem_v2 layer5_data_mem_even(
+	.clk(clk),
+	.rst(rst),
+	.save_enable1(layer5_even_even_save_enable),
+	.save_enable2(layer5_even_odd_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row>>1),
+	.save_col_addr(layer5_save_col>>1),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal1(layer5_result_read_signal),
+	.layer5_result_read_signal2(layer5_result_read_signal),
+	//INOUT
+	
+	.layer5_result_output1(layer5_result_even_even),
+	.layer5_result_output2(layer5_result_even_odd)
+);
+layer5_result_one_side_mem_v2 layer5_data_mem_odd(
+	.clk(clk),
+	.rst(rst),
+	.save_enable1(layer5_odd_even_save_enable),
+	.save_enable2(layer5_odd_odd_save_enable),
+	.layer5_result_store_data_in(layer5_output_data),
+	.save_row_addr(layer5_save_row>>1),
+	.save_col_addr(layer5_save_col>>1),
+	.read_row_addr(layer6_read_row),
+	.read_col_addr(layer6_read_col),
+	.layer5_result_read_signal1(layer5_result_read_signal),
+	.layer5_result_read_signal2(layer5_result_read_signal),
+	//INOUT
+	
+	.layer5_result_output1(layer5_result_odd_even),
+	.layer5_result_output2(layer5_result_odd_odd)
+);
+*/
 
 layer5_result_one_side_mem layer5_data_mem_even_even(
 	.clk(clk),
@@ -833,7 +870,7 @@ layer5_result_one_side_mem layer5_data_mem_even_odd(
 	//INOUT
 	.layer5_result_output(layer5_result_even_odd)	
 );
-layer5_result_one_side_mem layer5_data_odd_even(
+layer5_result_one_side_mem layer5_data_mem_odd_even(
 	.clk(clk),
 	.rst(rst),
 	.save_enable(layer5_odd_even_save_enable),
@@ -847,7 +884,7 @@ layer5_result_one_side_mem layer5_data_odd_even(
 	.layer5_result_output(layer5_result_odd_even)	
 );
 
-layer5_result_one_side_mem layer5_data_odd_odd(
+layer5_result_one_side_mem layer5_data_mem_odd_odd(
 	.clk(clk),
 	.rst(rst),
 	.save_enable(layer5_odd_odd_save_enable),
@@ -860,7 +897,6 @@ layer5_result_one_side_mem layer5_data_odd_odd(
 	//INOUT
 	.layer5_result_output(layer5_result_odd_odd)	
 );
-	
 layer5_result_mem layer5_data_mem(
 	.clk(clk),
 	.rst(rst),
