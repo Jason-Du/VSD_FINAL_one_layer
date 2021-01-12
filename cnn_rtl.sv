@@ -78,6 +78,8 @@ logic layer5_weight_store_done;
 logic layer5_bias_store_done;
 logic layer7_weight_store_done;
 logic layer7_bias_store_done;
+
+logic [3:0]weight_fsm_cs;
 //////////////////////////////////////CONTROLLER
 logic        write_bias_mem_signal;
 logic [15:0] write_bias_mem_data;
@@ -281,6 +283,7 @@ controller ctlr(
 	.write_layer7_weight_mem(write_layer7_weight_mem),
 	.weight_mem_addr(write_weight_mem_addr),
 	.weight_mem_data(write_weight_mem_data),
+	.weight_fsm_cs(weight_fsm_cs),
 	
 	
 	//read_bias_mem(),
@@ -357,6 +360,9 @@ local_mem_weight weight_st_mem(
 	.write_weight_addr(write_weight_mem_addr),
 	.write_weight_data(write_weight_mem_data),
 	.write_weight_signal(write_weight_mem_signal||layer7_mem1_write),
+	.layer7_read_weight_signal(layer7_read_weight_signal),
+	.weight_fsm_cs(weight_fsm_cs),
+	.weight_store_done(layer1_weight_store_done||layer2_weight_store_done||layer4_weight_store_done||layer5_weight_store_done),
 	//
 	
 	.read_weight_data1(read_weight_data),
@@ -897,6 +903,7 @@ layer5_result_one_side_mem layer5_data_mem_odd_odd(
 	//INOUT
 	.layer5_result_output(layer5_result_odd_odd)	
 );
+/*
 layer5_result_mem layer5_data_mem(
 	.clk(clk),
 	.rst(rst),
@@ -911,6 +918,7 @@ layer5_result_mem layer5_data_mem(
 	
 	.layer5_result_output(layer5_result)
 );
+*/
 /*
 layer6_maxpooling layer6(
 	.clk(clk),

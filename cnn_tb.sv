@@ -538,7 +538,6 @@ begin
 			cnt = $fscanf(fp_r, "%h",result_reg2);
 			row_even=row%2;
 			col_even=col%2;
-			
 			if (row_even==0&&col_even==0)
 			begin
 				if(result_reg2==TOP.layer2_data_mem_even_even.layer2_st.i_layer3_sram.Memory[memory_even_even])
@@ -906,12 +905,12 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER7_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer6),.STAGE("STAGE6"));
-		
+		/*
 		if (picture_layer6==1)
 		begin
 			$finish;
 		end
-		
+		*/
 		picture_layer6++;	
 	end
 	pass_count=0;
@@ -944,12 +943,12 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
-		/*
+		
 		if (picture_layer7==2)
 		begin
 			$finish;
 		end
-		*/
+		
 		picture_layer7++;
 		if(FAIL_FLAG)
 		begin

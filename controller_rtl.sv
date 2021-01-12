@@ -58,6 +58,7 @@ module controller(
 	write_layer7_weight_mem,
 	weight_mem_addr,
 	weight_mem_data,
+	weight_fsm_cs,
 	
 	
 	//read_bias_mem,
@@ -200,7 +201,7 @@ localparam LAYER5_WEIGHT_NUM              =16'd575;
 localparam LAYER7_WEIGHT_NUM              =16'd1999;
 //localparam LAYER5_WEIGHT_NUM              =16'd576;//9*8*8
 
-logic [ 3:0] weight_fsm_cs;
+output logic [ 3:0] weight_fsm_cs;
 logic [ 3:0] weight_fsm_ns;
 logic        weight_store_count_clear;
 logic        weight_store_count_keep;
