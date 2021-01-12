@@ -1,5 +1,6 @@
 `timescale 1ns/10ps
 `include "counter_cnn_rtl.sv"
+`include "./LocalBuffer/word72_wrapper.sv"
 module local_mem_weight(
 	clk,
 	rst,
@@ -63,6 +64,7 @@ localparam STATE_8=3'b111;
 logic read_enable2;
 logic read_enable1;
 logic [6:0] addrA_sram;
+logic [6:0] addrA_sram1;
 logic [6:0] addrB_sram;
 
 logic [15:0] write_addr;
@@ -72,7 +74,7 @@ logic [ 7:0] write_web;
 logic [127:0] write_data;
 logic weight_store_done_register_out;
 
-/*
+
 counter_cnn weight_channel_count(
 	.clk(clk),
 	.rst(rst),
@@ -94,7 +96,7 @@ begin
 	begin
 		weight_channel3_state=weight_channel3_state_ns;
 		weight_channel8_state=weight_channel8_state_ns;
-		 weight_store_done_register_out=weight_store_done;
+		weight_store_done_register_out=weight_store_done;
 	end
 end
 
@@ -104,9 +106,10 @@ begin
 	read_enable2=read_weight_signal?1'b1:1'b0;
 	read_enable1=layer7_read_weight_signal?1'b1:1'b0;
 	
-	addrA_sram=write_weight_signal?write_addr[6:0]:read_weight_addr2[6:0];//WRITE PORT
-	addrB_sram=(read_weight_addr1[6:0]==7'd72)?7'd0:read_weight_addr1[6:0];//READ_PORT
-	write_addr_clear=weight_store_done_register_out?1'b1:1'b0;
+	addrA_sram1=write_weight_signal?write_addr[6:0]:read_weight_addr2[6:0]+7'd25;
+	addrA_sram=(addrA_sram1>=7'd80)?7'd0:addrA_sram1;//WRITE PORT
+	addrB_sram=(read_weight_addr1[6:0]>=7'd80)?7'd0:read_weight_addr1[6:0];//READ_PORT
+	
 	if(write_weight_signal)
 	begin
 		if (weight_fsm_cs==WEIGHT_LAYER1_STORE||weight_fsm_cs==WEIGHT_IDLE)
@@ -118,6 +121,7 @@ begin
 					write_web=8'b11111110;
 					weight_channel3_state_ns=STATE_G;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_G:
 				begin
@@ -125,6 +129,7 @@ begin
 					write_web=8'b11111101;
 					weight_channel3_state_ns=STATE_B;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_B:
 				begin
@@ -132,6 +137,7 @@ begin
 					write_web=8'b11111011;
 					weight_channel3_state_ns=STATE_R;
 					write_addr_keep=1'b0;
+					write_addr_clear=(write_addr==16'd71)?1'b1:1'b0;
 				end
 				default:
 				begin
@@ -139,6 +145,7 @@ begin
 					write_web=8'b11111111;
 					weight_channel3_state_ns=STATE_R;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 			endcase
 		end
@@ -151,6 +158,7 @@ begin
 					write_web=8'b11111110;
 					weight_channel8_state_ns=STATE_2;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_2:
 				begin
@@ -158,6 +166,7 @@ begin
 					write_web=8'b11111101;
 					weight_channel8_state_ns=STATE_3;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_3:
 				begin
@@ -165,6 +174,7 @@ begin
 					write_web=8'b11111011;
 					weight_channel8_state_ns=STATE_4;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end	
 				STATE_4:
 				begin
@@ -172,6 +182,7 @@ begin
 					write_web=8'b11110111;
 					weight_channel8_state_ns=STATE_5;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_5:
 				begin
@@ -179,6 +190,7 @@ begin
 					write_web=8'b11101111;
 					weight_channel8_state_ns=STATE_6;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_6:
 				begin
@@ -186,6 +198,7 @@ begin
 					write_web=8'b11011111;
 					weight_channel8_state_ns=STATE_7;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_7:
 				begin
@@ -193,6 +206,7 @@ begin
 					write_web=8'b10111111;
 					weight_channel8_state_ns=STATE_8;
 					write_addr_keep=1'b1;
+					write_addr_clear=1'b0;
 				end
 				STATE_8:
 				begin
@@ -200,6 +214,14 @@ begin
 					write_web=8'b01111111;
 					weight_channel8_state_ns=STATE_1;
 					write_addr_keep=1'b0;
+					if(weight_fsm_cs==WEIGHT_LAYER7_STORE)
+					begin
+						write_addr_clear=(write_addr==16'd49)?1'b1:1'b0;
+					end
+					else
+					begin
+						write_addr_clear=(write_addr==16'd71)?1'b1:1'b0;
+					end
 				end
 			endcase
 		end
@@ -211,6 +233,7 @@ begin
 		weight_channel3_state_ns=weight_channel3_state;
 		weight_channel8_state_ns=weight_channel8_state;
 		write_addr_keep=1'b1;
+		write_addr_clear=1'b0;
 	end
 end
 
@@ -221,14 +244,14 @@ word72_wrapper weight_st(
   .WEAN(write_web),
   .WEBN(8'b11111111),
   .A(addrA_sram),
-  .B(addrA_sram),
+  .B(addrB_sram),
   .DOA(read_weight_data2),
   .DOB(read_weight_data1),
-  .DIA(),
+  .DIA(write_data),
   .DIB(128'd0)
 );
-*/
 
+/*
 logic [15:0] output_addr1;
 logic [15:0] output_addr2;
 logic [15:0] output_addr3;
@@ -350,7 +373,7 @@ begin
 		output_addr8=16'd0;
 	end
 end
-
+*/
 endmodule
 
 

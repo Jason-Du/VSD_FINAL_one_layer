@@ -315,6 +315,7 @@ begin
 					ns=FEED_WEIGHT;
 				end
 			end
+			
 			FEED_BIAS:
 			begin
 			/*
@@ -944,7 +945,7 @@ begin
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
 		
-		if (picture_layer7==2)
+		if (picture_layer7==1)
 		begin
 			$finish;
 		end

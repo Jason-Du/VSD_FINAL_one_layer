@@ -353,7 +353,7 @@ local_mem_weight weight_st_mem(
 	.clk(clk),
 	.rst(rst),
 	.read_weight_addr1(read_weight_addr_data),
-	.read_weight_addr2(read_weight_addr_data+16'd200),
+	.read_weight_addr2(read_weight_addr_data),
 	.read_weight_signal(read_weight_signal_data),
 	.buffer_num_sel(layer_weight_sel),
 	
@@ -391,7 +391,7 @@ layer7_local_mem_weight layer7_channel3_4_mem(
 	.rst(rst),
 	.read_weight_signal(layer7_read_weight_signal),
 	.read_weight_addr1(read_weight_addr_data),
-	.read_weight_addr2(read_weight_addr_data+16'd200),
+	.read_weight_addr2(read_weight_addr_data),
 	
 	.write_weight_data(write_weight_mem_data),
 	.write_weight_signal(layer7_mem2_write),
@@ -407,7 +407,7 @@ layer7_local_mem_weight layer7_channel5_6_mem(
 	.rst(rst),
 	.read_weight_signal(layer7_read_weight_signal),
 	.read_weight_addr1(read_weight_addr_data),
-	.read_weight_addr2(read_weight_addr_data+16'd200),
+	.read_weight_addr2(read_weight_addr_data),
 	
 	.write_weight_data(write_weight_mem_data),
 	.write_weight_signal(layer7_mem3_write),
@@ -422,7 +422,7 @@ layer7_local_mem_weight layer7_channel7_8_mem(
 	.rst(rst),
 	.read_weight_signal(layer7_read_weight_signal),
 	.read_weight_addr1(read_weight_addr_data),
-	.read_weight_addr2(read_weight_addr_data+16'd200),
+	.read_weight_addr2(read_weight_addr_data),
 	
 	.write_weight_data(write_weight_mem_data),
 	.write_weight_signal(layer7_mem4_write),
@@ -437,7 +437,7 @@ layer7_local_mem_weight layer7_channel9_10_mem(
 	.rst(rst),
 	.read_weight_signal(layer7_read_weight_signal),
 	.read_weight_addr1(read_weight_addr_data),
-	.read_weight_addr2(read_weight_addr_data+16'd200),
+	.read_weight_addr2(read_weight_addr_data),
 	
 	.write_weight_data(write_weight_mem_data),
 	.write_weight_signal(layer7_mem5_write),
