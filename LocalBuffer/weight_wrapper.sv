@@ -8,7 +8,7 @@
 // WEN (Write Enable) is active low
 //================================================
 //`include "../SRAMcompiler/weight/weight_sram.v"
-`include "weight/weight_sram.v"
+//`include "weight/weight_sram.v"
 
 module weight_wrapper (
   input CK,

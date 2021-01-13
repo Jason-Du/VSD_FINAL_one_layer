@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 `include "def.svh"
-`include "counter_cnn_rtl.sv"
+//`include "counter_cnn_rtl.sv"
 module controller(
 	clk,
 	rst,

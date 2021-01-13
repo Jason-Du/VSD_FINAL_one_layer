@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-`include "counter_cnn_rtl.sv"
+//`include "counter_cnn_rtl.sv"
 `include "word72_wrapper.sv"
 module local_mem_weight(
 	clk,

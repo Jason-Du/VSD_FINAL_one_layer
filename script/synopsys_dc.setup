@@ -3,11 +3,11 @@ set designer "Student"
 
 set CoreSearchPath /usr/cad/CBDK/CBDK018_UMC_Faraday_v1.0/orig_lib/fsa0m_a/2009Q2v2.0/GENERIC_CORE/FrontEnd/synopsys/
 set IOSearchPath /usr/cad/CBDK/CBDK018_UMC_Faraday_v1.0/orig_lib/fsa0m_a/2008Q3v1.2/T33_GENERIC_IO/FrontEnd/synopsys/
-set MemoryPath ../sim/SRAM\ ../sim/data_array\ ../sim/tag_array
+set MemoryPath ../SRAMcompiler/layer1\ ../SRAMcompiler/layer3\ ../SRAMcompiler/layer4\ ../SRAMcompiler/pixel\ ../SRAMcompiler/word64\ ../SRAMcompiler/word72
 set DefintionPath ../include
 
 set search_path    "$CoreSearchPath $IOSearchPath $MemoryPath $DefintionPath $search_path"
-set target_library " fsa0m_a_generic_core_ss1p62v125c.db fsa0m_a_generic_core_ff1p98vm40c.db SRAM_WC.db SRAM_BC.db data_array_WC.db data_array_BC.db tag_array_WC.db tag_array_BC.db fsa0m_a_t33_generic_io_ss1p62v125c.db fsa0m_a_t33_generic_io_ff1p98vm40c.db"
+set target_library " fsa0m_a_generic_core_ss1p62v125c.db fsa0m_a_generic_core_ff1p98vm40c.db layer1_sram_WC.db layer1_sram_BC.db layer3_sram_WC.db layer3_sram_BC.db layer4_sram_WC.db layer4_sram_BC.db pixel_sram_WC.db pixel_sram_BC.db word64_WC.db word64_BC.db word72_WC.db word72_BC.db fsa0m_a_t33_generic_io_ss1p62v125c.db fsa0m_a_t33_generic_io_ff1p98vm40c.db"
 set synthetic_library "dw_foundation.sldb"
 set link_library   "* $target_library $synthetic_library"
 set symbol_library "fsa0m_a_generic_core.sdb fsa0m_a_t33_generic_io.sdb"
@@ -16,12 +16,18 @@ set_min_lib "fsa0m_a_generic_core_ss1p62v125c.db" \
        -min "fsa0m_a_generic_core_ff1p98vm40c.db"     ; # for core lib
 set_min_lib "fsa0m_a_t33_generic_io_ss1p62v125c.db" \
        -min "fsa0m_a_t33_generic_io_ff1p98vm40c.db"   ; # for IO lib
-set_min_lib "SRAM_WC.db" \
-       -min "SRAM_BC.db"                              ; # for Memory
-set_min_lib "data_array_WC.db" \
-       -min "data_array_BC.db"                        ; # for Memory
-set_min_lib "tag_array_WC.db" \
-       -min "tag_array_BC.db"                         ; # for Memory
+set_min_lib "layer1_sram_WC.db" \
+       -min "layer1_sram_BC.db"                              ; # for Memory
+set_min_lib "layer3_sram_WC.db" \
+       -min "layer3_sram_BC.db"                              ; # for Memory
+set_min_lib "layer4_sram_WC.db" \
+       -min "layer4_sram_BC.db"                              ; # for Memory
+set_min_lib "pixel_sram_WC.db" \
+       -min "pixel_sram_BC.db"                              ; # for Memory
+set_min_lib "word64_WC.db" \
+       -min "word64_BC.db"                              ; # for Memory
+set_min_lib "word72_WC.db" \
+       -min "word72_BC.db"                              ; # for Memory
 
 set verilogout_no_tri true
 set hdlin_enable_presto_for_vhdl "TRUE"

@@ -5,9 +5,9 @@ pr_dir := ./pr
 inc_dir := ./include
 sim_dir := ./sim
 bld_dir := ./build
-sram_wrapper_dir= ./LocalBuffer
-sram_syn_dir= ./SRAMcompiler
-top_data_dir= ./top_data
+sram_wrapper_dir:= ./LocalBuffer
+sram_syn_dir:= ./SRAMcompiler
+top_data_dir:= ./top_data
 FSDB_DEF :=
 ifeq ($(FSDB),1)
 FSDB_DEF := +FSDB

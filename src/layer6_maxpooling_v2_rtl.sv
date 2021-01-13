@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
-`include "maxpooling_2x2_rtl.sv"
-`include "counter_cnn_rtl.sv"
+//`include "maxpooling_2x2_rtl.sv"
+//`include "counter_cnn_rtl.sv"
 `include "def.svh"
 module layer6_maxpooling_v2(
 	clk,

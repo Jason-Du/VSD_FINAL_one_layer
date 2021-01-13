@@ -1,8 +1,8 @@
 `timescale 1ns/10ps
-`include "channel8_tree_adder_rtl.sv"
+//`include "channel8_tree_adder_rtl.sv"
 `include "layer2_systolic_rtl.sv"
 `include "stage27_fifo_rtl.sv"
-`include "counter_cnn_rtl.sv"
+//`include "counter_cnn_rtl.sv"
 `include "def.svh"
 module layer2_cnn(
 	clk,

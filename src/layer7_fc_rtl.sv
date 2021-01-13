@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 `include "layer7_systolic_rtl.sv"
-`include "counter_cnn_rtl.sv"
+//`include "counter_cnn_rtl.sv"
 `include "def.svh"
 
 module layer7_fc(
