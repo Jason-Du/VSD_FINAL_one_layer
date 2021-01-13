@@ -1,5 +1,5 @@
 //`include "../SRAMcompiler/word72/word72.v"
-`include "SRAMcompiler/word72/word72.v"
+`include "word72/word72.v"
 module word72_wrapper (
   input CK,
   input OEA,

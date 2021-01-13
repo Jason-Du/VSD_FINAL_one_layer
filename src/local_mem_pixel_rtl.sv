@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-`include "LocalBuffer/pixel_wrapper.sv"
+`include "pixel_wrapper.sv"
 module local_mem_pixel(
 	clk,
 	rst,

@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 `include "counter_cnn_rtl.sv"
-`include "./LocalBuffer/word72_wrapper.sv"
+`include "word72_wrapper.sv"
 module local_mem_weight(
 	clk,
 	rst,

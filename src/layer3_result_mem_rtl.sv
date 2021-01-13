@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 `include"def.svh"
-`include "LocalBuffer/layer3_wrapper.sv"
+`include "layer3_wrapper.sv"
 module layer3_result_mem(
 	clk,
 	rst,

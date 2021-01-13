@@ -8,7 +8,7 @@
 // WEN (Write Enable) is active low
 //================================================
 //`include "../SRAMcompiler/pixel/pixel_sram.v"
-`include "SRAMcompiler/pixel/pixel_sram.v"
+`include "pixel/pixel_sram.v"
 module pixel_wrapper (
   input CK,
   input OEA,
