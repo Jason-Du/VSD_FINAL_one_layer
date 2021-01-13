@@ -35,7 +35,7 @@ always_comb begin
         _A = {A[9:1],!A[0]};
         _B = B;
       end
-    else if(WEAN!=1'b1)begin
+    else if(WEAN!=3'b111)begin
         _A = A;
         _B = {B[9:1],!B[0]};
     end

@@ -240,7 +240,7 @@ begin
 end
 
 word72_wrapper weight_st(
-  .CK(~clk),
+  .CK(clk),
   .OEA(read_enable1),
   .OEB(read_enable2),
   .WEAN(write_web),

@@ -1,5 +1,5 @@
 `timescale 1ns/10ps
-`include"def.svh"
+`include"./def.svh"
 module layer1_systolic(
 	input_channel,
 	

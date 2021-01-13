@@ -39,15 +39,14 @@ cnn0: | $(bld_dir)
 	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
 	+define+ideal_transfer \
 	+data_path=$(root_dir)/$(top_data_dir) \
-	+access+r \
-	#+prog_path=$(root_dir)/$(sim_dir)/cnn0
+	+access+r
 cnn1: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
-	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
+	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(inc_dir) \
 	+define+nonideal_transfer \
 	+data_path=$(root_dir)/$(top_data_dir) \
-	+access+r \
+	+access+r 
 	
 rtl0: | $(bld_dir)
 	@if [ $$(echo $(CYCLE) '>' 20.0 | bc -l) -eq 1 ]; then \

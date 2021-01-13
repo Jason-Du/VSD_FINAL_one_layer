@@ -148,7 +148,7 @@ module layer3_maxpooling_v2(
 			set_keep=1'b0;
 			read_pixel_clear=1'b0;
 			read_pixel_row_keep=1'b1;
-			if(set_count==16'd0)
+			if(set_count==16'd1)//////////READ SRAM DELAY 1 CYCLE
 			begin
 				set_clear=1'b1;
 				save_enable=1'b0;
@@ -192,7 +192,7 @@ module layer3_maxpooling_v2(
 				save_address_row_keep=1'b1;
 			end
 			//////////////////////////////////////////////////////////////
-			if(save_address_row_count==16'd0&&set_count==16'd1)
+			if(save_address_row_count==16'd0&&set_count==16'd2)//////////READ SRAM DELAY 1 CYCLE
 			begin
 				pipeline_layer3_calculation_done=1'b1;
 			end

@@ -89,9 +89,9 @@ begin
 	read_enable2=read_weight_signal?1'b1:1'b0;
 	read_enable1=read_enable2;
 	
-	addrA_sram1=write_weight_signal?write_addr[5:0]:read_weight_addr2[5:0]+6'd25;
-	addrA_sram=(addrA_sram1>=6'd80)?6'd0:addrA_sram1;//WRITE PORT
-	addrB_sram=(read_weight_addr1[5:0]>=6'd80)?6'd0:read_weight_addr1[5:0];//READ_PORT
+	addrA_sram=write_weight_signal?write_addr[5:0]:read_weight_addr2[5:0]+6'd25;
+	//WRITE PORT
+	addrB_sram=read_weight_addr1[5:0];//READ_PORT
 	
 	if(write_weight_signal)
 	begin
@@ -173,7 +173,7 @@ begin
 	end
 end
 word64_wrapper layer7_weight_st(
-  .CK(~clk),
+  .CK(clk),
   .OEA(read_enable1),
   .OEB(read_enable2),
   .WEAN(write_web),
