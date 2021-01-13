@@ -173,7 +173,7 @@ begin
 	end
 end
 word64_wrapper layer7_weight_st(
-  .CK(~clk),
+  .CK(clk),
   .OEA(read_enable1),
   .OEB(read_enable2),
   .WEAN(write_web),

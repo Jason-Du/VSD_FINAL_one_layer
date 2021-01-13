@@ -1,12 +1,20 @@
 `timescale 1ns/10ps
-`include "layer1/layer1_sram.v"
-//`include "layer1/layer1_sram_rtl.sv"
-`include "layer3/layer3_sram.v"
-`include "layer4/layer4_sram.v"
-`include "pixel/pixel_sram.v"
-`include "word64/word64.v"
-`include "word72/word72.v"
+//`include "layer1/layer1_sram.v"
+`include "layer1/layer1_sram_rtl.sv"
+//`include "layer3/layer3_sram.v"
+`include "layer3/layer3_sram_rtl.sv"
+//`include "layer4/layer4_sram.v"
+`include "layer4/layer4_sram_rtl.sv"
 
+//`include "pixel/pixel_sram.v"
+`include "pixel/pixel_sram_rtl.sv"
+
+//`include "word64/word64.v"
+
+`include "word64/word64_rtl.sv"
+
+//`include "word72/word72.v"
+`include "word72/word72_rtl.sv"
 `include "cnn_rtl.sv"
 
 `include "def.svh"
@@ -522,7 +530,7 @@ begin
 		begin
 			$finish;
 		end
-		*/
+*/		
 		
 		picture_layer1++;
 		//$finish;	
@@ -962,7 +970,7 @@ begin
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
 		
-		if (picture_layer7==1)
+		if (picture_layer7==2)
 		begin
 			$finish;
 		end

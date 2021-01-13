@@ -196,6 +196,7 @@ module layer1_cnn(
 			pipeline_layer1_calculation_done=1'b0;
 			save_address_row_clear=1'b1;
 			read_pixel_signal=1'b1;
+			save_enable=1'b0;
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
@@ -213,13 +214,11 @@ module layer1_cnn(
 			if(set_count==`LAYER1_SET_COUNT)
 			begin
 				set_clear=1'b1;
-				save_enable=1'b0;
 				save_ns=SAVE_ENABLE;
 			end
 			else
 			begin
 				set_clear=1'b0;
-				save_enable=1'b0;
 				save_ns=SAVE_SETTING;
 			end
 		end

@@ -571,10 +571,10 @@ logic layer2_odd_odd_save_enable;
 logic layer2_odd_even_save_enable;
 always_comb
 begin
-	layer2_even_even_save_enable=layer2_save_enable?(layer2_save_row[0]==0&&layer2_save_col[0]==0)?1'b1:1'b0:1'b0;
-	layer2_even_odd_save_enable=layer2_save_enable?(layer2_save_row[0]==0&&layer2_save_col[0]==1)?1'b1:1'b0:1'b0;
-	layer2_odd_even_save_enable=layer2_save_enable?(layer2_save_row[0]==1&&layer2_save_col[0]==0)?1'b1:1'b0:1'b0;
-	layer2_odd_odd_save_enable=layer2_save_enable?(layer2_save_row[0]==1&&layer2_save_col[0]==1)?1'b1:1'b0:1'b0;
+	layer2_even_even_save_enable=layer2_save_enable?(layer2_save_row[0]==1'b0&&layer2_save_col[0]==1'b0)?1'b1:1'b0:1'b0;
+	layer2_even_odd_save_enable=layer2_save_enable?(layer2_save_row[0]==1'b0&&layer2_save_col[0]==1'b1)?1'b1:1'b0:1'b0;
+	layer2_odd_even_save_enable=layer2_save_enable?(layer2_save_row[0]==1'b1&&layer2_save_col[0]==1'b0)?1'b1:1'b0:1'b0;
+	layer2_odd_odd_save_enable=layer2_save_enable?(layer2_save_row[0]==1'b1&&layer2_save_col[0]==1'b1)?1'b1:1'b0:1'b0;
 end
 
 
@@ -804,10 +804,10 @@ logic layer5_odd_odd_save_enable;
 logic layer5_odd_even_save_enable;
 always_comb
 begin
-	layer5_even_even_save_enable=layer5_save_enable?(layer5_save_row[0]==0&&layer5_save_col[0]==0)?1'b1:1'b0:1'b0;
-	layer5_even_odd_save_enable=layer5_save_enable?(layer5_save_row[0]==0&&layer5_save_col[0]==1)?1'b1:1'b0:1'b0;
-	layer5_odd_even_save_enable=layer5_save_enable?(layer5_save_row[0]==1&&layer5_save_col[0]==0)?1'b1:1'b0:1'b0;
-	layer5_odd_odd_save_enable=layer5_save_enable?(layer5_save_row[0]==1&&layer5_save_col[0]==1)?1'b1:1'b0:1'b0;
+	layer5_even_even_save_enable=layer5_save_enable?(layer5_save_row[0]==1'b0&&layer5_save_col[0]==1'b0)?1'b1:1'b0:1'b0;
+	layer5_even_odd_save_enable=layer5_save_enable?(layer5_save_row[0]==1'b0&&layer5_save_col[0]==1'b1)?1'b1:1'b0:1'b0;
+	layer5_odd_even_save_enable=layer5_save_enable?(layer5_save_row[0]==1'b1&&layer5_save_col[0]==1'b0)?1'b1:1'b0:1'b0;
+	layer5_odd_odd_save_enable=layer5_save_enable?(layer5_save_row[0]==1'b1&&layer5_save_col[0]==1'b1)?1'b1:1'b0:1'b0;
 end
 
 

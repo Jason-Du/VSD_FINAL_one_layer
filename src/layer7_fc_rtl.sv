@@ -367,24 +367,28 @@ module layer7_fc(
 	always_comb
 	begin
 		read_weight_addr=weight_read_count;
-		weight_read_clear=1'b1;
+		
 		case(weight_cs)
 		WEIGHT_IDLE:
 		begin
-			read_weight_signal=1'b0;
+			//read_weight_signal=1'b0;
+			//weight_read_clear=1'b1;
 			if(pixel_store_done)
 			begin
 				weight_ns=WEIGHT_SET;
+				weight_read_clear=1'b0;//SRAM READ ONE DELAY
+				read_weight_signal=1'b1;
 			end
 			else
 			begin
 				weight_ns=WEIGHT_IDLE;
-				
+				weight_read_clear=1'b1;
+				read_weight_signal=1'b0;
 			end	
 		end
 		WEIGHT_SET:
 		begin
-			if(weight_read_count==16'd25)
+			if(weight_read_count==`LAYER7_SET_COUNT)
 			begin
 				weight_read_clear=1'b1;
 				read_weight_signal=1'b0;

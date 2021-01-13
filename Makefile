@@ -5,11 +5,9 @@ pr_dir := ./pr
 inc_dir := ./include
 sim_dir := ./sim
 bld_dir := ./build
-#MODIFY______________________________________________________________________________________________________
 sram_wrapper_dir= ./LocalBuffer
 sram_syn_dir= ./SRAMcompiler
 top_data_dir= ./top_data
-#MODIFY______________________________________________________________________________________________________
 FSDB_DEF :=
 ifeq ($(FSDB),1)
 FSDB_DEF := +FSDB
@@ -35,7 +33,6 @@ cache: clean | $(bld_dir)
 
 # RTL simulation
 rtl_all: clean rtl0 rtl1 rtl2
-#MODIFY______________________________________________________________________________________________________
 cnn0: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
@@ -46,11 +43,10 @@ cnn0: | $(bld_dir)
 cnn1: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
-	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
+	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(inc_dir) \
 	+define+nonideal_transfer \
 	+data_path=$(root_dir)/$(top_data_dir) \
-	+access+r \
-#MODIFY______________________________________________________________________________________________________
+	+access+r 
 	
 rtl0: | $(bld_dir)
 	@if [ $$(echo $(CYCLE) '>' 20.0 | bc -l) -eq 1 ]; then \

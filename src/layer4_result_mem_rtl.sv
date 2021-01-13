@@ -58,7 +58,7 @@ module layer4_result_mem(
 	end
 
 layer4_wrapper layer4_st(
-  .CK(~clk),
+  .CK(clk),
   .OEA(1'b0),
   .OEB(layer4_result_read_signal),
   .WEAN(~save_enable),

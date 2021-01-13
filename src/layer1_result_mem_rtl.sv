@@ -48,7 +48,7 @@ module layer1_result_mem(
 	end
 	
 layer1_wrapper layer1_st(
-  .CK(~clk),
+  .CK(clk),
   .OEA(1'b0),
   .OEB(layer1_result_read_signal),
   .WEAN(~save_enable),

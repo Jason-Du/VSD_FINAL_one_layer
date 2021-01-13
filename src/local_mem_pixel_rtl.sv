@@ -70,7 +70,7 @@ begin
 	write_addr_sram=write_pixel_addr[9:0];
 end
 pixel_wrapper pixel_st(
- .CK(~clk),
+ .CK(clk),
  .OEA(1'b0),
  .OEB(read_pixel_signal),
  .WEAN(write_web),

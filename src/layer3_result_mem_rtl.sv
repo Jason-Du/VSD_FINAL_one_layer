@@ -52,7 +52,7 @@ module layer3_result_mem(
 	end
 	
 layer3_wrapper layer3_st(
-  .CK(~clk),
+  .CK(clk),
   .OEA(1'b0),
   .OEB(layer3_result_read_signal),
   .WEAN(~save_enable),
