@@ -36,7 +36,7 @@ rtl_all: clean rtl0 rtl1 rtl2
 cnn0: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
-	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(inc_dir) \
+	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
 	+define+ideal_transfer \
 	+data_path=$(root_dir)/$(top_data_dir) \
 	+access+r \
