@@ -1,5 +1,5 @@
 //`include "../SRAMcompiler/word72/word72.v"
-`include "word72/word72.v"
+//`include "word72/word72.v"
 module word72_wrapper (
   input CK,
   input OEA,
@@ -27,7 +27,7 @@ always_comb begin
         _A = {A[6:1],!A[0]};
         _B = B;
       end
-    else if(WEAN!=1'b1)begin
+    else if(WEAN!=8'b11111111)begin
         _A = A;
         _B = {B[6:1],!B[0]};
     end

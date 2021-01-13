@@ -20,7 +20,7 @@ always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
 	begin
-		setting_done_condition<=1'b0;
+		setting_done_condition<=2'b00;
 	end
 	else
 	begin

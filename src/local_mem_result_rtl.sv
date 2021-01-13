@@ -52,7 +52,7 @@ module local_mem_result(
 	begin
 		if(rst)
 		begin
-			result_mem_out<=32'd0;
+			result_mem_out<=160'd0;
 		end
 		else
 		begin

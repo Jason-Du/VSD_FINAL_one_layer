@@ -34,11 +34,11 @@ module layer3_result_mem(
 	logic [ 7:0]   read_addr_sram;
 	logic [ 7:0]   save_addr_sram;
 	
-	logic [15:0]   read_addr_minus;
-	logic [15:0]   read_addr_add;
+	logic [16:0]   read_addr_minus;
+	logic [19:0]   read_addr_add;
 	
-	logic [15:0]   save_addr_add;
-	logic [15:0]   save_addr_minus;
+	logic [19:0]   save_addr_add;
+	logic [16:0]   save_addr_minus;
 	logic [`LAYER3_OUTPUT_LENGTH-1:0] null_wire1;
 	
 	always_comb

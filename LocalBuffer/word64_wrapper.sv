@@ -1,5 +1,5 @@
 //`include "../SRAMcompiler/word64/word64.v"
-`include "word64/word64.v"
+//`include "word64/word64.v"
 module word64_wrapper (
   input CK,
   input OEA,
@@ -27,7 +27,7 @@ always_comb begin
         _A = {A[5:1],!A[0]};
         _B = B;
       end
-    else if(WEAN!=1'b1)begin
+    else if(WEAN!=8'b11111111)begin
         _A = A;
         _B = {B[5:1],!B[0]};
     end

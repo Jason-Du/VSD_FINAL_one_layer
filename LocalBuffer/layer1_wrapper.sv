@@ -8,7 +8,7 @@
 // WEN (Write Enable) is active low
 //================================================
 //`include "../SRAMcompiler/layer1/layer1_sram.v"
-`include "layer1/layer1_sram.v"
+//
 module layer1_wrapper (
   input CK,
   input OEA,

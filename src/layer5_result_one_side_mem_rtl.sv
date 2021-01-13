@@ -1,5 +1,6 @@
 `timescale 1ns/10ps
 `include"def.svh"
+//`include "include/def.svh"
 module layer5_result_one_side_mem(
 	clk,
 	rst,
@@ -18,7 +19,7 @@ module layer5_result_one_side_mem(
 	input rst;
 
 	input        save_enable;
-	input [`LAYER5_OUTPUT_LENGTH-1:0]layer5_result_store_data_in;
+	input [`LAYER6_WEIGHT_INPUT_LENGTH-1:0]layer5_result_store_data_in;
 	input [ 15:0] 	save_row_addr;
 	input [ 15:0] 	save_col_addr;
 	input [ 15:0] 	read_row_addr;
@@ -26,20 +27,20 @@ module layer5_result_one_side_mem(
 	input        layer5_result_read_signal;
 	//INOUT
 	
-	output logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_result_output;
+	output logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_result_output;
 	
-	logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_results_mem [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
-	logic [`LAYER5_OUTPUT_LENGTH-1:0] layer5_results_mem_in [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
+	logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_results_mem [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
+	logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_results_mem_in [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
 	
 	always_ff@(posedge clk or posedge rst)
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=`LAYER6_WIDTH/2-1;i++)
+			for(int i=0;i<=`LAYER6_WIDTH/2-1;i++)
 			begin
-				for(byte j=0;j<=`LAYER6_WIDTH/2-1;j++)
+				for(int j=0;j<=`LAYER6_WIDTH/2-1;j++)
 				begin
-					layer5_results_mem [i][j]<=`LAYER5_OUTPUT_LENGTH'd0;
+					layer5_results_mem [i][j]<=`LAYER6_WEIGHT_INPUT_LENGTH'd0;
 				end
 			end
 			
@@ -47,9 +48,9 @@ module layer5_result_one_side_mem(
 			//WRITE
 		else
 		begin
-			if(save_enable)
+			if(save_enable&&save_row_addr[2:0]<3'd5&&save_col_addr[2:0]<3'd5)
 			begin
-				layer5_results_mem [save_row_addr][save_col_addr]<=layer5_result_store_data_in;
+				layer5_results_mem [save_row_addr[2:0]][save_col_addr[2:0]]<=layer5_result_store_data_in;
 			end
 			else
 			begin
@@ -60,13 +61,14 @@ module layer5_result_one_side_mem(
 	//READ
 	always_comb
 	begin
-		if(layer5_result_read_signal)
+		if(layer5_result_read_signal&&read_row_addr[2:0]<3'd5&&read_col_addr[2:0]<3'd5)
 		begin
-			layer5_result_output=layer5_results_mem [read_row_addr][read_col_addr];
+			layer5_result_output=layer5_results_mem [read_row_addr[2:0]][read_col_addr[2:0]];
 		end
 		else
 		begin
-			layer5_result_output=`LAYER5_OUTPUT_LENGTH'd0;
+			layer5_result_output=`LAYER6_WEIGHT_INPUT_LENGTH'd0;
 		end
+		
 	end
 endmodule

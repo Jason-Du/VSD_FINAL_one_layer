@@ -88,15 +88,15 @@ always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
 	begin		
-		weight_channel3_state=STATE_R;
-		weight_channel8_state=STATE_1;
-		weight_store_done_register_out=1'b0;
+		weight_channel3_state<=STATE_R;
+		weight_channel8_state<=STATE_1;
+		weight_store_done_register_out<=1'b0;
 	end
 	else
 	begin
-		weight_channel3_state=weight_channel3_state_ns;
-		weight_channel8_state=weight_channel8_state_ns;
-		weight_store_done_register_out=weight_store_done;
+		weight_channel3_state<=weight_channel3_state_ns;
+		weight_channel8_state<=weight_channel8_state_ns;
+		weight_store_done_register_out<=weight_store_done;
 	end
 end
 
@@ -114,6 +114,7 @@ begin
 	begin
 		if (weight_fsm_cs==WEIGHT_LAYER1_STORE||weight_fsm_cs==WEIGHT_IDLE)
 		begin
+			weight_channel8_state_ns=STATE_1;
 			case(weight_channel3_state)
 				STATE_R:
 				begin
@@ -151,6 +152,7 @@ begin
 		end
 		else
 		begin
+			weight_channel3_state_ns=STATE_R;
 			case(weight_channel8_state)
 				STATE_1:
 				begin

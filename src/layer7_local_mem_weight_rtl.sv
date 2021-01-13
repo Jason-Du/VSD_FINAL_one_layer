@@ -73,13 +73,13 @@ always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
 	begin		
-		//weight_channel3_state=STATE_R;
-		weight_channel8_state=STATE_1;
+		//weight_channel3_state<=STATE_R;
+		weight_channel8_state<=STATE_1;
 	end
 	else
 	begin
-		//weight_channel3_state=weight_channel3_state_ns;
-		weight_channel8_state=weight_channel8_state_ns;
+		//weight_channel3_state<=weight_channel3_state_ns;
+		weight_channel8_state<=weight_channel8_state_ns;
 	end
 end
 
@@ -89,9 +89,9 @@ begin
 	read_enable2=read_weight_signal?1'b1:1'b0;
 	read_enable1=read_enable2;
 	
-	addrA_sram1=write_weight_signal?write_addr[5:0]:read_weight_addr2[5:0]+7'd25;
-	addrA_sram=(addrA_sram1>=7'd80)?7'd0:addrA_sram1;//WRITE PORT
-	addrB_sram=(read_weight_addr1[5:0]>=7'd80)?7'd0:read_weight_addr1[5:0];//READ_PORT
+	addrA_sram1=write_weight_signal?write_addr[5:0]:read_weight_addr2[5:0]+6'd25;
+	addrA_sram=(addrA_sram1>=6'd80)?6'd0:addrA_sram1;//WRITE PORT
+	addrB_sram=(read_weight_addr1[5:0]>=6'd80)?6'd0:read_weight_addr1[5:0];//READ_PORT
 	
 	if(write_weight_signal)
 	begin

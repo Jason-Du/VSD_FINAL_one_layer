@@ -45,7 +45,7 @@ module layer2_result_one_side_mem(
 		save_addr_minus=(save_row_addr)<<1;
 		save_addr_sram=save_addr_add[7:0]+save_col_addr[7:0]-save_addr_minus[7:0];
 	end
-	
+
 layer3_wrapper layer2_st(
   .CK(~clk),
   .OEA(1'b0),
@@ -59,9 +59,6 @@ layer3_wrapper layer2_st(
   .DIA(layer2_result_store_data_in),
   .DIB(128'd0)
 );
-
-	
-	
 	
 	//INOUT
 	

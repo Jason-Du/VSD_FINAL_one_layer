@@ -1,7 +1,16 @@
 `timescale 1ns/10ps
+`include "layer1/layer1_sram.v"
+`include "layer3/layer3_sram.v"
+`include "layer4/layer4_sram.v"
+`include "pixel/pixel_sram.v"
+`include "word64/word64.v"
+`include "word72/word72.v"
+
 `include "cnn_rtl.sv"
 `include "def.svh"
 `include "counter_cnn_rtl.sv"
+
+
 `define		MEM_PIXEL_FILE		"/pixel.data"
 `define		MEM_WEIGHT_FILE		"/weight.data"
 `define		MEM_BIAS_FILE		"/bias.data"

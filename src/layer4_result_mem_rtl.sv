@@ -35,11 +35,11 @@ module layer4_result_mem(
 	logic [ 7:0]   read_addr_sram0;
 	logic [ 7:0]   save_addr_sram0;
 	
-	logic [15:0]   read_addr_minus;
-	logic [15:0]   read_addr_add;
+	logic [17:0]   read_addr_minus;
+	logic [19:0]   read_addr_add;
 	
-	logic [15:0]   save_addr_add;
-	logic [15:0]   save_addr_minus;
+	logic [19:0]   save_addr_add;
+	logic [17:0]   save_addr_minus;
 	logic [`LAYER4_OUTPUT_LENGTH-1:0] null_wire1;
 	
 	
@@ -56,7 +56,7 @@ module layer4_result_mem(
 		save_addr_sram=(save_addr_sram0==8'd144)?8'd0:save_addr_sram0;
 		
 	end
-	
+
 layer4_wrapper layer4_st(
   .CK(~clk),
   .OEA(1'b0),
@@ -70,8 +70,6 @@ layer4_wrapper layer4_st(
   .DIA(layer4_result_store_data_in),
   .DIB(128'd0)
 );
-	
-	
 	/*
 	logic [`LAYER4_OUTPUT_LENGTH-1:0] layer4_results_mem    [`LAYER5_WIDTH][`LAYER5_WIDTH];
 	logic [`LAYER4_OUTPUT_LENGTH-1:0] layer4_results_mem_in [`LAYER5_WIDTH][`LAYER5_WIDTH];
