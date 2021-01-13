@@ -154,7 +154,7 @@ module layer4_cnn(
 		end
 		else
 		begin
-			save_cs=save_ns;
+			save_cs<=save_ns;
 		end
 	end
 	always_comb
@@ -199,7 +199,7 @@ module layer4_cnn(
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER4_WIDTH-1)
+			if (read_pixel_count==`LAYER4_READ_PIXEL_COUNT_COL_END)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -210,7 +210,7 @@ module layer4_cnn(
 				read_pixel_row_keep=1'b1;
 			end
 			//fix
-			if(set_count==16'd`LAYER4_SET_COUNT)
+			if(set_count==`LAYER4_SET_COUNT)
 			begin
 				set_clear=1'b1;
 				save_enable=1'b0;
@@ -230,7 +230,7 @@ module layer4_cnn(
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER4_WIDTH-1)
+			if (read_pixel_count==`LAYER4_READ_PIXEL_COUNT_COL_END)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -242,7 +242,7 @@ module layer4_cnn(
 			end
 			
 			//fix
-			if(set_count==16'd`LAYER4_WIDTH-1)
+			if(set_count==`LAYER4_READ_PIXEL_COUNT_COL_END)
 			begin
 				set_clear=1'b1;
 				save_address_row_keep=1'b0;
@@ -253,7 +253,7 @@ module layer4_cnn(
 				save_address_row_keep=1'b1;
 			end
 			
-			if(save_address_row_count==16'd`LAYER4_PIPELINE_ROW&&set_count==16'd`LAYER4_PIPELINE_COL)
+			if(save_address_row_count==`LAYER4_PIPELINE_ROW&&set_count==`LAYER4_PIPELINE_COL)
 			begin
 				pipeline_layer4_calculation_done=1'b1;
 			end
@@ -261,7 +261,7 @@ module layer4_cnn(
 			begin
 				pipeline_layer4_calculation_done=1'b0;
 			end
-			if(save_address_row_count==16'd`LAYER4_WIDTH-3&&set_count==16'd`LAYER4_WIDTH-3)
+			if(save_address_row_count==`LAYER4_BUFFER_LENGTH&&set_count==`LAYER4_BUFFER_LENGTH)
 			begin
 				save_ns=SAVE_IDLE;
 				layer4_calculation_done=1'b1;
@@ -272,7 +272,7 @@ module layer4_cnn(
 				layer4_calculation_done=1'b0;
 			end
 			
-			if(set_count>16'd`LAYER4_WIDTH-3)
+			if(set_count>`LAYER4_BUFFER_LENGTH)
 			begin
 				save_enable=1'b0;
 			end
@@ -347,11 +347,11 @@ module layer4_cnn(
 	begin
 		if(rst)
 		begin
-			bias_cs<=SAVE_IDLE;
+			bias_cs<=BIAS_IDLE;
 		end
 		else
 		begin
-			bias_cs=bias_ns;
+			bias_cs<=bias_ns;
 		end
 	end
 	always_comb
@@ -435,14 +435,14 @@ module layer4_cnn(
 			bias_register_in[0]=bias_register_out[1];
 			*/
 			bias_register_in[`LAYER4_OUTPUT_CHANNEL_NUM-1]=bias_data;
-			for (byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-2;i++)
+			for (int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-2;i++)
 			begin
 				bias_register_in[i]=bias_register_out[i+1];
 			end
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				bias_register_in[i]=bias_register_out[i];
 			end		
@@ -452,14 +452,14 @@ module layer4_cnn(
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				bias_register_out[i]<=16'd0;
 			end	
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				bias_register_out[i]<=bias_register_in[i];
 			end		
@@ -481,11 +481,11 @@ module layer4_cnn(
 	begin
 		if(rst)
 		begin
-			weight_cs<=SAVE_IDLE;
+			weight_cs<=WEIGHT_IDLE;
 		end
 		else
 		begin
-			weight_cs=weight_ns;
+			weight_cs<=weight_ns;
 		end
 	end
 	always_comb
@@ -510,7 +510,7 @@ module layer4_cnn(
 		end
 		WEIGHT_SET:
 		begin
-			if(weight_set_count==16'd`LAYER2_SYSTOLIC_WEIGHT_NUM)
+			if(weight_set_count==`LAYER4_WEIGHT_SET_COUNT)
 			begin
 				weight_set_keep=1'b1;
 				weight_set_done=1'b1;
@@ -558,7 +558,7 @@ module layer4_cnn(
 			weight_register_in3[0]=weight_register_out4[`LAYER4_OUTPUT_CHANNEL_NUM-1];
 			weight_register_in2[0]=weight_register_out3[`LAYER4_OUTPUT_CHANNEL_NUM-1];
 			weight_register_in1[0]=weight_register_out2[`LAYER4_OUTPUT_CHANNEL_NUM-1];
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-2;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-2;i++)
 			begin
 				weight_register_in9[i+1]=weight_register_out9[i];
 				weight_register_in8[i+1]=weight_register_out8[i];
@@ -573,7 +573,7 @@ module layer4_cnn(
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				weight_register_in1[i]=weight_register_out1[i];
 				weight_register_in2[i]=weight_register_out2[i];
@@ -591,7 +591,7 @@ module layer4_cnn(
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				weight_register_out1[i]<=`LAYER4_WEIGHT_INPUT_LENGTH'd0;
 				weight_register_out2[i]<=`LAYER4_WEIGHT_INPUT_LENGTH'd0;
@@ -606,7 +606,7 @@ module layer4_cnn(
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER4_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				weight_register_out1[i]<=weight_register_in1[i];
 				weight_register_out2[i]<=weight_register_in2[i];

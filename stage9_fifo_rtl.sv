@@ -16,7 +16,7 @@ logic        [`LAYER5_WEIGHT_INPUT_LENGTH-1:0] Reg_out [`LAYER5_WIDTH-3];
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=`LAYER5_WIDTH-4;i++)
+			for(int i=0;i<=`LAYER5_WIDTH-4;i++)
 			begin
 				Reg_out[i]<=`LAYER5_WEIGHT_INPUT_LENGTH'd0;
 				//$display("rst check");
@@ -25,7 +25,7 @@ logic        [`LAYER5_WEIGHT_INPUT_LENGTH-1:0] Reg_out [`LAYER5_WIDTH-3];
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER5_WIDTH-4;i++)
+			for(int i=0;i<=`LAYER5_WIDTH-4;i++)
 			begin
 				Reg_out[i]<=Reg_in[i];
 			end
@@ -33,7 +33,7 @@ logic        [`LAYER5_WEIGHT_INPUT_LENGTH-1:0] Reg_out [`LAYER5_WIDTH-3];
 	end
 	always_comb
 	begin
-		for(byte i=0;i<`LAYER5_WIDTH-4;i++)
+		for(int i=0;i<`LAYER5_WIDTH-4;i++)
 		begin
 			Reg_in[i+1]=Reg_out[i];
 		end

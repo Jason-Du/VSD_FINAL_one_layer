@@ -31,11 +31,11 @@ module layer1_result_mem(
 	logic        [`LAYER1_OUTPUT_LENGTH-1:0] null_wire1;
 	//A WRITE B READ
 	logic [ 9:0]   read_addr_sram;
-	logic [15:0]   read_addr_minus;
-	logic [15:0]   read_addr_add;
+	logic [16:0]   read_addr_minus;
+	logic [20:0]   read_addr_add;
 	logic [9:0]    save_addr_sram;
-	logic [15:0]   save_addr_add;
-	logic [15:0]   save_addr_minus;
+	logic [20:0]   save_addr_add;
+	logic [16:0]   save_addr_minus;
 	
 	always_comb
 	begin
@@ -61,12 +61,13 @@ layer1_wrapper layer1_st(
   .DIB(128'd0)
 );
 
-	/*
-	
 
 	
 	
 
+	
+	
+/*
 	logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_results_mem    [`LAYER2_WIDTH][`LAYER2_WIDTH];
 	logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_results_mem_in [`LAYER2_WIDTH][`LAYER2_WIDTH];
 	

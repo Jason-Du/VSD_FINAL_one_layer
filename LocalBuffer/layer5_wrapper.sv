@@ -7,6 +7,7 @@
 // Byte       : 1            
 // WEN (Write Enable) is active low
 //================================================
+//`include "../SRAMcompiler/layer5/layer5_sram.v"
 `include "SRAMcompiler/layer5/layer5_sram.v"
 
 module layer5_wrapper (

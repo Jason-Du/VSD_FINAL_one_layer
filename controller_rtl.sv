@@ -270,8 +270,8 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
-		layer1_weight_store_done=(weight_store_count_data==LAYER1_WEIGHT_NUM-1)?1'b1:1'b0;
-		layer_weight_sel         =(weight_store_count_data>=LAYER1_WEIGHT_NUM-1)?5'd1:5'd0;
+		layer1_weight_store_done=(weight_store_count_data==LAYER1_WEIGHT_NUM-16'd1)?1'b1:1'b0;
+		layer_weight_sel         =(weight_store_count_data>=LAYER1_WEIGHT_NUM-16'd1)?5'd1:5'd0;
 		if(weight_store_count_data==LAYER1_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
@@ -307,8 +307,8 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
-		layer2_weight_store_done=(weight_store_count_data==LAYER2_WEIGHT_NUM-1)?1'b1:1'b0;
-		layer_weight_sel         =(weight_store_count_data>=LAYER2_WEIGHT_NUM-1)?5'd2:5'd1;
+		layer2_weight_store_done=(weight_store_count_data==LAYER2_WEIGHT_NUM-16'd1)?1'b1:1'b0;
+		layer_weight_sel         =(weight_store_count_data>=LAYER2_WEIGHT_NUM-16'd1)?5'd2:5'd1;
 		if(weight_store_count_data==LAYER2_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
@@ -346,8 +346,8 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
-		layer4_weight_store_done=(weight_store_count_data==LAYER4_WEIGHT_NUM-1)?1'b1:1'b0;
-		layer_weight_sel         =(weight_store_count_data>=LAYER4_WEIGHT_NUM-1)?5'd4:5'd2;
+		layer4_weight_store_done=(weight_store_count_data==LAYER4_WEIGHT_NUM-16'd1)?1'b1:1'b0;
+		layer_weight_sel         =(weight_store_count_data>=LAYER4_WEIGHT_NUM-16'd1)?5'd4:5'd2;
 		if(weight_store_count_data==LAYER4_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
@@ -385,8 +385,8 @@ begin
 			weight_mem_data  =16'd0;
 			weight_mem_addr  =16'd0;			
 		end
-		layer5_weight_store_done=(weight_store_count_data==LAYER5_WEIGHT_NUM-1)?1'b1:1'b0;
-		layer_weight_sel         =(weight_store_count_data>=LAYER5_WEIGHT_NUM-1)?5'd5:5'd4;
+		layer5_weight_store_done=(weight_store_count_data==LAYER5_WEIGHT_NUM-16'd1)?1'b1:1'b0;
+		layer_weight_sel         =(weight_store_count_data>=LAYER5_WEIGHT_NUM-16'd1)?5'd5:5'd4;
 		if(weight_store_count_data==LAYER5_WEIGHT_NUM&&wvalid)
 		begin
 			weight_store_count_clear=1'b1;
@@ -409,8 +409,8 @@ begin
 		layer4_weight_store_done=1'b0;
 		layer5_weight_store_done=1'b0;
 		write_weight_mem =1'b0;
-		layer7_weight_store_done=(weight_store_count_data==LAYER7_WEIGHT_NUM-1)?1'b1:1'b0;
-		layer_weight_sel         =(weight_store_count_data>=LAYER7_WEIGHT_NUM-1)?5'd7:5'd5;
+		layer7_weight_store_done=(weight_store_count_data==LAYER7_WEIGHT_NUM-16'd1)?1'b1:1'b0;
+		layer_weight_sel         =(weight_store_count_data>=LAYER7_WEIGHT_NUM-16'd1)?5'd7:5'd5;
 		if(wvalid&&awaddr[31:16]==local_weight_mem_ADDRESS)
 		begin
 			weight_store_count_keep=1'b0;
@@ -849,7 +849,7 @@ begin
 				pixel_mem_data  =16'd0;
 				pixel_mem_addr  =16'd0;
 			end
-			layer1_input_store_done=(pixel_store_count_data==LAYER1_PIXEL_NUM-1)?1'b1:1'b0;
+			layer1_input_store_done=(pixel_store_count_data==LAYER1_PIXEL_NUM-16'd1)?1'b1:1'b0;
 	
 			if(pixel_store_count_data==LAYER1_PIXEL_NUM&&wvalid)
 			begin

@@ -101,7 +101,7 @@ module layer6_maxpooling_v2(
 		end
 		else
 		begin
-			save_cs=save_ns;
+			save_cs<=save_ns;
 		end
 	end
 	always_comb
@@ -145,11 +145,12 @@ module layer6_maxpooling_v2(
 			save_address_row_clear=1'b1;
 			read_pixel_signal=1'b1;
 			set_keep=1'b0;
+			read_pixel_row_clear=1'b0;
 			//fix
 			//read_pixel_clear=1'b0;
 			/*
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER7_WIDTH-1)
+			if (read_pixel_count==`LAYER6_READ_PIXEL_COUNT_COL_END)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -183,7 +184,7 @@ module layer6_maxpooling_v2(
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
-			if (read_pixel_count==16'd`LAYER7_WIDTH-1)
+			if (read_pixel_count==`LAYER6_READ_PIXEL_COUNT_COL_END)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -195,7 +196,7 @@ module layer6_maxpooling_v2(
 			end
 			//fix
 			////////////////////////////////////////////////////////////////
-			if(set_count==16'd`LAYER7_WIDTH-1)
+			if(set_count==`LAYER6_READ_PIXEL_COUNT_COL_END)
 			begin
 				set_clear=1'b1;
 				save_address_row_keep=1'b0;
@@ -214,7 +215,7 @@ module layer6_maxpooling_v2(
 			begin
 				pipeline_layer6_calculation_done=1'b0;
 			end
-			if(save_address_row_count==16'd`LAYER7_WIDTH-1&&set_count==16'd`LAYER7_WIDTH-1)
+			if(save_address_row_count==`LAYER6_READ_PIXEL_COUNT_COL_END&&set_count==`LAYER6_READ_PIXEL_COUNT_COL_END)
 			begin
 				save_ns=SAVE_IDLE;
 				layer6_calculation_done=1'b1;

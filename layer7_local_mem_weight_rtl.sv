@@ -69,7 +69,7 @@ counter_cnn weight_channel_count(
 );
 
 
-always_ff@(posedge clk or rst)
+always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
 	begin		

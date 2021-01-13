@@ -119,7 +119,7 @@ module layer7_fc(
 		end
 		else
 		begin
-			save_cs=save_ns;
+			save_cs<=save_ns;
 		end
 	end
 	always_comb
@@ -164,7 +164,7 @@ module layer7_fc(
 			read_pixel_row_clear=1'b0;
 			systolic_adder_control=1'b1;
 			read_pixel_signal=1'b1;
-			if (read_pixel_count==16'd`LAYER7_WIDTH-1)
+			if (read_pixel_count==`LAYER7_READ_PIXEL_COUNT_COL_END)
 			begin
 				read_pixel_clear=1'b1;
 				read_pixel_row_keep=1'b0;
@@ -174,7 +174,7 @@ module layer7_fc(
 				read_pixel_clear=1'b0;
 				read_pixel_row_keep=1'b1;
 			end
-			if(read_pixel_row_count==6'd`LAYER7_WIDTH-1&&read_pixel_count==6'd`LAYER7_WIDTH-1)
+			if(read_pixel_row_count==`LAYER7_READ_PIXEL_COUNT_COL_END&&read_pixel_count==`LAYER7_READ_PIXEL_COUNT_COL_END)
 			begin
 				save_ns=SAVE_IDLE;
 				layer7_calculation_done_register_in=1'b1;
@@ -239,11 +239,11 @@ module layer7_fc(
 	begin
 		if(rst)
 		begin
-			bias_cs<=SAVE_IDLE;
+			bias_cs<=BIAS_IDLE;
 		end
 		else
 		begin
-			bias_cs=bias_ns;
+			bias_cs<=bias_ns;
 		end
 	end
 	always_comb
@@ -315,14 +315,14 @@ module layer7_fc(
 		if(bias_set_done==1'b0)
 		begin
 			bias_register_in[`LAYER7_OUTPUT_CHANNEL_NUM-1]=bias_data;
-			for (byte i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-2;i++)
+			for (int i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-2;i++)
 			begin
 				bias_register_in[i]=bias_register_out[i+1];
 			end
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				bias_register_in[i]=bias_register_out[i];
 			end		
@@ -332,14 +332,14 @@ module layer7_fc(
 	begin
 		if(rst)
 		begin
-			for(byte i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				bias_register_out[i]<=16'd0;
 			end	
 		end
 		else
 		begin
-			for(byte i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-1;i++)
+			for(int i=0;i<=`LAYER7_OUTPUT_CHANNEL_NUM-1;i++)
 			begin
 				bias_register_out[i]<=bias_register_in[i];
 			end		
@@ -357,11 +357,11 @@ module layer7_fc(
 	begin
 		if(rst)
 		begin
-			weight_cs<=SAVE_IDLE;
+			weight_cs<=WEIGHT_IDLE;
 		end
 		else
 		begin
-			weight_cs=weight_ns;
+			weight_cs<=weight_ns;
 		end
 	end
 	always_comb

@@ -1,3 +1,4 @@
+//`include "../SRAMcompiler/word64/word64.v"
 `include "SRAMcompiler/word64/word64.v"
 module word64_wrapper (
   input CK,
