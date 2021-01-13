@@ -1,5 +1,6 @@
 `timescale 1ns/10ps
 `include "layer1/layer1_sram.v"
+//`include "layer1/layer1_sram_rtl.sv"
 `include "layer3/layer3_sram.v"
 `include "layer4/layer4_sram.v"
 `include "pixel/pixel_sram.v"
@@ -7,6 +8,7 @@
 `include "word72/word72.v"
 
 `include "cnn_rtl.sv"
+
 `include "def.svh"
 `include "counter_cnn_rtl.sv"
 
