@@ -1,24 +1,27 @@
 `timescale 1ns/10ps
-//`include "layer1/layer1_sram.v"
+`ifdef SYN
+`include "cnn_syn.v"
+`include "../src/counter_cnn_rtl.sv"
+`include "layer1/layer1_sram.v"
+`include "layer3/layer3_sram.v"
+`include "layer4/layer4_sram.v"
+`include "pixel/pixel_sram.v"
+`include "word64/word64.v"
+`include "word72/word72.v"
+`include "/usr/cad/CBDK/CBDK018_UMC_Faraday_v1.0/orig_lib/fsa0m_a/2009Q2v2.0/GENERIC_CORE/FrontEnd/verilog/fsa0m_a_generic_core_21.lib"
+`else
 `include "layer1/layer1_sram_rtl.sv"
-//`include "layer3/layer3_sram.v"
 `include "layer3/layer3_sram_rtl.sv"
-//`include "layer4/layer4_sram.v"
 `include "layer4/layer4_sram_rtl.sv"
-
-//`include "pixel/pixel_sram.v"
 `include "pixel/pixel_sram_rtl.sv"
-
-//`include "word64/word64.v"
-
 `include "word64/word64_rtl.sv"
-
-//`include "word72/word72.v"
 `include "word72/word72_rtl.sv"
 `include "cnn_rtl.sv"
-
-`include "def.svh"
 `include "counter_cnn_rtl.sv"
+`endif
+`include "def.svh"
+
+
 
 
 `define		MEM_PIXEL_FILE		"/pixel.data"
@@ -119,6 +122,7 @@ cnn TOP(
 	.rdata(rdata),
 	.interrupt_signal(interrupt_signal)
 );
+
 initial 
 begin
 	 $value$plusargs("data_path=%s",data_path);
@@ -183,6 +187,12 @@ begin
 	rst   =1'b1;
 	#(`CYCLE/2) rst   =1'b0;
 end
+`ifdef SYN
+initial
+begin 
+	$sdf_annotate("cnn_syn.sdf", TOP);
+end
+`endif
 initial
 begin
 	$fsdbDumpfile("top.fsdb");
@@ -443,6 +453,7 @@ begin
 		ns=FEED_WEIGHT;
 	end
 end
+`ifdef RTL
 always_ff@(posedge clk)
 begin
 	if(rst)
@@ -466,6 +477,20 @@ begin
 		STAGE7_COMPLETE<=TOP.layer7_calculation_done;
 	end
 end
+`endif
+`ifdef SYN
+always_ff@(posedge clk)
+begin
+	if(rst)
+	begin	
+		STAGE1_COMPLETE<=0;
+	end
+	else
+	begin
+		STAGE1_COMPLETE<=TOP.layer1.layer1_calculation_done;
+	end
+end
+`endif
 always
 begin
 	#(`CYCLE/2) clk = ~clk;
@@ -525,19 +550,18 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER2_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer1),.STAGE("STAGE1"));
-		/*
+		
 		if (picture_layer1==1)
 		begin
 			$finish;
-		end
-*/		
+		end		
 		
 		picture_layer1++;
 		//$finish;	
 	end
 	////////////////////////////////////////////////////////////////////
 	pass_count=0;
-
+`ifdef RTL
 	if(STAGE2_COMPLETE)
 	begin
 		$display("PICTURE %d STAGE2_COMPLETE",picture_layer2);
@@ -766,16 +790,17 @@ begin
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER5_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer4),.STAGE("STAGE4"));
 		//#(`CYCLE*10)
-		/*
+		
 		if (picture_layer4==1)
 		begin
 			$finish;
 		end
-		*/
+		
 		picture_layer4++;	
 	end
 		////////////////////////////////////////////////////////////////////
 	pass_count=0;
+
 	if(STAGE5_COMPLETE)
 	begin
 		$display("PICTURE %d STAGE5_COMPLETE",picture_layer5);
@@ -981,7 +1006,7 @@ begin
 			$finish;
 		end
 	end
-	
+`endif	
 end
 	task photo();
 		input int CORRECT_pass_count;

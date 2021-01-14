@@ -37,16 +37,24 @@ cnn0: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
 	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
-	+define+ideal_transfer \
+	+define+ideal_transfer+RTL \
 	+data_path=$(root_dir)/$(top_data_dir) \
 	+access+r
 cnn1: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
 	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(inc_dir) \
-	+define+nonideal_transfer \
+	+define+nonideal_transfer+RTL \
 	+data_path=$(root_dir)/$(top_data_dir) \
 	+access+r 
+cnn_syn0: | $(bld_dir)
+	cd $(bld_dir); \
+	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
+	-sdf_file $(root_dir)/$(syn_dir)/cnn_syn.sdf \
+	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(syn_dir) \
+	+define+SYN+ideal_transfer \
+	+data_path=$(root_dir)/$(top_data_dir) \
+	+access+r
 	
 rtl0: | $(bld_dir)
 	@if [ $$(echo $(CYCLE) '>' 20.0 | bc -l) -eq 1 ]; then \
@@ -56,6 +64,7 @@ rtl0: | $(bld_dir)
 	make -C $(sim_dir)/prog0/; \
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/top_tb.sv \
+
 	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(src_dir)/AXI+$(root_dir)/$(inc_dir)+$(root_dir)/$(sim_dir) \
 	+define+prog0$(FSDB_DEF) \
 	-define CYCLE=$(CYCLE) \
