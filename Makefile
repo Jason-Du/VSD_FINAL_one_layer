@@ -32,7 +32,16 @@ cache: clean | $(bld_dir)
 	jg ../script/jg.tcl -batch
 
 # RTL simulation
+#channel8_tree_adder_rtl.sv
+#layer1_cnn_rtl.sv 
 rtl_all: clean rtl0 rtl1 rtl2
+test: | $(bld_dir)
+	cd $(bld_dir); \
+	irun $(root_dir)/$(src_dir)/cnn_rtl.sv   \
+	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
+	+define+ideal_transfer+RTL \
+	+data_path=$(root_dir)/$(top_data_dir) \
+	+access+r
 cnn0: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \

@@ -130,7 +130,12 @@ module layer1_cnn(
 	logic  [15:0] save_address_row_count;
 	logic         save_address_row_clear;
 	logic         save_address_row_keep;
-	
+	logic         pipeline_save_enable_stage1;
+	logic         pipeline_save_enable_stage2;
+	logic         pipeline_save_enable_stage3;
+	logic         pipeline_layer1_calculation_done_stage1;
+	logic         pipeline_layer1_calculation_done_stage2;
+	logic         pipeline_layer1_calculation_done_stage3;
 
 	logic  [15:0] read_pixel_count;
 	logic  read_pixel_clear;
@@ -151,10 +156,22 @@ module layer1_cnn(
 		if(rst)
 		begin
 			save_cs<=SAVE_IDLE;
+			pipeline_save_enable_stage1<=1'b0;
+			pipeline_save_enable_stage2<=1'b0;
+			pipeline_save_enable_stage3<=1'b0;
+			pipeline_layer1_calculation_done_stage1<=1'b0;
+			pipeline_layer1_calculation_done_stage2<=1'b0;
+			pipeline_layer1_calculation_done_stage3<=1'b0;
 		end
 		else
 		begin
 			save_cs<=save_ns;
+			pipeline_save_enable_stage1<=save_enable;
+			pipeline_save_enable_stage2<=pipeline_save_enable_stage1;
+			pipeline_save_enable_stage3<=pipeline_save_enable_stage2;
+			pipeline_layer1_calculation_done_stage1<=layer1_calculation_done;
+			pipeline_layer1_calculation_done_stage2<=pipeline_layer1_calculation_done_stage1;
+			pipeline_layer1_calculation_done_stage3<=pipeline_layer1_calculation_done_stage2;
 		end
 	end
 	always_comb
@@ -823,6 +840,8 @@ module layer1_cnn(
 );
 	//----------------------------------------ADDER_TREE--------------------------------------------//
 	channel8_tree_adder channel_1_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[0]),
 	.input_data2(systolic2_output[0]),
 	.input_data3(systolic3_output[0]),
@@ -837,6 +856,8 @@ module layer1_cnn(
 	);
 	
 	channel8_tree_adder channel_2_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[1]),
 	.input_data2(systolic2_output[1]),
 	.input_data3(systolic3_output[1]),
@@ -851,6 +872,8 @@ module layer1_cnn(
 	);
 	
 	channel8_tree_adder channel_3_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[2]),
 	.input_data2(systolic2_output[2]),
 	.input_data3(systolic3_output[2]),
@@ -864,6 +887,8 @@ module layer1_cnn(
 	.output_data(output_data[47:32])
 	);
 	channel8_tree_adder channel_4_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[3]),
 	.input_data2(systolic2_output[3]),
 	.input_data3(systolic3_output[3]),
@@ -877,6 +902,8 @@ module layer1_cnn(
 	.output_data(output_data[63:48])
 	);
 	channel8_tree_adder channel_5_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[4]),
 	.input_data2(systolic2_output[4]),
 	.input_data3(systolic3_output[4]),
@@ -890,6 +917,8 @@ module layer1_cnn(
 	.output_data(output_data[79:64])
 	);
 	channel8_tree_adder channel_6_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[5]),
 	.input_data2(systolic2_output[5]),
 	.input_data3(systolic3_output[5]),
@@ -903,6 +932,8 @@ module layer1_cnn(
 	.output_data(output_data[95:80])
 	);
 	channel8_tree_adder channel_7_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[6]),
 	.input_data2(systolic2_output[6]),
 	.input_data3(systolic3_output[6]),
@@ -916,6 +947,8 @@ module layer1_cnn(
 	.output_data(output_data[111:96])
 	);
 	channel8_tree_adder channel_8_adder_output(
+	.clk(clk),
+	.rst(rst),
 	.input_data1(systolic1_output[7]),
 	.input_data2(systolic2_output[7]),
 	.input_data3(systolic3_output[7]),
