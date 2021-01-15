@@ -195,8 +195,10 @@ end
 `endif
 initial
 begin
+`ifdef RTL
 	$fsdbDumpfile("top.fsdb");
 	$fsdbDumpvars("+struct", "+mda",TOP);
+`endif
 	//$fsdbDumpvars(0,TOP);
 	//Simulation Limitation
 	#(`CYCLE*`MAX);
