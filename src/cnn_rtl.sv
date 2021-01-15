@@ -26,6 +26,8 @@
 //`include "layer5_result_one_side_mem_v2_rtl.sv"
 `include "layer6_result_mem_rtl.sv"
 `include "local_mem_result_rtl.sv"
+`include "counter_cnn_rtl.sv"
+`include "channel8_tree_adder_rtl.sv"
 
 `timescale 1ns/10ps
 module cnn(

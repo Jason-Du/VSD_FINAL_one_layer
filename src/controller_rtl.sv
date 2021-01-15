@@ -74,7 +74,7 @@ module controller(
 
 `define result_address             32'hd000_0000
 `define image_set_register_ADDRESS 32'hd111_0000
-`define interrupr_rsgister_ADDRESS 32'hd222_0000
+`define interrupr_rsgister_ADDRESS 32'hd000_0200
 
 `define local_weight_mem_ADDRESS_START 32'hd333_0000
 `define local_weight_mem_ADDRESS_END 32'hd333_ffff
@@ -90,7 +90,7 @@ module controller(
 */
 localparam result_address             =32'hd000_0000;
 localparam image_set_register_ADDRESS =32'hd111_0000;
-localparam interrupr_rsgister_ADDRESS =32'hd222_0000;
+localparam interrupr_rsgister_ADDRESS =32'hd000_0200;
 localparam local_pixel_mem_ADDRESS    =16'hd555;
 localparam local_weight_mem_ADDRESS   =16'hd333;
 localparam local_bias_mem_ADDRESS     =16'hd444;
