@@ -30,6 +30,9 @@ input [15:0] write_weight_addr;
 output logic [127:0] read_weight_data1;
 output logic [127:0] read_weight_data2;
 
+logic [127:0] read_weight_data1_sram;
+logic [127:0] read_weight_data2_sram;
+
 
 logic [1:0] weight_channel3_state;
 logic [2:0] weight_channel8_state;
@@ -171,7 +174,10 @@ begin
 		write_addr_keep=1'b1;
 		write_addr_clear=1'b0;
 	end
+	read_weight_data2=read_enable1?read_weight_data2_sram:128'd0;
+	read_weight_data1=read_enable2?read_weight_data1_sram:128'd0;
 end
+
 word64_wrapper layer7_weight_st(
   .CK(clk),
   .OEA(read_enable1),
@@ -180,8 +186,8 @@ word64_wrapper layer7_weight_st(
   .WEBN(8'b11111111),
   .A(addrA_sram),
   .B(addrB_sram),
-  .DOA(read_weight_data2),
-  .DOB(read_weight_data1),
+  .DOA(read_weight_data2_sram),
+  .DOB(read_weight_data1_sram),
   .DIA(write_data),
   .DIB(128'd0)
 );

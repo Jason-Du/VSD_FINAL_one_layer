@@ -26,7 +26,7 @@ module layer2_result_one_side_mem(
 	input [ 15:0] 	read_col_addr;
 	input        layer2_result_read_signal;
 	output logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_result_output;
-	
+	logic [`LAYER2_OUTPUT_LENGTH-1:0] layer2_result_output_sram;
 	logic [ 7:0]   read_addr_sram;
 	logic [ 7:0]   save_addr_sram;
 	logic [16:0]   read_addr_minus;
@@ -44,6 +44,7 @@ module layer2_result_one_side_mem(
 		save_addr_add=(save_row_addr)<<4;
 		save_addr_minus=(save_row_addr)<<1;
 		save_addr_sram=save_addr_add[7:0]+save_col_addr[7:0]-save_addr_minus[7:0];
+		layer2_result_output=layer2_result_read_signal?layer2_result_output_sram:128'd0;
 	end
 
 layer3_wrapper layer2_st(
@@ -55,7 +56,7 @@ layer3_wrapper layer2_st(
   .A(save_addr_sram),
   .B(read_addr_sram),
   .DOA(null_wire1),
-  .DOB(layer2_result_output),
+  .DOB(layer2_result_output_sram),
   .DIA(layer2_result_store_data_in),
   .DIB(128'd0)
 );

@@ -25,7 +25,7 @@ input write_pixel_signal;
 input [15:0]write_pixel_data;
 input [15:0]read_pixel_addr;
 input [15:0]write_pixel_addr;
-
+logic [47:0]read_pixel_data_sram;
 output logic [47:0] read_pixel_data;
 
 
@@ -68,6 +68,7 @@ begin
 	end
 	read_addr_sram=read_pixel_addr[9:0];
 	write_addr_sram=write_pixel_addr[9:0];
+	read_pixel_data=read_pixel_signal?read_pixel_data_sram:48'd0;
 end
 pixel_wrapper pixel_st(
  .CK(clk),
@@ -78,7 +79,7 @@ pixel_wrapper pixel_st(
  .A(write_addr_sram),
  .B(read_addr_sram),
  .DOA(null_wire),
- .DOB(read_pixel_data),
+ .DOB(read_pixel_data_sram),
  .DIA(write_data_sram),
  .DIB(48'd0)
 );

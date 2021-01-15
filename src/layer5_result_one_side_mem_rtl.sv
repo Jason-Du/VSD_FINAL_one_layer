@@ -30,7 +30,7 @@ module layer5_result_one_side_mem(
 	output logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_result_output;
 	
 	logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_results_mem [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
-	logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_results_mem_in [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
+	//logic [`LAYER6_WEIGHT_INPUT_LENGTH-1:0] layer5_results_mem_in [`LAYER6_WIDTH/2][`LAYER6_WIDTH/2];
 	
 	always_ff@(posedge clk or posedge rst)
 	begin

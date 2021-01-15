@@ -43,8 +43,11 @@ input [ 4:0]buffer_num_sel;
 input [ 3:0]weight_fsm_cs;
 input weight_store_done;
 
+
 output logic [127:0] read_weight_data1;
 output logic [127:0] read_weight_data2;
+logic [127:0] read_weight_data_sram1;
+logic [127:0] read_weight_data_sram2;
 
 logic [1:0] weight_channel3_state;
 logic [2:0] weight_channel8_state;
@@ -119,7 +122,7 @@ begin
 				STATE_R:
 				begin
 					write_data={112'd0,write_weight_data};
-					write_web=8'b11111110;
+					write_web=8'b00000000;
 					weight_channel3_state_ns=STATE_G;
 					write_addr_keep=1'b1;
 					write_addr_clear=1'b0;
@@ -157,7 +160,7 @@ begin
 				STATE_1:
 				begin
 					write_data={112'd0,write_weight_data};
-					write_web=8'b11111110;
+					write_web=8'b00000000;
 					weight_channel8_state_ns=STATE_2;
 					write_addr_keep=1'b1;
 					write_addr_clear=1'b0;
@@ -238,7 +241,11 @@ begin
 		write_addr_clear=1'b0;
 	end
 end
-
+always_comb
+begin
+	read_weight_data1=read_enable2?read_weight_data_sram1:128'd0;
+	read_weight_data2=read_enable1?read_weight_data_sram2:128'd0;
+end
 word72_wrapper weight_st(
   .CK(clk),
   .OEA(read_enable1),
@@ -247,8 +254,8 @@ word72_wrapper weight_st(
   .WEBN(8'b11111111),
   .A(addrA_sram),
   .B(addrB_sram),
-  .DOA(read_weight_data2),
-  .DOB(read_weight_data1),
+  .DOA(read_weight_data_sram2),
+  .DOB(read_weight_data_sram1),
   .DIA(write_data),
   .DIB(128'd0)
 );

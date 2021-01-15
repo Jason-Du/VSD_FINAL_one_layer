@@ -29,6 +29,7 @@ module layer1_result_mem(
 	
 	output logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_result_output;
 	logic        [`LAYER1_OUTPUT_LENGTH-1:0] null_wire1;
+	logic        [`LAYER1_OUTPUT_LENGTH-1:0] layer1_result_output_sram_register_in;
 	//A WRITE B READ
 	logic [ 9:0]   read_addr_sram;
 	logic [16:0]   read_addr_minus;
@@ -36,7 +37,7 @@ module layer1_result_mem(
 	logic [9:0]    save_addr_sram;
 	logic [20:0]   save_addr_add;
 	logic [16:0]   save_addr_minus;
-	
+	logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_result_output_sram;
 	always_comb
 	begin
 		read_addr_add=(read_row_addr)<<5;
@@ -45,6 +46,7 @@ module layer1_result_mem(
 		save_addr_add=(save_row_addr)<<5;
 		save_addr_minus=(save_row_addr)<<1;
 		save_addr_sram=save_addr_add[9:0]+save_col_addr[9:0]-save_addr_minus[9:0];
+		layer1_result_output=layer1_result_read_signal?layer1_result_output_sram:128'd0;
 	end
 	
 layer1_wrapper layer1_st(
@@ -56,11 +58,21 @@ layer1_wrapper layer1_st(
   .A(save_addr_sram),
   .B(read_addr_sram),
   .DOA(null_wire1),
-  .DOB(layer1_result_output),
+  .DOB(layer1_result_output_sram_register_in),
   .DIA(layer1_result_store_data_in),
   .DIB(128'd0)
 );
-
+always_ff@(posedge clk or posedge rst)
+begin
+	if(rst)
+	begin
+		layer1_result_output_sram<=128'd0;
+	end
+	else
+	begin
+		layer1_result_output_sram<=layer1_result_output_sram_register_in;
+	end
+end
 
 	
 	

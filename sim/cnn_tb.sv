@@ -537,6 +537,7 @@ begin
 				$display("row[%4d]col[%4d] CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",row,col,result_reg1,TOP.layer1_data_mem.layer1_st.i_layer1_sram.Memory[memory_index]);
 				FAIL_FLAG=1;
 			end
+			
 			if(col==`LAYER2_WIDTH-1)
 			begin
 				col=0;
@@ -550,12 +551,12 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER2_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer1),.STAGE("STAGE1"));
-		
+		/*
 		if (picture_layer1==1)
 		begin
 			$finish;
 		end		
-		
+		*/
 		picture_layer1++;
 		//$finish;	
 	end
@@ -790,12 +791,12 @@ begin
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(`LAYER5_WIDTH**2),.REAL_pass_count(pass_count),.picture_num(picture_layer4),.STAGE("STAGE4"));
 		//#(`CYCLE*10)
-		
+		/*
 		if (picture_layer4==1)
 		begin
 			$finish;
 		end
-		
+		*/
 		picture_layer4++;	
 	end
 		////////////////////////////////////////////////////////////////////
@@ -995,7 +996,7 @@ begin
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
 		
-		if (picture_layer7==2)
+		if (picture_layer7==1)
 		begin
 			$finish;
 		end

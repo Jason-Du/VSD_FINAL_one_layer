@@ -225,8 +225,9 @@ module layer4_cnn(
 		end
 		SAVE_ENABLE:
 		begin
+			
 			save_address_row_clear=1'b0;
-			read_pixel_signal=1'b1;
+			
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
@@ -260,16 +261,21 @@ module layer4_cnn(
 			else
 			begin
 				pipeline_layer4_calculation_done=1'b0;
+				
 			end
 			if(save_address_row_count==`LAYER4_BUFFER_LENGTH&&set_count==`LAYER4_BUFFER_LENGTH)
 			begin
 				save_ns=SAVE_IDLE;
 				layer4_calculation_done=1'b1;
+				read_pixel_signal=1'b0;
+				
 			end
 			else
 			begin
 				save_ns=SAVE_ENABLE;
 				layer4_calculation_done=1'b0;
+				read_pixel_signal=1'b1;
+				
 			end
 			
 			if(set_count>`LAYER4_BUFFER_LENGTH)

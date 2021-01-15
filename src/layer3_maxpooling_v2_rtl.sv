@@ -164,7 +164,7 @@ module layer3_maxpooling_v2(
 		SAVE_ENABLE:
 		begin
 			save_address_row_clear=1'b0;
-			read_pixel_signal=1'b1;
+			
 			set_keep=1'b0;
 			//fix
 			//read_pixel_clear=1'b0;
@@ -203,11 +203,13 @@ module layer3_maxpooling_v2(
 			if(save_address_row_count==`LAYER3_READ_PIXEL_COUNT_COL_END&&set_count==`LAYER3_READ_PIXEL_COUNT_COL_END)
 			begin
 				save_ns=SAVE_IDLE;
+				read_pixel_signal=1'b0;
 				layer3_calculation_done=1'b1;
 			end
 			else
 			begin
 				save_ns=SAVE_ENABLE;
+				read_pixel_signal=1'b1;
 				layer3_calculation_done=1'b0;
 			end
 			save_enable=1'b1;

@@ -29,7 +29,7 @@ module layer6_result_mem(
 	output logic [`LAYER7_WEIGHT_INPUT_LENGTH-1:0] layer6_result_output;
 	
 	logic [`LAYER7_WEIGHT_INPUT_LENGTH-1:0] layer6_results_mem    [`LAYER7_WIDTH][`LAYER7_WIDTH];
-	logic [`LAYER7_WEIGHT_INPUT_LENGTH-1:0] layer6_results_mem_in [`LAYER7_WIDTH][`LAYER7_WIDTH];
+	//logic [`LAYER7_WEIGHT_INPUT_LENGTH-1:0] layer6_results_mem_in [`LAYER7_WIDTH][`LAYER7_WIDTH];
 	
 	always_ff@(posedge clk or posedge rst)
 	begin

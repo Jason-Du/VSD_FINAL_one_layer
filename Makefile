@@ -34,10 +34,19 @@ cache: clean | $(bld_dir)
 # RTL simulation
 #channel8_tree_adder_rtl.sv
 #layer1_cnn_rtl.sv 
+#local_mem_weight_rtl.sv
+#layer7_fc_rtl.sv
+#local_mem_pixel_rtl.sv
+#layer1_result_mem_rtl.sv
+
+#layer3_maxpooling_v2_rtl.sv
+#layer2_result_one_side_mem_rtl.sv 
+#layer7_local_mem_weight_rtl.sv
+
 rtl_all: clean rtl0 rtl1 rtl2
 test: | $(bld_dir)
 	cd $(bld_dir); \
-	irun $(root_dir)/$(src_dir)/layer1_cnn_rtl.sv    \
+	irun $(root_dir)/$(src_dir)/cnn_rtl.sv   \
 	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
 	+define+ideal_transfer+RTL \
 	+data_path=$(root_dir)/$(top_data_dir) \

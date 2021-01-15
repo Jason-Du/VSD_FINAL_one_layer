@@ -226,7 +226,7 @@ module layer5_cnn(
 		SAVE_ENABLE:
 		begin
 			save_address_row_clear=1'b0;
-			read_pixel_signal=1'b1;
+			
 			//fix
 			//read_pixel_clear=1'b0;
 			read_pixel_row_clear=1'b0;
@@ -265,11 +265,13 @@ module layer5_cnn(
 			begin
 				save_ns=SAVE_IDLE;
 				layer5_calculation_done=1'b1;
+				read_pixel_signal=1'b0;
 			end
 			else
 			begin
 				save_ns=SAVE_ENABLE;
 				layer5_calculation_done=1'b0;
+				read_pixel_signal=1'b1;
 			end
 			
 			if(set_count>`LAYER5_BUFFER_LENGTH)

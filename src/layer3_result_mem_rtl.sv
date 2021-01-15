@@ -28,7 +28,7 @@ module layer3_result_mem(
 	//INOUT
 	
 	output logic [`LAYER3_OUTPUT_LENGTH-1:0] layer3_result_output;
-	
+	logic [`LAYER3_OUTPUT_LENGTH-1:0]layer3_result_output_sram;
 	
 	
 	logic [ 7:0]   read_addr_sram;
@@ -49,6 +49,7 @@ module layer3_result_mem(
 		save_addr_add=(save_row_addr)<<4;
 		save_addr_minus=(save_row_addr)<<1;
 		save_addr_sram=save_addr_add[7:0]+save_col_addr[7:0]-save_addr_minus[7:0];
+		layer3_result_output=layer3_result_read_signal?layer3_result_output_sram:128'd0;
 	end
 	
 layer3_wrapper layer3_st(
@@ -60,7 +61,7 @@ layer3_wrapper layer3_st(
   .A(save_addr_sram),
   .B(read_addr_sram),
   .DOA(null_wire1),
-  .DOB(layer3_result_output),
+  .DOB(layer3_result_output_sram),
   .DIA(layer3_result_store_data_in),
   .DIB(128'd0)
 );
