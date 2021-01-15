@@ -1,7 +1,13 @@
 #@ # 
 #@ # Running lc_shell Version O-2018.06 for linux64 -- May 31, 2018
-#@ # Date:   Mon Jan  4 22:00:10 2021
-#@ # Run by: vsd2001@vlsicad8
+#@ # Date:   Fri Jan 15 13:38:16 2021
+#@ # Run by: vsd2030@vlsicad8
 #@ 
 
+read_lib layer1_sram_BC.lib
+read_lib layer1_sram_TC.lib
+read_lib layer1_sram_WC.lib
+write_lib layer1_sram_BC -format db -output layer1_sram_BC.db
+write_lib layer1_sram_TC -format db -output layer1_sram_TC.db
+write_lib layer1_sram_WC -format db -output layer1_sram_WC.db
 exit

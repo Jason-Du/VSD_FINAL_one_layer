@@ -1,0 +1,13 @@
+#@ # 
+#@ # Running lc_shell Version O-2018.06 for linux64 -- May 31, 2018
+#@ # Date:   Fri Jan 15 13:43:18 2021
+#@ # Run by: vsd2030@vlsicad8
+#@ 
+
+read_lib layer4_sram_BC.lib
+read_lib layer4_sram_TC.lib
+read_lib layer4_sram_WC.lib
+write_lib layer4_sram_BC -format db -output layer4_sram_BC.db
+write_lib layer4_sram_TC -format db -output layer4_sram_TC.db
+write_lib layer4_sram_WC -format db -output layer4_sram_WC.db
+exit

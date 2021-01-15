@@ -1,0 +1,41 @@
+
+Initializing...
+lc_shell> read_lib word72_BC.lib
+Reading '/home/user2/vsd20/vsd2030/Desktop/system_test/word72/word72_BC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'word72_BC' read successfully
+1
+lc_shell> read_lib word72_TC.lib
+Reading '/home/user2/vsd20/vsd2030/Desktop/system_test/word72/word72_TC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'word72_TC' read successfully
+1
+lc_shell> read_lib word72_WC.lib
+Reading '/home/user2/vsd20/vsd2030/Desktop/system_test/word72/word72_WC.lib' ...
+Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
+        as the default_operating_conditions. (LBDB-663)
+Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
+        No default can be applied to this attribute. (LBDB-366)
+Technology library 'word72_WC' read successfully
+1
+lc_shell> write_lib word72_BC -format db -output word72_BC.db
+Wrote the 'word72_BC' library to '/home/user2/vsd20/vsd2030/Desktop/system_test/word72/word72_BC.db' successfully
+1
+lc_shell> write_lib word72_TC -format db -output word72_TC.db
+Wrote the 'word72_TC' library to '/home/user2/vsd20/vsd2030/Desktop/system_test/word72/word72_TC.db' successfully
+1
+lc_shell> write_lib word72_WC -format db -output word72_WC.db
+Wrote the 'word72_WC' library to '/home/user2/vsd20/vsd2030/Desktop/system_test/word72/word72_WC.db' successfully
+1
+lc_shell> exit
+Maximum memory usage for this session: 106.62 MB
+CPU usage for this session:      7 seconds (  0.00 hours)
+Elapsed time for this session:    155 seconds (  0.04 hours)
+Thank you for using Library Compiler.
+

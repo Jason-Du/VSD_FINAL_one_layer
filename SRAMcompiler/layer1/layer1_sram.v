@@ -26,14 +26,14 @@ ________________________________________________________________________________
       Power Ring Type   :  port         
       Power Ring Width  :  2 (um)       
       Output Loading    :  0.5 (pf)     
-      Input Data Slew   :  0.5 (ns)     
-      Input Clock Slew  :  0.5 (ns)     
+      Input Data Slew   :  2.0 (ns)     
+      Input Clock Slew  :  2.0 (ns)     
 
 ________________________________________________________________________________
 
       Library          : FSA0M_A
       Memaker          : 200901.2.1
-      Date             : 2021/01/04 21:34:49
+      Date             : 2021/01/15 13:25:09
 
 ________________________________________________________________________________
 
@@ -53,7 +53,7 @@ ________________________________________________________________________________
 
                 Library          : FSA0M_A
                 Memaker          : 200901.2.1
-                Date             : 2021/01/04 21:34:49
+                Date             : 2021/01/15 13:25:09
 
  *******************************************************************************/
 
@@ -149,9 +149,9 @@ module layer1_sram (A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,B0,B1,B2,B3,B4,B5,
   parameter  Words                = 912;              
   parameter  Bytes                = 1;                
   parameter  AspectRatio          = 1;                
-  parameter  Tr2w                 = (201:289:471);    
-  parameter  Tw2r                 = (181:253:406);    
-  parameter  TOH                  = (67:96:157);      
+  parameter  Tr2w                 = (198:290:476);    
+  parameter  Tw2r                 = (178:254:411);    
+  parameter  TOH                  = (66:97:159);      
 
   output     DOA0,DOA1,DOA2,DOA3,DOA4,DOA5,DOA6,DOA7,DOA8,
              DOA9,DOA10,DOA11,DOA12,DOA13,DOA14,DOA15,DOA16,DOA17,DOA18,
@@ -2283,20 +2283,20 @@ module layer1_sram (A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,B0,B1,B2,B3,B4,B5,
   endfunction //end AddressRangeCheck;
 
    specify
-      specparam TAA  = (159:229:378);
-      specparam TRC  = (201:289:471);
-      specparam THPW = (67:96:157);
-      specparam TLPW = (67:96:157);
-      specparam TAS  = (52:81:138);
-      specparam TAH  = (9:12:18);
-      specparam TWS  = (29:43:72);
-      specparam TWH  = (9:11:16);
-      specparam TDS  = (9:10:19);
-      specparam TDH  = (26:27:29);
-      specparam TCSS = (65:91:152);
+      specparam TAA  = (156:230:384);
+      specparam TRC  = (198:290:476);
+      specparam THPW = (66:97:159);
+      specparam TLPW = (66:97:159);
+      specparam TAS  = (75:95:140);
+      specparam TAH  = (11:14:19);
+      specparam TWS  = (46:54:76);
+      specparam TWH  = (12:16:26);
+      specparam TDS  = (39:35:33);
+      specparam TDH  = (33:33:34);
+      specparam TCSS = (91:118:177);
       specparam TCSH = (0:0:0);
-      specparam TOE  = (118:166:258);
-      specparam TOZ  = (80:106:157);
+      specparam TOE  = (111:164:263);
+      specparam TOZ  = (103:128:181);
 
 
       $setuphold ( posedge CKA &&& con_A,         posedge A0, TAS,     TAH,     n_flag_A0      );

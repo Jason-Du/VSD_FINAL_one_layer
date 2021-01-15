@@ -1,74 +1,41 @@
 
 Initializing...
 lc_shell> read_lib pixel_sram_BC.lib
-Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_BC.lib' ...
+Reading '/home/user2/vsd20/vsd2030/Desktop/system_test/pixel/pixel_sram_BC.lib' ...
 Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
         as the default_operating_conditions. (LBDB-663)
 Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
         No default can be applied to this attribute. (LBDB-366)
 Technology library 'pixel_sram_BC' read successfully
 1
-lc_shell> write_lib pixel_sram_BC -format db -output pixel_sram_BC.db
-Wrote the 'pixel_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_BC.db' successfully
-1
 lc_shell> read_lib pixel_sram_TC.lib
-Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_TC.lib' ...
+Reading '/home/user2/vsd20/vsd2030/Desktop/system_test/pixel/pixel_sram_TC.lib' ...
 Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
         as the default_operating_conditions. (LBDB-663)
 Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
         No default can be applied to this attribute. (LBDB-366)
 Technology library 'pixel_sram_TC' read successfully
 1
-lc_shell> write_lib pixel_sram_TC -format db -output pixel_sram_TC.db
-Wrote the 'pixel_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_TC.db' successfully
-1
 lc_shell> read_lib pixel_sram_WC.lib
-Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_WC.lib' ...
+Reading '/home/user2/vsd20/vsd2030/Desktop/system_test/pixel/pixel_sram_WC.lib' ...
 Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
         as the default_operating_conditions. (LBDB-663)
 Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
         No default can be applied to this attribute. (LBDB-366)
 Technology library 'pixel_sram_WC' read successfully
 1
+lc_shell> write_lib pixel_sram_BC -format db -output pixel_sram_BC.db
+Wrote the 'pixel_sram_BC' library to '/home/user2/vsd20/vsd2030/Desktop/system_test/pixel/pixel_sram_BC.db' successfully
+1
+lc_shell> write_lib pixel_sram_TC -format db -output pixel_sram_TC.db
+Wrote the 'pixel_sram_TC' library to '/home/user2/vsd20/vsd2030/Desktop/system_test/pixel/pixel_sram_TC.db' successfully
+1
 lc_shell> write_lib pixel_sram_WC -format db -output pixel_sram_WC.db
-Wrote the 'pixel_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/pixel_sram_WC.db' successfully
-1
-lc_shell> read_lib weight_sram_BC.lib
-Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_BC.lib' ...
-Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'BCCOM' is set
-        as the default_operating_conditions. (LBDB-663)
-Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
-        No default can be applied to this attribute. (LBDB-366)
-Technology library 'weight_sram_BC' read successfully
-1
-lc_shell> write_lib weight_sram_BC -format db -output weight_sram_BC.db
-Wrote the 'weight_sram_BC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_BC.db' successfully
-1
-lc_shell> read_lib weight_sram_TC.lib
-Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_TC.lib' ...
-Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'TCCOM' is set
-        as the default_operating_conditions. (LBDB-663)
-Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
-        No default can be applied to this attribute. (LBDB-366)
-Technology library 'weight_sram_TC' read successfully
-1
-lc_shell> write_lib weight_sram_TC -format db -output weight_sram_TC.db
-Wrote the 'weight_sram_TC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_TC.db' successfully
-1
-lc_shell> read_lib weight_sram_WC.lib
-Reading '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_WC.lib' ...
-Warning: Line 45, The default_operating_conditions is not defined. operating_conditions 'WCCOM' is set
-        as the default_operating_conditions. (LBDB-663)
-Warning: Line 45, The 'internal_power_calculation' attribute in char_config group is required for NLPM library. 
-        No default can be applied to this attribute. (LBDB-366)
-Technology library 'weight_sram_WC' read successfully
-1
-lc_shell> write_lib weight_sram_WC -format db -output weight_sram_WC.db
-Wrote the 'weight_sram_WC' library to '/home/user2/vsd20/vsd2001/Desktop/sram_compiler/weight_sram_WC.db' successfully
+Wrote the 'pixel_sram_WC' library to '/home/user2/vsd20/vsd2030/Desktop/system_test/pixel/pixel_sram_WC.db' successfully
 1
 lc_shell> exit
-Maximum memory usage for this session: 125.68 MB
-CPU usage for this session:      6 seconds (  0.00 hours)
-Elapsed time for this session:    465 seconds (  0.13 hours)
+Maximum memory usage for this session: 82.47 MB
+CPU usage for this session:      5 seconds (  0.00 hours)
+Elapsed time for this session:    121 seconds (  0.03 hours)
 Thank you for using Library Compiler.
 
