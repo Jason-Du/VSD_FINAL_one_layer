@@ -58,10 +58,11 @@ layer1_wrapper layer1_st(
   .A(save_addr_sram),
   .B(read_addr_sram),
   .DOA(null_wire1),
-  .DOB(layer1_result_output_sram_register_in),
+  .DOB(layer1_result_output_sram),
   .DIA(layer1_result_store_data_in),
   .DIB(128'd0)
 );
+/*
 always_ff@(posedge clk or posedge rst)
 begin
 	if(rst)
@@ -73,7 +74,7 @@ begin
 		layer1_result_output_sram<=layer1_result_output_sram_register_in;
 	end
 end
-
+*/
 	
 	
 
