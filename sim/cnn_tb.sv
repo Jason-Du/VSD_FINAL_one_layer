@@ -137,7 +137,8 @@ integer predict_index=0;
 
 integer pass_count=0;
 integer err=0;
-integer fp_r, fp_w, cnt;
+integer cnt;
+integer fp_r, fp_w;
 
 cnn TOP(
 	.clk(clk),
@@ -238,12 +239,12 @@ end
 `endif
 initial
 begin
-/*
+
 `ifdef RTL
 	$fsdbDumpfile("top.fsdb");
 	$fsdbDumpvars("+struct", "+mda",TOP);
 `endif
-*/
+
 	//$fsdbDumpvars(0,TOP);
 	//Simulation Limitation
 	#(`CYCLE*`MAX);
@@ -556,12 +557,13 @@ int memory_odd_odd=0;
 int row_even=0;
 int col_even=0;
 int predict_hit=0;
+int read_pic_num=0;
 always
 begin
 	#(`CYCLE);
 	
 	`ifdef LAYER_TEST
-	if(STAGE1_COMPLETE&&(picture_layer1<=2))
+	if(STAGE1_COMPLETE)
 	begin
 		$display("PICTURE %d STAGE1_COMPLETE",picture_layer1);
 		$display("%d",$time);
@@ -639,7 +641,6 @@ begin
 		begin
 			fp_r = $fopen({data_path,`PIC2_GOLDEN_FILE_LAYER2},"r");
 		end
-		
 		while(!$feof(fp_r)) 
 		begin
 			cnt = $fscanf(fp_r, "%h",result_reg2);
@@ -721,8 +722,6 @@ begin
 			$finish;
 		end
 		*/
-	
-		
 		picture_layer2++;	
 	end
 	////////////////////////////////////////////////////////////////////
@@ -1024,9 +1023,6 @@ begin
 	pass_count=0;
 	if(STAGE7_COMPLETE)
 	begin		
-		fp_w= $fopen(`RESULT_FILE, "w");
-			$fwrite(fp_w,"%h",TOP.result_st_mem.result_mem_out);
-		$fclose(fp_w);
 		if(picture_layer7==1)
 		begin
 			fp_r = $fopen({data_path,`PIC1_GOLDEN_FILE_LAYER7},"r");
@@ -1052,7 +1048,7 @@ begin
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
 		
-		if (picture_layer7==1)
+		if (picture_layer7==2)
 		begin
 			$finish;
 		end
@@ -1137,7 +1133,7 @@ end
 			end
 			predict_index++;
 		end
-		if(predict_index==PIC_NUM)
+		if(predict_index==30)
 		begin
 			$display("PREDICT HIT:[%2d]",predict_hit);
 			$fclose(fp_w);			
