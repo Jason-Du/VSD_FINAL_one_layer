@@ -23,24 +23,51 @@
 
 
 
+`ifdef MNIST
+`define		MEM_PIXEL_FILE		"/MNIST/pixel.data"
+`define		MEM_WEIGHT_FILE		"/MNIST/weight.data"
+`define		MEM_BIAS_FILE		"/MNIST/bias.data"
+`define		MEM_PREDICT_FILE		"/MNIST/predict.data"
+`define		PIC1_GOLDEN_FILE_LAYER1		"/MNIST/PIC1_CORRECT_LAYER1.data"
+`define		PIC1_GOLDEN_FILE_LAYER2		"/MNIST/PIC1_CORRECT_LAYER2.data"
+`define		PIC1_GOLDEN_FILE_LAYER3		"/MNIST/PIC1_CORRECT_LAYER3.data"
+`define		PIC1_GOLDEN_FILE_LAYER4		"/MNIST/PIC1_CORRECT_LAYER4.data"
+`define		PIC1_GOLDEN_FILE_LAYER5		"/MNIST/PIC1_CORRECT_LAYER5.data"
+`define		PIC1_GOLDEN_FILE_LAYER6		"/MNIST/PIC1_CORRECT_LAYER6.data"
+`define		PIC1_GOLDEN_FILE_LAYER7		"/MNIST/PIC1_CORRECT_LAYER7.data"
+`define		PIC2_GOLDEN_FILE_LAYER1	    "/MNIST/PIC2_CORRECT_LAYER1.data"
+`define		PIC2_GOLDEN_FILE_LAYER2		"/MNIST/PIC2_CORRECT_LAYER2.data"
+`define		PIC2_GOLDEN_FILE_LAYER3		"/MNIST/PIC2_CORRECT_LAYER3.data"
+`define		PIC2_GOLDEN_FILE_LAYER4		"/MNIST/PIC2_CORRECT_LAYER4.data"
+`define		PIC2_GOLDEN_FILE_LAYER5		"/MNIST/PIC2_CORRECT_LAYER5.data"
+`define		PIC2_GOLDEN_FILE_LAYER6		"/MNIST/PIC2_CORRECT_LAYER6.data"
+`define		PIC2_GOLDEN_FILE_LAYER7		"/MNIST/PIC2_CORRECT_LAYER7.data"
+`endif
 
-`define		MEM_PIXEL_FILE		"/pixel.data"
-`define		MEM_WEIGHT_FILE		"/weight.data"
-`define		MEM_BIAS_FILE		"/bias.data"
-`define		PIC1_GOLDEN_FILE_LAYER1		"/PIC1_CORRECT_LAYER1.data"
-`define		PIC1_GOLDEN_FILE_LAYER2		"/PIC1_CORRECT_LAYER2.data"
-`define		PIC1_GOLDEN_FILE_LAYER3		"/PIC1_CORRECT_LAYER3.data"
-`define		PIC1_GOLDEN_FILE_LAYER4		"/PIC1_CORRECT_LAYER4.data"
-`define		PIC1_GOLDEN_FILE_LAYER5		"/PIC1_CORRECT_LAYER5.data"
-`define		PIC1_GOLDEN_FILE_LAYER6		"/PIC1_CORRECT_LAYER6.data"
-`define		PIC1_GOLDEN_FILE_LAYER7		"/PIC1_CORRECT_LAYER7.data"
-`define		PIC2_GOLDEN_FILE_LAYER1	    "/PIC2_CORRECT_LAYER1.data"
-`define		PIC2_GOLDEN_FILE_LAYER2		"/PIC2_CORRECT_LAYER2.data"
-`define		PIC2_GOLDEN_FILE_LAYER3		"/PIC2_CORRECT_LAYER3.data"
-`define		PIC2_GOLDEN_FILE_LAYER4		"/PIC2_CORRECT_LAYER4.data"
-`define		PIC2_GOLDEN_FILE_LAYER5		"/PIC2_CORRECT_LAYER5.data"
-`define		PIC2_GOLDEN_FILE_LAYER6		"/PIC2_CORRECT_LAYER6.data"
-`define		PIC2_GOLDEN_FILE_LAYER7		"/PIC2_CORRECT_LAYER7.data"
+`ifdef CIFAR
+`define		MEM_PIXEL_FILE		"/CIFAR/pixel.data"
+`define		MEM_WEIGHT_FILE		"/CIFAR/weight.data"
+`define		MEM_BIAS_FILE		"/CIFAR/bias.data"
+`define		MEM_PREDICT_FILE		"/CIFAR/predict.data"
+`define		PIC1_GOLDEN_FILE_LAYER1		"/CIFAR/PIC1_CORRECT_LAYER1.data"
+`define		PIC1_GOLDEN_FILE_LAYER2		"/CIFAR/PIC1_CORRECT_LAYER2.data"
+`define		PIC1_GOLDEN_FILE_LAYER3		"/CIFAR/PIC1_CORRECT_LAYER3.data"
+`define		PIC1_GOLDEN_FILE_LAYER4		"/CIFAR/PIC1_CORRECT_LAYER4.data"
+`define		PIC1_GOLDEN_FILE_LAYER5		"/CIFAR/PIC1_CORRECT_LAYER5.data"
+`define		PIC1_GOLDEN_FILE_LAYER6		"/CIFAR/PIC1_CORRECT_LAYER6.data"
+`define		PIC1_GOLDEN_FILE_LAYER7		"/CIFAR/PIC1_CORRECT_LAYER7.data"
+`define		PIC2_GOLDEN_FILE_LAYER1	    "/CIFAR/PIC2_CORRECT_LAYER1.data"
+`define		PIC2_GOLDEN_FILE_LAYER2		"/CIFAR/PIC2_CORRECT_LAYER2.data"
+`define		PIC2_GOLDEN_FILE_LAYER3		"/CIFAR/PIC2_CORRECT_LAYER3.data"
+`define		PIC2_GOLDEN_FILE_LAYER4		"/CIFAR/PIC2_CORRECT_LAYER4.data"
+`define		PIC2_GOLDEN_FILE_LAYER5		"/CIFAR/PIC2_CORRECT_LAYER5.data"
+`define		PIC2_GOLDEN_FILE_LAYER6		"/CIFAR/PIC2_CORRECT_LAYER6.data"
+`define		PIC2_GOLDEN_FILE_LAYER7		"/CIFAR/PIC2_CORRECT_LAYER7.data"
+`endif
+
+
+
+
 `define		RESULT_FILE		    "RESULT.csv"
 `define MAX 80000
 `define CYCLE 20.0
@@ -52,6 +79,7 @@ localparam TOTAL_WEIGHT_NUM=(`PICTURE_CHANNEL*`LAYER1_OUTPUT_CHANNEL_NUM+
 							`LAYER4_OUTPUT_CHANNEL_NUM*`LAYER5_OUTPUT_CHANNEL_NUM
 							)*`KERNEL_SIZE+2000;
 localparam TOTAL_BIAS_NUM=`LAYER1_OUTPUT_CHANNEL_NUM+`LAYER2_OUTPUT_CHANNEL_NUM+`LAYER4_OUTPUT_CHANNEL_NUM+`LAYER5_OUTPUT_CHANNEL_NUM+10;
+localparam TOTAL_TEST_NUM=100;
 module top_tb;
 logic STAGE1_COMPLETE;
 logic STAGE2_COMPLETE;
@@ -60,6 +88,7 @@ logic STAGE4_COMPLETE;
 logic STAGE5_COMPLETE;
 logic STAGE6_COMPLETE;
 logic STAGE7_COMPLETE;
+logic INTERRUPT_SIG;
 integer picture_layer7=1;
 integer picture_layer6=1;
 integer picture_layer5=1;
@@ -74,6 +103,7 @@ logic 	rst;
 logic [31:0]mem_pixel_in[PIXEL_NUM*PIC_NUM];
 logic [31:0]mem_weight_in[TOTAL_WEIGHT_NUM];
 logic [31:0]mem_bias_in[TOTAL_BIAS_NUM];
+logic [31:0]mem_predict_in[TOTAL_TEST_NUM];
 logic [31:0]araddr; 
 logic [31:0]awaddr; 
 logic [31:0]wdata; 
@@ -98,10 +128,12 @@ integer col=0;
 integer bias_num=0;
 integer weight_num=0;
 integer pic_num=0;
+integer predict_num=0;
 
 integer weight_index=0;
 integer bias_index=0;
 integer pixel_index=0;
+integer predict_index=0;
 
 integer pass_count=0;
 integer err=0;
@@ -157,6 +189,16 @@ begin
 			mem_weight_in[weight_num]={16'd0,reg1};
 			weight_num=weight_num+1;
 		end
+	$fclose(fp_r);
+	fp_r = $fopen({data_path,`MEM_PREDICT_FILE}, "r");
+	while(!$feof(fp_r)) 
+	begin
+		//$display("weight_setting");
+		cnt = $fscanf(fp_r, "%h",reg1);
+		//$display("%h",reg1);
+		mem_predict_in[predict_num]={28'd0,reg1};
+		predict_num=predict_num+1;
+	end
 	$fclose(fp_r);
 end
 
@@ -306,6 +348,7 @@ always_comb
 begin
 	if(~rst)
 	begin
+		awvalid=(TOP.interrupt_signal)?1'b1:1'b0;
 		case(cs)
 			FEED_WEIGHT:
 			begin
@@ -402,7 +445,7 @@ begin
 				begin
 					pixel_set_clear=1'd0;
 				end
-				if(pixel_set_count==16'd0)
+				if(pixel_set_count==16'd0&&!(TOP.interrupt_signal))
 				begin
 					wvalid=1'd1;
 					pixel_keep=1'd0;
@@ -413,7 +456,8 @@ begin
 				begin
 					wvalid=1'd0;
 					pixel_keep=1'd1;
-					awaddr=32'h0000_0000;
+					awaddr=(TOP.interrupt_signal)?32'hd000_0200:32'h0000_0000;
+					
 					wdata=32'd0;
 				end
 				`endif
@@ -443,6 +487,7 @@ begin
 	end
 	else
 	begin
+		awvalid=1'b0;
 		bias_keep=1'b1;
 		bias_set_clear=1'd1;
 		weight_keep=1'b1;
@@ -456,6 +501,7 @@ begin
 	end
 end
 `ifdef RTL
+
 always_ff@(posedge clk)
 begin
 	if(rst)
@@ -467,6 +513,7 @@ begin
 		STAGE5_COMPLETE<=0;
 		STAGE6_COMPLETE<=0;
 		STAGE7_COMPLETE<=0;
+		INTERRUPT_SIG<=0;
 	end
 	else
 	begin
@@ -477,6 +524,7 @@ begin
 		STAGE5_COMPLETE<=TOP.layer5_calculation_done;
 		STAGE6_COMPLETE<=TOP.layer6_calculation_done;
 		STAGE7_COMPLETE<=TOP.layer7_calculation_done;
+		INTERRUPT_SIG<=TOP.interrupt_signal;
 	end
 end
 `endif
@@ -504,9 +552,11 @@ int memory_odd_even=0;
 int memory_odd_odd=0;
 int row_even=0;
 int col_even=0;
+
 always
 begin
 	#(`CYCLE);
+	`ifdef RTL
 	if(STAGE1_COMPLETE&&(picture_layer1<=2))
 	begin
 		$display("PICTURE %d STAGE1_COMPLETE",picture_layer1);
@@ -564,7 +614,7 @@ begin
 	end
 	////////////////////////////////////////////////////////////////////
 	pass_count=0;
-`ifdef RTL
+
 	if(STAGE2_COMPLETE)
 	begin
 		$display("PICTURE %d STAGE2_COMPLETE",picture_layer2);
@@ -997,19 +1047,25 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
-		
+		/*
 		if (picture_layer7==1)
 		begin
 			$finish;
 		end
-		
+		*/
 		picture_layer7++;
+
+		
+	end
+`endif
+		interrupt_test();
+		/*
 		if(FAIL_FLAG)
 		begin
 			$finish;
 		end
-	end
-`endif	
+		*/
+		
 end
 	task photo();
 		input int CORRECT_pass_count;
@@ -1054,20 +1110,28 @@ end
 		end
 	endtask
 	task interrupt_test();
-		if(TOP.interrupt_signal)
-			begin
+		//input answer;
+		if(STAGE7_COMPLETE)
+		begin
 			araddr=32'hd000_0000;
 			# (`CYCLE)
-			if(TOP.rdata==32'h1111_1111)
+			if(TOP.rdata==mem_predict_in[predict_index])
 			begin
 				$display("INTERRUPT RESULT MATCH");
+				$display("CORRECT ANSWER:[ %h ]",mem_predict_in[predict_index]);
 			end
 			else
 			begin
 				$display("INTERRUPT RESULT MISMATCH ERROR");
+				$display("CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",mem_predict_in[predict_index],TOP.rdata);
 			end
-			//$finish;
+			predict_index++;
 		end
+		if(predict_index==1)
+		begin
+			$finish();
+		end
+		
 	endtask
 	
 endmodule

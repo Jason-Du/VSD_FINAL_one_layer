@@ -46,25 +46,42 @@ cache: clean | $(bld_dir)
 rtl_all: clean rtl0 rtl1 rtl2
 test: | $(bld_dir)
 	cd $(bld_dir); \
-	irun $(root_dir)/$(src_dir)/layer1_result_mem_rtl.sv   \
+	irun $(root_dir)/$(sim_dir)/   \
 	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
-	+define+ideal_transfer+RTL \
+	+define+ideal_transfer+RTL+CIFAR \
 	+data_path=$(root_dir)/$(top_data_dir) \
 	+access+r
-cnn0: | $(bld_dir)
+cnn0_MNIST: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
 	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
-	+define+ideal_transfer+RTL \
+	+define+ideal_transfer+RTL+MNIST \
 	+data_path=$(root_dir)/$(top_data_dir) \
 	+access+r
-cnn1: | $(bld_dir)
+cnn1_MNIST: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
 	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(inc_dir) \
-	+define+nonideal_transfer+RTL \
+	+define+nonideal_transfer+RTL+MNIST \
 	+data_path=$(root_dir)/$(top_data_dir) \
-	+access+r 
+	+access+r
+		+access+r
+cnn0_CIFAR: | $(bld_dir)
+	cd $(bld_dir); \
+	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
+	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
+	+define+ideal_transfer+RTL+CIFAR \
+	+data_path=$(root_dir)/$(top_data_dir) \
+	+access+r
+cnn1_CIFAR: | $(bld_dir)
+	cd $(bld_dir); \
+	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
+	+incdir+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir)+$(root_dir)/$(inc_dir) \
+	+define+nonideal_transfer+RTL+CIFAR \
+	+data_path=$(root_dir)/$(top_data_dir) \
+	+access+r
+
+	
 cnn_syn0: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \
