@@ -69,17 +69,17 @@
 
 
 `define		RESULT_FILE		    "RESULT.csv"
-`define MAX 80000
+`define MAX 8000000
 `define CYCLE 20.0
-localparam PIC_NUM=2;
-localparam PIXEL_NUM=3072;
+localparam PIC_NUM=100;
+
 localparam TOTAL_WEIGHT_NUM=(`PICTURE_CHANNEL*`LAYER1_OUTPUT_CHANNEL_NUM+
 							`LAYER1_OUTPUT_CHANNEL_NUM*`LAYER2_OUTPUT_CHANNEL_NUM+
 							`LAYER3_OUTPUT_CHANNEL_NUM*`LAYER4_OUTPUT_CHANNEL_NUM+
 							`LAYER4_OUTPUT_CHANNEL_NUM*`LAYER5_OUTPUT_CHANNEL_NUM
 							)*`KERNEL_SIZE+2000;
 localparam TOTAL_BIAS_NUM=`LAYER1_OUTPUT_CHANNEL_NUM+`LAYER2_OUTPUT_CHANNEL_NUM+`LAYER4_OUTPUT_CHANNEL_NUM+`LAYER5_OUTPUT_CHANNEL_NUM+10;
-localparam TOTAL_TEST_NUM=100;
+localparam PIXEL_NUM=3072;
 module top_tb;
 logic STAGE1_COMPLETE;
 logic STAGE2_COMPLETE;
@@ -103,7 +103,7 @@ logic 	rst;
 logic [31:0]mem_pixel_in[PIXEL_NUM*PIC_NUM];
 logic [31:0]mem_weight_in[TOTAL_WEIGHT_NUM];
 logic [31:0]mem_bias_in[TOTAL_BIAS_NUM];
-logic [31:0]mem_predict_in[TOTAL_TEST_NUM];
+logic [31:0]mem_predict_in[PIC_NUM];
 logic [31:0]araddr; 
 logic [31:0]awaddr; 
 logic [31:0]wdata; 
@@ -157,6 +157,7 @@ cnn TOP(
 
 initial 
 begin
+	fp_w= $fopen(`RESULT_FILE, "w");
 	 $value$plusargs("data_path=%s",data_path);
 	 //data_path="test";
 	 $display("%s",data_path);
@@ -552,11 +553,12 @@ int memory_odd_even=0;
 int memory_odd_odd=0;
 int row_even=0;
 int col_even=0;
-
+int predict_hit=0;
 always
 begin
 	#(`CYCLE);
-	`ifdef RTL
+	
+	`ifdef LAYER_TEST
 	if(STAGE1_COMPLETE&&(picture_layer1<=2))
 	begin
 		$display("PICTURE %d STAGE1_COMPLETE",picture_layer1);
@@ -614,7 +616,7 @@ begin
 	end
 	////////////////////////////////////////////////////////////////////
 	pass_count=0;
-
+	`ifdef RTL
 	if(STAGE2_COMPLETE)
 	begin
 		$display("PICTURE %d STAGE2_COMPLETE",picture_layer2);
@@ -1057,15 +1059,16 @@ begin
 
 		
 	end
-`endif
+	`endif
+	`endif
 		interrupt_test();
 		/*
 		if(FAIL_FLAG)
 		begin
 			$finish;
 		end
-		*/
 		
+		*/
 end
 	task photo();
 		input int CORRECT_pass_count;
@@ -1119,6 +1122,10 @@ end
 			begin
 				$display("INTERRUPT RESULT MATCH");
 				$display("CORRECT ANSWER:[ %h ]",mem_predict_in[predict_index]);
+				predict_hit++;
+				$fwrite(fp_w,"%d",predict_index+1);
+				$fwrite(fp_w,"\n");
+
 			end
 			else
 			begin
@@ -1127,8 +1134,10 @@ end
 			end
 			predict_index++;
 		end
-		if(predict_index==1)
+		if(predict_index==100)
 		begin
+			$display("PREDICT HIT:[%2d]",predict_hit);
+			$fclose(fp_w);			
 			$finish();
 		end
 		
