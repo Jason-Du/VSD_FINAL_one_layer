@@ -51,7 +51,37 @@ module layer1_systolic(
 	
 	
 	
+	logic  signed       [31:0] channel1_data1;
+	logic  signed       [31:0] channel1_data2;
+	logic  signed       [31:0] channel1_data3;
 	
+	logic signed        [31:0] channel2_data1;
+	logic signed        [31:0] channel2_data2;
+	logic signed        [31:0] channel2_data3;
+	
+	logic signed        [31:0] channel3_data1;
+	logic signed        [31:0] channel3_data2;
+	logic signed        [31:0] channel3_data3;
+	
+	logic signed        [31:0] channel4_data1;
+	logic signed        [31:0] channel4_data2;
+	logic signed        [31:0] channel4_data3;
+	
+	logic signed        [31:0] channel5_data1;
+	logic signed        [31:0] channel5_data2;
+	logic signed        [31:0] channel5_data3;
+	
+	logic signed        [31:0] channel6_data1;
+	logic signed        [31:0] channel6_data2;
+	logic signed        [31:0] channel6_data3;
+	
+	logic signed        [31:0] channel7_data1;
+	logic signed        [31:0] channel7_data2;
+	logic signed        [31:0] channel7_data3;
+	
+	logic signed        [31:0] channel8_data1;
+	logic signed        [31:0] channel8_data2;
+	logic signed        [31:0] channel8_data3;
 	
 	always_comb
 	begin
