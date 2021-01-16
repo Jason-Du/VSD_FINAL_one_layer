@@ -69,9 +69,9 @@
 
 
 `define		RESULT_FILE		    "RESULT.csv"
-`define MAX 8000000
-`define CYCLE 20.0
-localparam PIC_NUM=100;
+`define MAX 1000000000
+`define CYCLE 2.0
+localparam PIC_NUM=1000;
 
 localparam TOTAL_WEIGHT_NUM=(`PICTURE_CHANNEL*`LAYER1_OUTPUT_CHANNEL_NUM+
 							`LAYER1_OUTPUT_CHANNEL_NUM*`LAYER2_OUTPUT_CHANNEL_NUM+
@@ -238,10 +238,12 @@ end
 `endif
 initial
 begin
+/*
 `ifdef RTL
 	$fsdbDumpfile("top.fsdb");
 	$fsdbDumpvars("+struct", "+mda",TOP);
 `endif
+*/
 	//$fsdbDumpvars(0,TOP);
 	//Simulation Limitation
 	#(`CYCLE*`MAX);
@@ -1049,12 +1051,12 @@ begin
 		end
 		$fclose(fp_r);
 		photo(.CORRECT_pass_count(1),.REAL_pass_count(pass_count),.picture_num(picture_layer7),.STAGE("STAGE7"));
-		/*
+		
 		if (picture_layer7==1)
 		begin
 			$finish;
 		end
-		*/
+		
 		picture_layer7++;
 
 		
@@ -1129,12 +1131,13 @@ end
 			end
 			else
 			begin
+				$display("PREDICT MISS INDEX:[%2d]",predict_index+1);
 				$display("INTERRUPT RESULT MISMATCH ERROR");
 				$display("CORRECT ANSWER:[ %h ]YOUR ANSWER:[ %h ]",mem_predict_in[predict_index],TOP.rdata);
 			end
 			predict_index++;
 		end
-		if(predict_index==100)
+		if(predict_index==PIC_NUM)
 		begin
 			$display("PREDICT HIT:[%2d]",predict_hit);
 			$fclose(fp_w);			
