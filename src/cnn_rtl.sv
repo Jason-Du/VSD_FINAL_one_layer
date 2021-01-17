@@ -426,7 +426,7 @@ layer1_result_mem layer1_data_mem(
 	.araddr(araddr),
 	.layer1_result_read_signal(layer1_result_read_signal),
 	//INOUT
-	.layer1_result_output(layer1_result)
+	.layer1_result_output(cnn_128)
 );
 
 
@@ -438,21 +438,21 @@ weight_bias_arbitor wb_arbitor(
 	.layer1_read_bias_signal(layer1_read_bias_signal),
 	.layer2_read_bias_signal(1'd0),
 	.layer1_read_weight_addr(layer1_read_weight_addr),
-	.layer2_read_weight_addr(32'd0),
+	.layer2_read_weight_addr(16'd0),
 	.layer1_read_bias_addr(layer1_read_bias_addr),
-	.layer2_read_bias_addr(32'd0),
+	.layer2_read_bias_addr(16'd0),
 	.layer4_read_weight_signal(1'd0),
 	.layer4_read_bias_signal(1'd0),
-	.layer4_read_weight_addr(32'd0),
-	.layer4_read_bias_addr(32'd0),
+	.layer4_read_weight_addr(16'd0),
+	.layer4_read_bias_addr(16'd0),
 	.layer5_read_weight_signal(1'd0),
 	.layer5_read_bias_signal(1'd0),
-	.layer5_read_weight_addr(32'd0),
-	.layer5_read_bias_addr(32'd0),
+	.layer5_read_weight_addr(16'd0),
+	.layer5_read_bias_addr(16'd0),
 	.layer7_read_weight_signal(1'd0),
 	.layer7_read_bias_signal(1'd0),
-	.layer7_read_weight_addr(32'd0),
-	.layer7_read_bias_addr(32'd0 ),
+	.layer7_read_weight_addr(16'd0),
+	.layer7_read_bias_addr(16'd0 ),
 	//INOUT
 	.read_weight_signal_data(read_weight_signal_data),
 	.read_weight_addr_data(read_weight_addr_data),
@@ -465,7 +465,7 @@ begin
 	//FIX
 	//write_result_signal=layer2_calculation_done?1'b1:1'b0;
 	read_result_signal=(araddr==32'hd000_0000)?1'b1:1'b0;
-	layer1_result_read_signal=(araddr[32:16]==32'hd000)?1'b1:1'b0;
+	layer1_result_read_signal=(araddr[31:16]==16'hd000)?1'b1:1'b0;
 	//
 end
 

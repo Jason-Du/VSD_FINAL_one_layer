@@ -25,7 +25,7 @@ module layer3_maxpooling_v2(
 	read_col_addr,
 	read_row_addr,
 	//fix
-	read_pixel_signal,
+	read_pixel_signal
 
 );
 	input                                           clk;
