@@ -46,7 +46,7 @@ cache: clean | $(bld_dir)
 rtl_all: clean rtl0 rtl1 rtl2
 test: | $(bld_dir)
 	cd $(bld_dir); \
-	irun $(root_dir)/$(src_dir)/layer2_systolic_rtl.sv   \
+	irun $(root_dir)/$(src_dir)/cnn_rtl.sv   \
 	+incdir+$(root_dir)/$(inc_dir)+$(root_dir)/$(src_dir)+$(root_dir)/$(sram_wrapper_dir)+$(root_dir)/$(sram_syn_dir) \
 	+define+ideal_transfer+RTL+CIFAR \
 	+data_path=$(root_dir)/$(top_data_dir) \
@@ -66,6 +66,7 @@ cnn1_MNIST: | $(bld_dir)
 	+data_path=$(root_dir)/$(top_data_dir) \
 	+access+r
 		+access+r
+		#+LAYER_TEST
 cnn0_CIFAR: | $(bld_dir)
 	cd $(bld_dir); \
 	irun $(root_dir)/$(sim_dir)/cnn_tb.sv \

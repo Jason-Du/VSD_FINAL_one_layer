@@ -8,9 +8,10 @@ module layer1_result_mem(
 	layer1_result_store_data_in,
 	save_row_addr,
 	save_col_addr,
-	read_row_addr,
-	read_col_addr,
+	//read_row_addr,
+	//read_col_addr,
 	layer1_result_read_signal,
+	araddr,
 	//INOUT
 	
 	layer1_result_output
@@ -22,8 +23,9 @@ module layer1_result_mem(
 	input [`LAYER1_OUTPUT_LENGTH-1:0]layer1_result_store_data_in;
 	input [ 15:0] 	save_row_addr;
 	input [ 15:0] 	save_col_addr;
-	input [ 15:0] 	read_row_addr;
-	input [ 15:0] 	read_col_addr;
+	//input [ 15:0] 	read_row_addr;
+	//input [ 15:0] 	read_col_addr;
+	input [ 31:0]   araddr;
 	input        layer1_result_read_signal;
 	//INOUT
 	
@@ -40,9 +42,10 @@ module layer1_result_mem(
 	logic [`LAYER1_OUTPUT_LENGTH-1:0] layer1_result_output_sram;
 	always_comb
 	begin
-		read_addr_add=(read_row_addr)<<5;
-		read_addr_minus=(read_row_addr)<<1;
-		read_addr_sram=read_addr_add[9:0]+read_col_addr[9:0]-read_addr_minus[9:0];
+		//read_addr_add=(read_row_addr)<<5;
+		//read_addr_minus=(read_row_addr)<<1;
+		//read_addr_sram=read_addr_add[9:0]+read_col_addr[9:0]-read_addr_minus[9:0];
+		read_addr_sram=araddr[9:0];
 		save_addr_add=(save_row_addr)<<5;
 		save_addr_minus=(save_row_addr)<<1;
 		save_addr_sram=save_addr_add[9:0]+save_col_addr[9:0]-save_addr_minus[9:0];

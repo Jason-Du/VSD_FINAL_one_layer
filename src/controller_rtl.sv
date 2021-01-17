@@ -90,7 +90,7 @@ module controller(
 */
 localparam result_address             =32'hd000_0000;
 localparam image_set_register_ADDRESS =32'hd111_0000;
-localparam interrupr_rsgister_ADDRESS =32'hd000_0200;
+localparam interrupr_rsgister_ADDRESS =32'hd001_0000;
 localparam local_pixel_mem_ADDRESS    =16'hd555;
 localparam local_weight_mem_ADDRESS   =16'hd333;
 localparam local_bias_mem_ADDRESS     =16'hd444;

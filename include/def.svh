@@ -17,7 +17,7 @@
 `define LAYER1_OUTPUT_CHANNEL_NUM 8
 `define LAYER1_SYSTOLIC_WEIGHT_NUM `LAYER1_OUTPUT_CHANNEL_NUM*9
 `define LAYER1_PIPELINE_ROW `WORDLENGTH'd1//
-`define LAYER1_PIPELINE_COL `WORDLENGTH'd27//30-4+  2 prevent same address and read delay 1 cycle
+`define LAYER1_PIPELINE_COL `WORDLENGTH'd27///30-4+  2 prevent same address and read delay 1 cycle
 
 `define LAYER2_WIDTH 30
 `define LAYER2_READ_PIXEL_COUNT_COL_END `WORDLENGTH'd29//30-1

@@ -83,6 +83,7 @@ module layer1_systolic(
 	logic signed        [31:0] channel8_data2;
 	logic signed        [31:0] channel8_data3;
 	
+	
 	always_comb
 	begin
 		channel1_data1=(signed'(weight1[47:32])*signed'(input_channel[47:32]));
